@@ -1,3 +1,4 @@
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { SkuRestockedEvent, SkuRestockedEventInput } from './SkuRestockedEvent'
 
@@ -14,152 +15,152 @@ function buildMockValidSkuRestockedEventInput() {
   return mockValidInput
 }
 
-describe('Warehouse Service RestockSkuApi SkuRestockedEvent tests', () => {
+describe(`Warehouse Service RestockSkuApi SkuRestockedEvent tests`, () => {
   //
   // Test SkuRestockedEventData edge cases
   //
-  it('does not throw if the input SkuRestockedEventInput is valid', () => {
+  it(`does not throw if the input SkuRestockedEventInput is valid`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).not.toThrow()
   })
 
-  it('throws if the input SkuRestockedEventInput is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput is undefined`, () => {
     const mockSkuRestockedEventInput = undefined as unknown as SkuRestockedEventInput
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput is null', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput is null`, () => {
     const mockSkuRestockedEventInput = null as unknown as SkuRestockedEventInput
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
   //
   // Test SkuRestockedEventData.sku edge cases
   //
-  it('throws if the input SkuRestockedEventInput.sku is missing', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is missing`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     delete mockSkuRestockedEventInput.sku
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.sku is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is undefined`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = undefined
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.sku is null', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is null`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = null
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.sku is empty', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is empty`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = ''
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.sku is blank', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is blank`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = '      '
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.sku length < 4', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku length < 4`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = '123'
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
   //
   // Test SkuRestockedEventData.units edge cases
   //
-  it('throws if the input SkuRestockedEventInput.units is missing', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is missing`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     delete mockSkuRestockedEventInput.units
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.units is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is undefined`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = undefined
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.units is null', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is null`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = null
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.units < 0', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units < 0`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = -1
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.units == 0', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units == 0`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = 0
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.units is not an integer', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is not an integer`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = 2.34
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.units is not a number', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is not a number`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = '1' as unknown as number
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
   //
   // Test SkuRestockedEventData.lotId edge cases
   //
-  it('throws if the input SkuRestockedEventInput.lotId is missing', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is missing`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     delete mockSkuRestockedEventInput.lotId
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.lotId is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is undefined`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = undefined
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.lotId is null', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is null`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = null
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.lotId is empty', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is empty`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = ''
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.lotId is blank', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is blank`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = '      '
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
-  it('throws if the input SkuRestockedEventInput.lotId length < 4', () => {
+  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId length < 4`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = '123'
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow()
+    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
   })
 
   //
   // Test expected results
   //
-  it('returns the expected SkuRestockedEvent with eventName and eventData', () => {
+  it(`returns the expected SkuRestockedEvent with eventName and eventData`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     const expected: SkuRestockedEvent = {
       eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,

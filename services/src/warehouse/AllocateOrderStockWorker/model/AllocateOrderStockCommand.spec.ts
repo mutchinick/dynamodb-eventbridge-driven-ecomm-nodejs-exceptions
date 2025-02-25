@@ -1,6 +1,7 @@
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
-import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
 import { AllocateOrderStockCommand, AllocateOrderStockCommandInput } from './AllocateOrderStockCommand'
+import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
 
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
@@ -35,8 +36,8 @@ function buildMockValidAllocateOrderStockCommandInput() {
   return mockValidInput
 }
 
-describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand tests', () => {
-  it('does not throw if the input AllocateOrderStockCommandInput is valid', () => {
+describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand tests`, () => {
+  it(`does not throw if the input AllocateOrderStockCommandInput.is valid`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).not.toThrow()
   })
@@ -44,260 +45,375 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
   //
   // Test AllocateOrderStockCommandInput edge cases
   //
-  it('throws if the input AllocateOrderStockCommandInput is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input AllocateOrderStockCommandInput.is undefined`, () => {
     const mockAllocateOrderStockCommandInput: AllocateOrderStockCommandInput = undefined
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput is null', () => {
+  it(`throws an InvalidArgumentsError if the input AllocateOrderStockCommandInput.is null`, () => {
     const mockAllocateOrderStockCommandInput: AllocateOrderStockCommandInput = null
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
   //
   // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName edge cases
   //
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is missing', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is missing`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName = undefined
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is null', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is null`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName = null
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is empty', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is empty`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName = '' as never
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is blank', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is blank`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName = '      ' as never
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is not an ORDER_CREATED_EVENT', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is not an ORDER_CREATED_EVENT`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName = 'mockWarehouseEventName' as never
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
   //
   // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku edge cases
   //
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is missing', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is missing`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku = undefined
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is null', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is null`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku = null
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is empty', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is empty`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku = ''
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is blank', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku is blank`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku = '      '
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku length < 4', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku length < 4`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku = '123'
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
   //
   // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units edge cases
   //
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is missing', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is missing`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units = undefined
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is null', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is null`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units = null
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units < 0', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units < 0`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units = -1
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units == 0', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units == 0`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units = 0
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is not an integer', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is not an integer`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units = 3.45
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is not a number', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units is not a number`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units = '1' as unknown as number
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
   //
   // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId edge cases
   //
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is missing', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is missing`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = undefined
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is null', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is null`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = null
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is empty', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is empty`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = ''
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is blank', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is blank`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = '      '
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId length < 4', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId length < 4`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = '123'
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
   //
   // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt edge cases
   //
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is missing', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is missing`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt = undefined
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is null', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is null`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt = null
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is empty', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is empty`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt = ''
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is blank', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt is blank`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt = '      '
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt length < 4', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt length < 4`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.createdAt = '123'
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
   //
   // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt edge cases
   //
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is missing', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is missing`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is undefined', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt = undefined
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is null', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is null`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt = null
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is empty', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is empty`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt = ''
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is blank', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt is blank`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt = '      '
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
-  it('throws if the input AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt length < 4', () => {
+  it(`throws an InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt length < 4`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.updatedAt = '123'
-    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow()
+    expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).toThrow(
+      InvalidArgumentsError,
+    )
   })
 
   //
   // Test expected results
   //
-  it('returns the expected AllocateOrderStockCommand', () => {
+  it(`returns the expected AllocateOrderStockCommand`, () => {
     const mockAllocateOrderStockCommandInput = buildMockValidAllocateOrderStockCommandInput()
     const allocateOrderStockCommand = AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     const expected: AllocateOrderStockCommand = {

@@ -1,3 +1,4 @@
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { IDbRestockSkuClient } from '../DbRestockSkuClient/DbRestockSkuClient'
 import { IncomingSkuRestockedEvent } from '../model/IncomingSkuRestockedEvent'
@@ -36,34 +37,34 @@ function buildMockDbRestockSkuClient_restockSku_throws(): IDbRestockSkuClient {
   return { restockSku: jest.fn().mockRejectedValue(new Error()) }
 }
 
-describe('Warehouse Service RestockSkuWorker RestockSkuWorkerService tests', () => {
+describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerService tests`, () => {
   //
   // Test IncomingSkuRestockedEvent edge cases
   //
-  it('throws if IncomingSkuRestockedEvent is undefined', async () => {
+  it(`throws an InvalidArgumentsError if IncomingSkuRestockedEvent is undefined`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_restockSku_throws()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
-    await expect(restockSkuWorkerService.restockSku(undefined)).rejects.toThrow()
+    await expect(restockSkuWorkerService.restockSku(undefined)).rejects.toThrow(InvalidArgumentsError)
   })
 
   //
   // Test internal logic
   //
-  it('calls DbRestockSkuClient.restockSku a single time', async () => {
+  it(`calls DbRestockSkuClient.restockSku a single time`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_restockSku_resolves()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
     await restockSkuWorkerService.restockSku(mockIncomingSkuRestockedEvent)
     expect(mockDbRestockSkuClient.restockSku).toHaveBeenCalledTimes(1)
   })
 
-  it('calls DbRestockSkuClient.restockSku with the expected RestockSkuCommand', async () => {
+  it(`calls DbRestockSkuClient.restockSku with the expected RestockSkuCommand`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_restockSku_resolves()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
     await restockSkuWorkerService.restockSku(mockIncomingSkuRestockedEvent)
     expect(mockDbRestockSkuClient.restockSku).toHaveBeenCalledWith(expectedRestockSkuCommand)
   })
 
-  it('throws if DbRestockSkuClient.restockSku throws', async () => {
+  it(`throws if DbRestockSkuClient.restockSku throws`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_restockSku_throws()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
     await expect(restockSkuWorkerService.restockSku(mockIncomingSkuRestockedEvent)).rejects.toThrow()
@@ -72,7 +73,7 @@ describe('Warehouse Service RestockSkuWorker RestockSkuWorkerService tests', () 
   //
   // Test expected results
   //
-  it('returns a void promise', async () => {
+  it(`returns a void promise`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_restockSku_resolves()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
     const serviceOutput = await restockSkuWorkerService.restockSku(mockIncomingSkuRestockedEvent)

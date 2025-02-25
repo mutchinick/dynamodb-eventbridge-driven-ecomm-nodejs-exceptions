@@ -1,6 +1,6 @@
 import { marshall } from '@aws-sdk/util-dynamodb'
 import { AttributeValue, EventBridgeEvent, SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
-import { WarehouseError } from '../../errors/WarehouseError'
+import { AppError, InvalidOperationError } from '../../errors/AppError'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { IAllocateOrderStockWorkerService } from '../AllocateOrderStockWorkerService/AllocateOrderStockWorkerService'
 import { IncomingOrderCreatedEvent } from '../model/IncomingOrderCreatedEvent'
@@ -98,8 +98,8 @@ function buildMockAllocateOrderStockWorkerService_allocateOrderStock_resolves():
   return { allocateOrderStock: jest.fn() }
 }
 
-function buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked(
-  errorName: string,
+function buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(
+  error: AppError,
 ): IAllocateOrderStockWorkerService {
   return {
     allocateOrderStock: jest.fn().mockImplementation((incomingOrderCreatedEvent: IncomingOrderCreatedEvent) => {
@@ -108,8 +108,6 @@ function buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsk
         false,
       )
       if (shouldThrow) {
-        const error = new Error()
-        WarehouseError.addName(error, errorName)
         return Promise.reject(error)
       }
       return Promise.resolve()
@@ -1340,9 +1338,10 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expected)
   })
 
-  it('return no failures if the AllocateOrderStockWorkerService throws an DoNotRetryError (test 1)', async () => {
+  it('return no failures if the AllocateOrderStockWorkerService a non transient Error (test 1)', async () => {
+    const nonTransientError = InvalidOperationError.from('non_transient')
     const mockAllocateOrderStockWorkerService =
-      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked(WarehouseError.DoNotRetryError)
+      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(nonTransientError)
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
     )
@@ -1353,9 +1352,10 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expected)
   })
 
-  it('return no failures if the AllocateOrderStockWorkerService throws an DoNotRetryError (test 2)', async () => {
+  it('return no failures if the AllocateOrderStockWorkerService a non transient Error (test 2)', async () => {
+    const nonTransientError = InvalidOperationError.from('non_transient')
     const mockAllocateOrderStockWorkerService =
-      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked(WarehouseError.DoNotRetryError)
+      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(nonTransientError)
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
     )
@@ -1366,9 +1366,10 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expected)
   })
 
-  it('return no failures if the AllocateOrderStockWorkerService throws an DoNotRetryError (test 3)', async () => {
+  it('return no failures if the AllocateOrderStockWorkerService a non transient Error (test 3)', async () => {
+    const nonTransientError = InvalidOperationError.from('non_transient')
     const mockAllocateOrderStockWorkerService =
-      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked(WarehouseError.DoNotRetryError)
+      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(nonTransientError)
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
     )
@@ -1379,9 +1380,10 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expected)
   })
 
-  it('returns expected failures if the AllocateOrderStockWorkerService throws an Error not DoNotRetryError (test 1)', async () => {
+  it('returns expected failures if the AllocateOrderStockWorkerService throws a transient Error (test 1)', async () => {
+    const transientError = InvalidOperationError.from('transient')
     const mockAllocateOrderStockWorkerService =
-      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked('SomeError')
+      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(transientError)
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
     )
@@ -1397,9 +1399,10 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expected)
   })
 
-  it('returns expected failures if the AllocateOrderStockWorkerService throws an Error not DoNotRetryError (test 2)', async () => {
+  it('returns expected failures if the AllocateOrderStockWorkerService throws a transient Error (test 2)', async () => {
+    const transientError = InvalidOperationError.from('transient')
     const mockAllocateOrderStockWorkerService =
-      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked('SomeError')
+      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(transientError)
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
     )
@@ -1415,9 +1418,10 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expected)
   })
 
-  it('returns expected failures if the AllocateOrderStockWorkerService throws an Error not DoNotRetryError (test 3)', async () => {
+  it('returns expected failures if the AllocateOrderStockWorkerService throws a transient Error (test 3)', async () => {
+    const transientError = InvalidOperationError.from('transient')
     const mockAllocateOrderStockWorkerService =
-      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked('SomeError')
+      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(transientError)
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
     )
@@ -1435,9 +1439,10 @@ describe('Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expected)
   })
 
-  it('returns all failures if the AllocateOrderStockWorkerService throws all and only Error not DoNotRetryError', async () => {
+  it('returns all failures if the AllocateOrderStockWorkerService throws all and only transient Error', async () => {
+    const transientError = InvalidOperationError.from('transient')
     const mockAllocateOrderStockWorkerService =
-      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throwsIfAsked('SomeError')
+      buildMockAllocateOrderStockWorkerService_allocateOrderStock_throws(transientError)
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
     )

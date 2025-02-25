@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { WarehouseError } from '../../errors/WarehouseError'
+import { InvalidArgumentsError, Result } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
 
@@ -7,22 +7,27 @@ export type IncomingRestockSkuRequestInput = Pick<RestockSkuData, 'sku' | 'units
 
 type IncomingRestockSkuRequestProps = Pick<RestockSkuData, 'sku' | 'units' | 'lotId'>
 
+/**
+ *
+ */
 export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps {
-  //
-  //
-  //
+  /**
+   *
+   */
   private constructor(
     public readonly sku: string,
     public readonly units: number,
     public readonly lotId: string,
   ) {}
 
-  //
-  //
-  //
-  public static validateAndBuild(incomingRestockSkuRequestInput: IncomingRestockSkuRequestInput) {
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  public static validateAndBuild(
+    incomingRestockSkuRequestInput: IncomingRestockSkuRequestInput,
+  ): Result<IncomingRestockSkuRequest, InvalidArgumentsError> {
     try {
-      const { sku, units, lotId } = this.buildIncomingRestockSkuRequestProps(incomingRestockSkuRequestInput)
+      const { sku, units, lotId } = this.buildProps(incomingRestockSkuRequestInput)
       return new IncomingRestockSkuRequest(sku, units, lotId)
     } catch (error) {
       console.error('IncomingRestockSkuRequest.validateAndBuild', { error, incomingRestockSkuRequestInput })
@@ -30,12 +35,12 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
     }
   }
 
-  //
-  //
-  //
-  private static buildIncomingRestockSkuRequestProps(
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static buildProps(
     incomingRestockSkuRequestInput: IncomingRestockSkuRequestInput,
-  ): IncomingRestockSkuRequestProps {
+  ): Result<IncomingRestockSkuRequestProps, InvalidArgumentsError> {
     try {
       const incomingRestockSkuRequest = z
         .object({
@@ -46,10 +51,8 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
         .parse(incomingRestockSkuRequestInput) as IncomingRestockSkuRequestProps
       return incomingRestockSkuRequest
     } catch (error) {
-      console.error('RestockSkuApiController.buildIncomingRestockSkuRequest error:', { error })
-      WarehouseError.addName(error, WarehouseError.InvalidArgumentsError)
-      WarehouseError.addName(error, WarehouseError.DoNotRetryError)
-      throw error
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      throw invalidArgumentsError
     }
   }
 }

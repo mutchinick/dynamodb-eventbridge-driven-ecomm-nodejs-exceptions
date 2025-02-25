@@ -7,23 +7,23 @@ import {
   Result,
   UnrecognizedError,
 } from '../../errors/AppError'
-import { SkuRestockedEvent } from '../model/SkuRestockedEvent'
+import { OrderStockDepletedEvent } from '../model/OrderStockDepletedEvent'
 
-export interface IEsRaiseSkuRestockedEventClient {
+export interface IEsRaiseOrderStockDepletedEventClient {
   /**
    * @throws {InvalidArgumentsError}
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  raiseSkuRestockedEvent: (
-    skuRestockedEvent: SkuRestockedEvent,
+  raiseOrderStockDepletedEvent: (
+    orderStockDepletedEvent: OrderStockDepletedEvent,
   ) => AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError>
 }
 
 /**
  *
  */
-export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEventClient {
+export class EsRaiseOrderStockDepletedEventClient implements IEsRaiseOrderStockDepletedEventClient {
   /**
    *
    */
@@ -34,28 +34,30 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  public async raiseSkuRestockedEvent(
-    skuRestockedEvent: SkuRestockedEvent,
+  public async raiseOrderStockDepletedEvent(
+    orderStockDepletedEvent: OrderStockDepletedEvent,
   ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
-    const logContext = 'EsRaiseSkuRestockedEventClient.raiseSkuRestockedEvent'
-    console.info(`${logContext} init:`, { skuRestockedEvent })
-    const ddbPutCommand = this.buildDdbPutCommand(skuRestockedEvent)
+    const logContext = 'EsRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent'
+    console.info(`${logContext} init:`, { orderStockDepletedEvent })
+    const ddbPutCommand = this.buildDdbPutCommand(orderStockDepletedEvent)
     await this.sendDdbPutCommand(ddbPutCommand)
-    console.info(`${logContext} exit success:`, { skuRestockedEvent })
+    console.info(`${logContext} exit success:`, { orderStockDepletedEvent })
   }
 
   /**
    * @throws {InvalidArgumentsError}
    */
-  private buildDdbPutCommand(skuRestockedEvent: SkuRestockedEvent): Result<PutCommand, InvalidArgumentsError> {
+  private buildDdbPutCommand(
+    orderStockDepletedEvent: OrderStockDepletedEvent,
+  ): Result<PutCommand, InvalidArgumentsError> {
     try {
       const ddbPutCommand = new PutCommand({
         TableName: process.env.EVENT_STORE_TABLE_NAME,
         Item: {
-          pk: `SKU#${skuRestockedEvent.eventData.sku}`,
-          sk: `EVENT#${skuRestockedEvent.eventName}#LOT_ID#${skuRestockedEvent.eventData.lotId}`,
+          pk: `ORDER_ID#${orderStockDepletedEvent.eventData.orderId}`,
+          sk: `EVENT#${orderStockDepletedEvent.eventName}`,
           _tn: '#EVENT',
-          ...skuRestockedEvent,
+          ...orderStockDepletedEvent,
         },
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })
@@ -73,8 +75,9 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
   private async sendDdbPutCommand(
     ddbPutCommand: PutCommand,
   ): AsyncResult<void, DuplicateEventRaisedError | UnrecognizedError> {
-    const logContext = 'EsRaiseSkuRestockedEventClient.raiseSkuRestockedEvent'
+    const logContext = 'EsRaiseOrderStockDepletedEventClient.sendDdbPutCommand'
     console.info(`${logContext} init:`, { ddbPutCommand })
+
     try {
       await this.ddbDocClient.send(ddbPutCommand)
       console.info(`${logContext} exit success:`, { ddbPutCommand })
@@ -84,12 +87,12 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
       // If the condition fails, the event has already been raised, so we throw a non transient
       // DuplicateEventRaisedError
       if (error instanceof ConditionalCheckFailedException) {
-        const duplicationError = DuplicateEventRaisedError.from()
+        const duplicationError = DuplicateEventRaisedError.from(error)
         console.error(`${logContext} exit error:`, { duplicationError, ddbPutCommand })
         throw duplicationError
       }
 
-      const unrecognizedError = UnrecognizedError.from()
+      const unrecognizedError = UnrecognizedError.from(error)
       console.error(`${logContext} exit error:`, { unrecognizedError, ddbPutCommand })
       throw unrecognizedError
     }

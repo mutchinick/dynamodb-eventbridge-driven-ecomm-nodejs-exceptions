@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { WarehouseError } from '../../errors/WarehouseError'
+import { InvalidArgumentsError, Result } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingSkuRestockedEvent } from './IncomingSkuRestockedEvent'
@@ -15,21 +15,26 @@ type RestockSkuCommandProps = {
   readonly options?: Record<string, unknown>
 }
 
+/**
+ *
+ */
 export class RestockSkuCommand implements RestockSkuCommandProps {
-  //
-  //
-  //
+  /**
+   *
+   */
   private constructor(
     public readonly restockSkuData: RestockSkuCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
-  //
-  //
-  //
-  public static validateAndBuild(restockSkuCommandInput: RestockSkuCommandInput): RestockSkuCommand {
+  /**
+   *
+   */
+  public static validateAndBuild(
+    restockSkuCommandInput: RestockSkuCommandInput,
+  ): Result<RestockSkuCommand, InvalidArgumentsError> {
     try {
-      const { restockSkuData, options } = this.buildRestockSkuCommandProps(restockSkuCommandInput)
+      const { restockSkuData, options } = this.buildProps(restockSkuCommandInput)
       return new RestockSkuCommand(restockSkuData, options)
     } catch (error) {
       console.error('RestockSkuCommand.validateAndBuild', { error, restockSkuCommandInput })
@@ -37,13 +42,15 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
     }
   }
 
-  //
-  //
-  //
-  private static buildRestockSkuCommandProps(restockSkuCommandInput: RestockSkuCommandInput): RestockSkuCommandProps {
-    const { incomingSkuRestockedEvent } = restockSkuCommandInput
-    this.validateWarehouseEvent(incomingSkuRestockedEvent)
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static buildProps(
+    restockSkuCommandInput: RestockSkuCommandInput,
+  ): Result<RestockSkuCommandProps, InvalidArgumentsError> {
+    this.validateInput(restockSkuCommandInput)
 
+    const { incomingSkuRestockedEvent } = restockSkuCommandInput
     const { sku, units, lotId } = incomingSkuRestockedEvent.eventData
     const date = new Date().toISOString()
     return {
@@ -58,25 +65,26 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
     }
   }
 
-  //
-  //
-  //
-  private static validateWarehouseEvent(incomingSkuRestockedEvent: IncomingSkuRestockedEvent) {
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static validateInput(restockSkuCommandInput: RestockSkuCommandInput): Result<void, InvalidArgumentsError> {
     try {
       z.object({
-        eventName: ValueValidators.validSkuRestockedEventName(),
-        eventData: z.object({
-          sku: ValueValidators.validSku(),
-          units: ValueValidators.validUnits(),
-          lotId: ValueValidators.validLotId(),
+        incomingSkuRestockedEvent: z.object({
+          eventName: ValueValidators.validSkuRestockedEventName(),
+          eventData: z.object({
+            sku: ValueValidators.validSku(),
+            units: ValueValidators.validUnits(),
+            lotId: ValueValidators.validLotId(),
+          }),
+          createdAt: ValueValidators.validCreatedAt(),
+          updatedAt: ValueValidators.validUpdatedAt(),
         }),
-        createdAt: ValueValidators.validCreatedAt(),
-        updatedAt: ValueValidators.validUpdatedAt(),
-      }).parse(incomingSkuRestockedEvent)
+      }).parse(restockSkuCommandInput)
     } catch (error) {
-      WarehouseError.addName(error, WarehouseError.InvalidArgumentsError)
-      WarehouseError.addName(error, WarehouseError.DoNotRetryError)
-      throw error
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      throw invalidArgumentsError
     }
   }
 }

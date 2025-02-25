@@ -2,7 +2,7 @@ import { AttributeValue } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { EventBridgeEvent } from 'aws-lambda'
 import { z } from 'zod'
-import { WarehouseError } from '../../errors/WarehouseError'
+import { InvalidArgumentsError, Result } from '../../errors/AppError'
 import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEvent } from '../../model/WarehouseEvent'
@@ -28,7 +28,13 @@ type IncomingOrderCreatedEventProps = WarehouseEvent<
   IncomingOrderCreatedEventData
 >
 
+/**
+ *
+ */
 export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps {
+  /**
+   *
+   */
   private constructor(
     readonly eventName: WarehouseEventName.ORDER_CREATED_EVENT,
     readonly eventData: IncomingOrderCreatedEventData,
@@ -36,7 +42,12 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
     readonly updatedAt: string,
   ) {}
 
-  public static validateAndBuild(incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput) {
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  public static validateAndBuild(
+    incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
+  ): Result<IncomingOrderCreatedEvent, InvalidArgumentsError> {
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(incomingOrderCreatedEventInput)
       return new IncomingOrderCreatedEvent(eventName, eventData, createdAt, updatedAt)
@@ -46,17 +57,15 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
     }
   }
 
-  //
-  //
-  //
+  /**
+   * @throws {InvalidArgumentsError}
+   */
   private static buildProps(
     incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
-  ): IncomingOrderCreatedEventProps {
+  ): Result<IncomingOrderCreatedEventProps, InvalidArgumentsError> {
     try {
       const eventDetail = incomingOrderCreatedEventInput.detail
-      const unverifiedIncomingOrderCreatedEvent = unmarshall(
-        eventDetail.dynamodb.NewImage,
-      ) as IncomingOrderCreatedEventProps
+      const unverifiedIncomingOrderCreatedEvent = unmarshall(eventDetail.dynamodb.NewImage)
       const incomingOrderCreatedEvent = z
         .object({
           eventName: ValueValidators.validOrderCreatedEventName(),
@@ -71,9 +80,8 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
         .parse(unverifiedIncomingOrderCreatedEvent) as IncomingOrderCreatedEventProps
       return incomingOrderCreatedEvent
     } catch (error) {
-      WarehouseError.addName(error, WarehouseError.InvalidArgumentsError)
-      WarehouseError.addName(error, WarehouseError.DoNotRetryError)
-      throw error
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      throw invalidArgumentsError
     }
   }
 }

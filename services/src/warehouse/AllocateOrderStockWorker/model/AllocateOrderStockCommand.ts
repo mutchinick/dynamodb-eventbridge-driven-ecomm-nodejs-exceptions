@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { WarehouseError } from '../../errors/WarehouseError'
+import { InvalidArgumentsError, Result } from '../../errors/AppError'
 import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
@@ -15,40 +15,42 @@ type AllocateOrderStockCommandProps = {
   readonly options?: Record<string, unknown>
 }
 
+/**
+ *
+ */
 export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps {
-  //
-  //
-  //
+  /**
+   *
+   */
   private constructor(
     public readonly allocateOrderStockData: AllocateOrderStockCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
-  //
-  //
-  //
+  /**
+   * @throws {InvalidArgumentsError}
+   */
   public static validateAndBuild(
     allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
-  ): AllocateOrderStockCommand {
+  ): Result<AllocateOrderStockCommand, InvalidArgumentsError> {
     try {
-      const { allocateOrderStockData, options } =
-        this.buildAllocateOrderStockCommandProps(allocateOrderStockCommandInput)
+      const { allocateOrderStockData, options } = this.buildProps(allocateOrderStockCommandInput)
       return new AllocateOrderStockCommand(allocateOrderStockData, options)
     } catch (error) {
-      console.error('AllocateOrderStockCommand.validateAndBuild', { error, allocateOrderStockCommandInput })
+      console.error('AllocateOrderStockCommand.validateAndBuild exit error:', { error, allocateOrderStockCommandInput })
       throw error
     }
   }
 
-  //
-  //
-  //
-  private static buildAllocateOrderStockCommandProps(
+  /**
+   *
+   */
+  private static buildProps(
     allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
-  ): AllocateOrderStockCommandProps {
-    const { incomingOrderCreatedEvent } = allocateOrderStockCommandInput
-    this.validateWarehouseEvent(incomingOrderCreatedEvent)
+  ): Result<AllocateOrderStockCommandProps, InvalidArgumentsError> {
+    this.validateInput(allocateOrderStockCommandInput)
 
+    const { incomingOrderCreatedEvent } = allocateOrderStockCommandInput
     const { sku, orderId, units } = incomingOrderCreatedEvent.eventData
     const date = new Date().toISOString()
     return {
@@ -63,25 +65,28 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     }
   }
 
-  //
-  //
-  //
-  private static validateWarehouseEvent(incomingOrderCreatedEvent: IncomingOrderCreatedEvent) {
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static validateInput(
+    allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
+  ): Result<void, InvalidArgumentsError> {
     try {
       z.object({
-        eventName: ValueValidators.validOrderCreatedEventName(),
-        eventData: z.object({
-          sku: ValueValidators.validSku(),
-          units: ValueValidators.validUnits(),
-          orderId: ValueValidators.validOrderId(),
+        incomingOrderCreatedEvent: z.object({
+          eventName: ValueValidators.validOrderCreatedEventName(),
+          eventData: z.object({
+            sku: ValueValidators.validSku(),
+            units: ValueValidators.validUnits(),
+            orderId: ValueValidators.validOrderId(),
+          }),
+          createdAt: ValueValidators.validCreatedAt(),
+          updatedAt: ValueValidators.validUpdatedAt(),
         }),
-        createdAt: ValueValidators.validCreatedAt(),
-        updatedAt: ValueValidators.validUpdatedAt(),
-      }).parse(incomingOrderCreatedEvent)
+      }).parse(allocateOrderStockCommandInput)
     } catch (error) {
-      WarehouseError.addName(error, WarehouseError.InvalidArgumentsError)
-      WarehouseError.addName(error, WarehouseError.DoNotRetryError)
-      throw error
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      throw invalidArgumentsError
     }
   }
 }

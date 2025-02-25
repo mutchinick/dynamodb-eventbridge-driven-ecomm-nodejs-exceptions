@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { z } from 'zod'
 import { WarehouseEventName } from './WarehouseEventName'
 
+/**
+ *
+ */
 export class ValueValidators {
   public static validSkuRestockedEventName = () => z.literal(WarehouseEventName.SKU_RESTOCKED_EVENT)
 
