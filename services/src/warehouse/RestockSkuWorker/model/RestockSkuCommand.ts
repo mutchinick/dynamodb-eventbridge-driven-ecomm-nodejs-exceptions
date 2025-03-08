@@ -28,7 +28,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
   ) {}
 
   /**
-   *
+   * @throws {InvalidArgumentsError}
    */
   public static validateAndBuild(
     restockSkuCommandInput: RestockSkuCommandInput,
