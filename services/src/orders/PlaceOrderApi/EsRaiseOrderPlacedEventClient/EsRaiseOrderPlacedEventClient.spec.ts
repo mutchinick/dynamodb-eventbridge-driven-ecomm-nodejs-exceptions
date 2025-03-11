@@ -1,5 +1,7 @@
+// Review error handling
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import { OrderError } from '../../errors/OrderError'
+import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { OrderEventName } from '../../model/OrderEventName'
 import { OrderPlacedEvent } from '../model/OrderPlacedEvent'
 import { EsRaiseOrderPlacedEventClient } from './EsRaiseOrderPlacedEventClient'
@@ -40,58 +42,58 @@ function buildMockDdbDocClient_send_resolves(): DynamoDBDocumentClient {
   return { send: jest.fn() } as unknown as DynamoDBDocumentClient
 }
 
-function buildMockDdbDocClient_send_throws(): DynamoDBDocumentClient {
-  return { send: jest.fn().mockRejectedValue(new Error()) } as unknown as DynamoDBDocumentClient
+function buildMockDdbDocClient_send_throws(error?: unknown): DynamoDBDocumentClient {
+  return { send: jest.fn().mockRejectedValue(error ?? new Error()) } as unknown as DynamoDBDocumentClient
 }
 
-function buildMockDdbDocClient_send_throws_ConditionalCheckFailedException(): DynamoDBDocumentClient {
-  const error = new Error()
-  OrderError.addName(error, OrderError.ConditionalCheckFailedException)
-  return { send: jest.fn().mockRejectedValue(error) } as unknown as DynamoDBDocumentClient
-}
-
-describe('Orders Service PlaceOrderApi EsRaiseOrderPlacedEventClient tests', () => {
+describe(`Orders Service PlaceOrderApi EsRaiseOrderPlacedEventClient tests`, () => {
   //
   // Test OrderPlacedEvent edge cases
   //
-  it('does not throw if the input OrderPlacedEvent is valid', async () => {
+  it(`does not throw if the input OrderPlacedEvent is valid`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
     const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
     await expect(esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockValidEvent)).resolves.not.toThrow()
   })
 
-  it('throws if the input OrderPlacedEvent is undefined', async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderPlacedEvent is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
     const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
     const mockTestEvent = undefined as OrderPlacedEvent
-    await expect(esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)).rejects.toThrow()
+    const resultPromise = esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it('throws if the input OrderPlacedEvent is null', async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderPlacedEvent is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
     const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
     const mockTestEvent = null as OrderPlacedEvent
-    await expect(esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)).rejects.toThrow()
+    const resultPromise = esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it('throws if the input OrderPlacedEvent is empty', async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderPlacedEvent is empty`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
     const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
     const mockTestEvent = {} as OrderPlacedEvent
-    await expect(esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)).rejects.toThrow()
+    const resultPromise = esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
   // Test internal logic
   //
-  it('calls DynamoDBDocumentClient.send a single time', async () => {
+  it(`calls DynamoDBDocumentClient.send a single time`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
     const ddbPlaceOrderEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
     await ddbPlaceOrderEventClient.raiseOrderPlacedEvent(mockValidEvent)
     expect(mockDdbDocClient.send).toHaveBeenCalledTimes(1)
   })
 
-  it('calls DynamoDBDocumentClient.send with the expected input', async () => {
+  it(`calls DynamoDBDocumentClient.send with the expected input`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
     const ddbPlaceOrderEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
     await ddbPlaceOrderEventClient.raiseOrderPlacedEvent(mockValidEvent)
@@ -100,33 +102,23 @@ describe('Orders Service PlaceOrderApi EsRaiseOrderPlacedEventClient tests', () 
     )
   })
 
-  it('throws if DynamoDBDocumentClient.send throws', async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws()
-    const ddbPlaceOrderEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
-    await expect(ddbPlaceOrderEventClient.raiseOrderPlacedEvent(mockValidEvent)).rejects.toThrow()
+  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send
+      throws a generic Error`, async () => {
+    const error = new Error('')
+    const mockDdbDocClient = buildMockDdbDocClient_send_throws(error)
+    const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
+    const resultPromise = esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockValidEvent)
+    await expect(resultPromise).rejects.toThrow(UnrecognizedError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
 
-  it('throws a InvalidEventRaiseOperationError_Redundant if DynamoDBDocumentClient.send throws a ConditionalCheckFailedException', async () => {
-    try {
-      const mockDdbDocClient = buildMockDdbDocClient_send_throws_ConditionalCheckFailedException()
-      const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
-      await esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockValidEvent)
-    } catch (error) {
-      expect(OrderError.hasName(error, OrderError.InvalidEventRaiseOperationError_Redundant)).toBe(true)
-      return
-    }
-    throw new Error('Test failed because no error was thrown')
-  })
-
-  it('throws a DoNotRetryError if DynamoDBDocumentClient.send throws a ConditionalCheckFailedException', async () => {
-    try {
-      const mockDdbDocClient = buildMockDdbDocClient_send_throws_ConditionalCheckFailedException()
-      const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
-      await esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockValidEvent)
-    } catch (error) {
-      expect(OrderError.hasName(error, OrderError.DoNotRetryError)).toBe(true)
-      return
-    }
-    throw new Error('Test failed because no error was thrown')
+  it(`throws a non-transient DuplicateEventRaisedError if DynamoDBDocumentClient.send
+      throws a ConditionalCheckFailedException`, async () => {
+    const error = new ConditionalCheckFailedException({ $metadata: {}, message: '' })
+    const mockDdbDocClient = buildMockDdbDocClient_send_throws(error)
+    const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
+    const resultPromise = esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockValidEvent)
+    await expect(resultPromise).rejects.toThrow(DuplicateEventRaisedError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 })

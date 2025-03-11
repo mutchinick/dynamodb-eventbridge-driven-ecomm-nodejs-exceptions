@@ -1,4 +1,6 @@
+// Review error handling
 import { z } from 'zod'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { OrderEvent } from '../../model/OrderEvent'
 import { OrderEventName } from '../../model/OrderEventName'
@@ -10,10 +12,13 @@ export type OrderPlacedEventInput = OrderPlacedEventData
 
 type OrderPlacedEventProps = OrderEvent<OrderEventName.ORDER_PLACED_EVENT, OrderPlacedEventData>
 
+/**
+ *
+ */
 export class OrderPlacedEvent implements OrderPlacedEventProps {
-  //
-  //
-  //
+  /**
+   *
+   */
   private constructor(
     public readonly eventName: OrderEventName.ORDER_PLACED_EVENT,
     public readonly eventData: OrderPlacedEventData,
@@ -21,34 +26,32 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
     public readonly updatedAt: string,
   ) {}
 
-  //
-  //
-  //
-  public static validateAndBuild(orderPlacedEventInput: OrderPlacedEventInput) {
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  public static validateAndBuild(orderPlacedEventInput: OrderPlacedEventInput): OrderPlacedEvent {
+    const logContext = 'OrderPlacedEvent.validateAndBuild'
+    console.info(`${logContext} init:`, { orderPlacedEventInput })
+
     try {
-      const { eventName, eventData, createdAt, updatedAt } = this.buildOrderPlacedEventProps(orderPlacedEventInput)
-      return new OrderPlacedEvent(eventName, eventData, createdAt, updatedAt)
+      const { eventName, eventData, createdAt, updatedAt } = this.buildProps(orderPlacedEventInput)
+      const orderPlacedEvent = new OrderPlacedEvent(eventName, eventData, createdAt, updatedAt)
+      console.info(`${logContext} exit success:`, { orderPlacedEvent, orderPlacedEventInput })
+      return orderPlacedEvent
     } catch (error) {
-      console.error('OrderPlacedEvent.validateAndBuild', { error, orderPlacedEventInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, orderPlacedEventInput })
       throw error
     }
   }
 
-  //
-  //
-  //
-  private static buildOrderPlacedEventProps(orderPlacedEventInput: OrderPlacedEventInput): OrderPlacedEventProps {
-    const validInput = z
-      .object({
-        orderId: ValueValidators.validOrderId(),
-        sku: ValueValidators.validSku(),
-        units: ValueValidators.validUnits(),
-        price: ValueValidators.validPrice(),
-        userId: ValueValidators.validUserId(),
-      })
-      .parse(orderPlacedEventInput) as OrderPlacedEventData
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static buildProps(orderPlacedEventInput: OrderPlacedEventInput): OrderPlacedEventProps {
+    this.validateInput(orderPlacedEventInput)
 
-    const { orderId, sku, units, price, userId } = validInput
+    const { orderId, sku, units, price, userId } = orderPlacedEventInput
     const date = new Date().toISOString()
     const orderPlacedEventData: OrderPlacedEventData = {
       orderId,
@@ -63,6 +66,28 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
       eventData: orderPlacedEventData,
       createdAt: date,
       updatedAt: date,
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static validateInput(orderPlacedEventInput: OrderPlacedEventData): void {
+    const logContext = 'OrderPlacedEvent.validateInput'
+
+    try {
+      z.object({
+        orderId: ValueValidators.validOrderId(),
+        sku: ValueValidators.validSku(),
+        units: ValueValidators.validUnits(),
+        price: ValueValidators.validPrice(),
+        userId: ValueValidators.validUserId(),
+      }).parse(orderPlacedEventInput)
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderPlacedEventInput })
+      throw invalidArgumentsError
     }
   }
 }

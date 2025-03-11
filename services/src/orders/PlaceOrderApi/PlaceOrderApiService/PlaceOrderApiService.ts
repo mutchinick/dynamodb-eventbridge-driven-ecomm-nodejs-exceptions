@@ -1,52 +1,73 @@
-import { OrderError } from '../../errors/OrderError'
+// Review error handling
+import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseOrderPlacedEventClient } from '../EsRaiseOrderPlacedEventClient/EsRaiseOrderPlacedEventClient'
 import { IncomingPlaceOrderRequest } from '../model/IncomingPlaceOrderRequest'
 import { OrderPlacedEvent } from '../model/OrderPlacedEvent'
 
 export interface IPlaceOrderApiService {
-  placeOrder: (incomingPlaceOrderRequest: IncomingPlaceOrderRequest) => Promise<ServiceOutput>
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {UnrecognizedError}
+   */
+  placeOrder: (incomingPlaceOrderRequest: IncomingPlaceOrderRequest) => Promise<PlaceOrderApiServiceOutput>
 }
 
-export type ServiceOutput = IncomingPlaceOrderRequest
+export type PlaceOrderApiServiceOutput = IncomingPlaceOrderRequest
 
+/**
+ *
+ */
 export class PlaceOrderApiService implements IPlaceOrderApiService {
-  //
-  //
-  //
+  /**
+   *
+   */
   constructor(private readonly ddbOrderPlacedEventClient: IEsRaiseOrderPlacedEventClient) {}
 
-  //
-  //
-  //
-  public async placeOrder(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): Promise<ServiceOutput> {
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {UnrecognizedError}
+   */
+  public async placeOrder(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): Promise<PlaceOrderApiServiceOutput> {
+    const logContext = 'PlaceOrderApiService.placeOrder'
+    console.info(`${logContext} init:`, { incomingPlaceOrderRequest })
+
     try {
-      console.info('PlaceOrderApiService.placeOrder init:', { incomingPlaceOrderRequest })
+      this.validateIncomingPlaceOrderRequest(incomingPlaceOrderRequest)
       await this.raiseOrderPlacedEvent(incomingPlaceOrderRequest)
-      const serviceOutput = this.buildServiceOutput(incomingPlaceOrderRequest)
-      console.info('PlaceOrderApiService.placeOrder exit:', { serviceOutput })
+      const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }
+      console.info(`${logContext} exit success:`, { serviceOutput })
       return serviceOutput
     } catch (error) {
-      console.error('PlaceOrderApiService.placeOrder error:', { error })
-      if (OrderError.hasName(error, OrderError.InvalidEventRaiseOperationError_Redundant)) {
-        const response = this.buildServiceOutput(incomingPlaceOrderRequest)
-        return response
+      console.error(`${logContext} error caught:`, { error })
+
+      if (error instanceof DuplicateEventRaisedError) {
+        const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }
+        console.info(`${logContext} exit success: from-error:`, { error, serviceOutput })
+        return serviceOutput
       }
+
+      console.error(`${logContext} exit error:`, { error })
       throw error
     }
   }
 
-  //
-  //
-  //
-  private async raiseOrderPlacedEvent(incomingPlaceOrderRequest: IncomingPlaceOrderRequest) {
-    const orderPlacedEvent = OrderPlacedEvent.validateAndBuild(incomingPlaceOrderRequest)
-    await this.ddbOrderPlacedEventClient.raiseOrderPlacedEvent(orderPlacedEvent)
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateIncomingPlaceOrderRequest(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): void {
+    if (incomingPlaceOrderRequest instanceof IncomingPlaceOrderRequest === false) {
+      const invalidArgumentsError = InvalidArgumentsError.from()
+      throw invalidArgumentsError
+    }
   }
 
-  //
-  //
-  //
-  private buildServiceOutput(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): ServiceOutput {
-    return incomingPlaceOrderRequest
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {DuplicateEventRaisedError}
+   * @throws {UnrecognizedError}
+   */
+  private async raiseOrderPlacedEvent(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): Promise<void> {
+    const orderPlacedEvent = OrderPlacedEvent.validateAndBuild(incomingPlaceOrderRequest)
+    await this.ddbOrderPlacedEventClient.raiseOrderPlacedEvent(orderPlacedEvent)
   }
 }

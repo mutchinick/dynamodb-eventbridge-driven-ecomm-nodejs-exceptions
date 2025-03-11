@@ -1,5 +1,6 @@
+// Review error handling
 import { z } from 'zod'
-import { OrderError } from '../../errors/OrderError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { ValueValidators } from '../../model/ValueValidators'
 
@@ -7,10 +8,13 @@ export type IncomingPlaceOrderRequestInput = Pick<OrderData, 'orderId' | 'sku' |
 
 type IncomingPlaceOrderRequestProps = Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
 
+/**
+ *
+ */
 export class IncomingPlaceOrderRequest implements IncomingPlaceOrderRequestProps {
-  //
-  //
-  //
+  /**
+   *
+   */
   private constructor(
     public readonly orderId: string,
     public readonly sku: string,
@@ -19,42 +23,63 @@ export class IncomingPlaceOrderRequest implements IncomingPlaceOrderRequestProps
     public readonly userId: string,
   ) {}
 
-  //
-  //
-  //
-  public static validateAndBuild(incomingPlaceOrderRequestInput: IncomingPlaceOrderRequestInput) {
+  /**
+   * @throws {InvalidArgumentsError
+   */
+  public static validateAndBuild(
+    incomingPlaceOrderRequestInput: IncomingPlaceOrderRequestInput,
+  ): IncomingPlaceOrderRequest {
+    const logContext = 'IncomingPlaceOrderRequest.validateAndBuild'
+    console.info(`${logContext} init:`, { incomingPlaceOrderRequestInput })
+
     try {
-      const { orderId, sku, units, price, userId } =
-        this.buildIncomingPlaceOrderRequestProps(incomingPlaceOrderRequestInput)
-      return new IncomingPlaceOrderRequest(orderId, sku, units, price, userId)
+      const { orderId, sku, units, price, userId } = this.buildProps(incomingPlaceOrderRequestInput)
+      const incomingPlaceOrderRequest = new IncomingPlaceOrderRequest(orderId, sku, units, price, userId)
+      console.info(`${logContext} exit success:`, { incomingPlaceOrderRequest, incomingPlaceOrderRequestInput })
+      return incomingPlaceOrderRequest
     } catch (error) {
-      console.error('IncomingPlaceOrderRequest.validateAndBuild', { error, incomingPlaceOrderRequestInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingPlaceOrderRequestInput })
       throw error
     }
   }
 
-  //
-  //
-  //
-  private static buildIncomingPlaceOrderRequestProps(
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static buildProps(
     incomingPlaceOrderRequestInput: IncomingPlaceOrderRequestInput,
   ): IncomingPlaceOrderRequestProps {
+    this.validateInput(incomingPlaceOrderRequestInput)
+    const { orderId, sku, units, price, userId } = incomingPlaceOrderRequestInput
+    return {
+      orderId,
+      sku,
+      units,
+      price,
+      userId,
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static validateInput(incomingPlaceOrderRequestInput: IncomingPlaceOrderRequestInput): void {
+    const logContext = 'IncomingPlaceOrderRequest.validateInput'
+
     try {
-      const incomingPlaceOrderRequest = z
-        .object({
-          orderId: ValueValidators.validOrderId(),
-          sku: ValueValidators.validSku(),
-          units: ValueValidators.validUnits(),
-          price: ValueValidators.validPrice(),
-          userId: ValueValidators.validUserId(),
-        })
-        .parse(incomingPlaceOrderRequestInput) as IncomingPlaceOrderRequestProps
-      return incomingPlaceOrderRequest
+      z.object({
+        orderId: ValueValidators.validOrderId(),
+        sku: ValueValidators.validSku(),
+        units: ValueValidators.validUnits(),
+        price: ValueValidators.validPrice(),
+        userId: ValueValidators.validUserId(),
+      }).parse(incomingPlaceOrderRequestInput)
     } catch (error) {
-      console.error('PlaceOrderApiController.buildIncomingPlaceOrderRequest error:', { error })
-      OrderError.addName(error, OrderError.InvalidArgumentsError)
-      OrderError.addName(error, OrderError.DoNotRetryError)
-      throw error
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingPlaceOrderRequestInput })
+      throw invalidArgumentsError
     }
   }
 }
