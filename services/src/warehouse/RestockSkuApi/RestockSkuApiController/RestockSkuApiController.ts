@@ -27,38 +27,41 @@ export class RestockSkuApiController implements IRestockSkuApiController {
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const incomingRestockSkuRequest = this.parseValidateRequest(apiEvent.body)
+      const incomingRestockSkuRequest = this.parseValidateRequest(apiEvent)
       const restockSkuOutput = await this.restockSkuApiService.restockSku(incomingRestockSkuRequest)
       const apiResponse = HttpResponse.Accepted(restockSkuOutput)
       console.info(`${logContext} exit success:`, { apiResponse })
       return apiResponse
     } catch (error) {
-      console.error('RestockSkuApiController.restockSku error:', { error })
+      console.error(`${logContext} error caught:`, { apiEvent })
 
-      // If InvalidArgumentsError we return Bad Request
       if (error instanceof InvalidArgumentsError) {
-        return HttpResponse.BadRequestError()
+        const badRequestError = HttpResponse.BadRequestError()
+        console.error(`${logContext} exit error:`, { badRequestError })
+        return badRequestError
       }
 
-      return HttpResponse.InternalServerError()
+      const internalServerError = HttpResponse.InternalServerError()
+      console.error(`${logContext} exit error:`, { internalServerError })
+      return internalServerError
     }
   }
 
   /**
    *
    */
-  private parseValidateRequest(bodyText: string): IncomingRestockSkuRequest {
+  private parseValidateRequest(apiEvent: APIGatewayProxyEventV2): IncomingRestockSkuRequest {
     const logContext = 'RestockSkuApiController.parseValidateRequest'
-    console.info(`${logContext} init:`, { bodyText })
+    console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedRequest = JSON.parse(bodyText) as IncomingRestockSkuRequestInput
+      const unverifiedRequest = JSON.parse(apiEvent.body) as IncomingRestockSkuRequestInput
       const incomingRestockSkuRequest = IncomingRestockSkuRequest.validateAndBuild(unverifiedRequest)
-      console.info(`${logContext} exit success:`, { bodyText })
+      console.info(`${logContext} exit success:`, { apiEvent })
       return incomingRestockSkuRequest
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { invalidArgumentsError, bodyText })
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, apiEvent })
       throw invalidArgumentsError
     }
   }

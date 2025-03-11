@@ -48,10 +48,10 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
   //
   // Test APIGatewayProxyEventV2 edge cases
   //
-  it(`responds with 500 Internal Server Error if the APIGatewayProxyEventV2 is undefined`, async () => {
+  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2 is undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_restockSku_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedErrorResponse = HttpResponse.InternalServerError()
+    const expectedErrorResponse = HttpResponse.BadRequestError()
     const mockApiEvent = undefined as unknown as APIGatewayProxyEventV2
     const actualResponse = await restockSkuApiController.restockSku(mockApiEvent)
     expect(actualResponse).toStrictEqual(expectedErrorResponse)
