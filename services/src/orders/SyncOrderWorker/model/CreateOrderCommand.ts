@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { OrderError } from '../../errors/OrderError'
+import { ForbiddenOrderStatusTransitionError, InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { OrderEventName } from '../../model/OrderEventName'
 import { OrderStatus } from '../../model/OrderStatus'
@@ -15,44 +15,53 @@ type CreateOrderCommandProps = {
   readonly options?: Record<string, unknown>
 }
 
+/**
+ *
+ */
 export class CreateOrderCommand implements CreateOrderCommandProps {
-  //
-  //
-  //
+  /**
+   *
+   */
   private constructor(
     public readonly orderData: OrderData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
-  //
-  //
-  //
-  public static validateAndBuild(createOrderCommandInput: CreateOrderCommandInput) {
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {ForbiddenOrderStatusTransitionError}
+   */
+  public static validateAndBuild(createOrderCommandInput: CreateOrderCommandInput): CreateOrderCommand {
+    const logContext = 'CreateOrderCommand.validateAndBuild'
+    console.info(`${logContext} init:`, { createOrderCommandInput })
+
     try {
-      const { orderData, options } = this.buildCreateOrderCommandProps(createOrderCommandInput)
-      return new CreateOrderCommand(orderData, options)
+      const { orderData, options } = this.buildProps(createOrderCommandInput)
+      const createOrderCommand = new CreateOrderCommand(orderData, options)
+      console.info(`${logContext} exit success:`, { createOrderCommand, createOrderCommandInput })
+      return createOrderCommand
     } catch (error) {
-      console.error('CreateOrderCommand.validateAndBuild', { error, createOrderCommandInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, createOrderCommandInput })
       throw error
     }
   }
 
-  //
-  //
-  //
-  private static buildCreateOrderCommandProps(
-    createOrderCommandInput: CreateOrderCommandInput,
-  ): CreateOrderCommandProps {
-    const { incomingOrderEvent } = createOrderCommandInput
-    this.validateOrderEvent(incomingOrderEvent)
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {ForbiddenOrderStatusTransitionError}
+   */
+  private static buildProps(createOrderCommandInput: CreateOrderCommandInput): CreateOrderCommandProps {
+    this.validateInput(createOrderCommandInput)
 
+    const { incomingOrderEvent } = createOrderCommandInput
     const incomingEventData = incomingOrderEvent.eventData
     const incomingEventName = incomingOrderEvent.eventName
     const { orderId, sku, units, price, userId } = incomingEventData
     const newOrderStatus = this.getNewOrderStatus(incomingEventName)
     const currentDate = new Date().toISOString()
 
-    const createOrderCommand: CreateOrderCommandProps = {
+    return {
       orderData: {
         orderId,
         orderStatus: newOrderStatus,
@@ -65,15 +74,16 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
       },
       options: {},
     }
-    return createOrderCommand
   }
 
-  //
-  //
-  //
-  private static validateOrderEvent(incomingOrderEvent: IncomingOrderEvent) {
-    try {
-      z.object({
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static validateInput(createOrderCommandInput: CreateOrderCommandInput): void {
+    const logContext = 'CreateOrderCommand.validateInput'
+
+    const schema = z.object({
+      incomingOrderEvent: z.object({
         eventName: ValueValidators.validIncomingEventName(),
         eventData: z.object({
           orderId: ValueValidators.validOrderId(),
@@ -84,25 +94,31 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
         }),
         createdAt: ValueValidators.validCreatedAt(),
         updatedAt: ValueValidators.validUpdatedAt(),
-      }).parse(incomingOrderEvent)
+      }),
+    })
+
+    try {
+      schema.parse(createOrderCommandInput)
     } catch (error) {
-      OrderError.addName(error, OrderError.InvalidArgumentsError)
-      OrderError.addName(error, OrderError.DoNotRetryError)
-      throw error
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { error, createOrderCommandInput })
+      throw invalidArgumentsError
     }
   }
 
-  //
-  //
-  //
-  private static getNewOrderStatus(incomingEventName: OrderEventName) {
+  /**
+   * @throws {ForbiddenOrderStatusTransitionError}
+   */
+  private static getNewOrderStatus(incomingEventName: OrderEventName): OrderStatus {
+    const logContext = 'CreateOrderCommand.getNewOrderStatus'
+
     if (incomingEventName === OrderEventName.ORDER_PLACED_EVENT) {
       return OrderStatus.ORDER_CREATED_STATUS
     }
 
-    const error = new Error('InvalidOrderStatusTransitionError_Forbidden')
-    OrderError.addName(error, OrderError.InvalidOrderStatusTransitionError_Forbidden)
-    OrderError.addName(error, OrderError.DoNotRetryError)
-    throw error
+    const forbiddenError = ForbiddenOrderStatusTransitionError.from()
+    console.error(`${logContext} exit error:`, { incomingEventName })
+    throw forbiddenError
   }
 }

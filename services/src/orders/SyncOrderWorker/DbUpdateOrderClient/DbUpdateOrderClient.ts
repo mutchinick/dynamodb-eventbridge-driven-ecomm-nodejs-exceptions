@@ -1,72 +1,105 @@
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, NativeAttributeValue, UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
-import { OrderError } from '../../errors/OrderError'
+import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
+import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
 import { UpdateOrderCommand } from '../model/UpdateOrderCommand'
 
 export interface IDbUpdateOrderClient {
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {UnrecognizedError}
+   */
   updateOrder: (updateOrderCommand: UpdateOrderCommand) => Promise<OrderData>
 }
 
+/**
+ *
+ */
 export class DbUpdateOrderClient implements IDbUpdateOrderClient {
-  //
-  //
-  //
+  /**
+   *
+   */
   constructor(private readonly ddbDocClient: DynamoDBDocumentClient) {}
 
-  //
-  //
-  //
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {UnrecognizedError}
+   */
   public async updateOrder(updateOrderCommand: UpdateOrderCommand): Promise<OrderData> {
+    const logContext = 'DbUpdateOrderClient.updateOrder'
+    console.info(`${logContext} init:`, { updateOrderCommand })
+    const ddbCommand = this.buildDdbCommand(updateOrderCommand)
+    const orderData = await this.sendDdbCommand(ddbCommand)
+    console.info(`${logContext} exit success:`, { orderData })
+    return orderData
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private buildDdbCommand(updateOrderCommand: UpdateOrderCommand): UpdateCommand {
     try {
-      console.info('DbUpdateOrderClient.updateOrder init:', { updateOrderCommand })
-      const ddbUpdateCommand = this.buildDdbUpdateCommand(updateOrderCommand)
-      const { Attributes } = await this.ddbDocClient.send(ddbUpdateCommand)
-      const orderData = this.buildOrderData(Attributes)
-      console.info('DbUpdateOrderClient.updateOrder exit:', { orderData })
-      return orderData
+      return new UpdateCommand({
+        TableName: process.env.ORDER_TABLE_NAME,
+        Key: {
+          pk: `ORDER_ID#${updateOrderCommand.orderData.orderId}`,
+          sk: `ORDER_ID#${updateOrderCommand.orderData.orderId}`,
+        },
+        UpdateExpression: 'SET #orderStatus = :orderStatus, #updatedAt = :updatedAt',
+        ExpressionAttributeNames: {
+          '#orderStatus': 'orderStatus',
+          '#updatedAt': 'updatedAt',
+        },
+        ExpressionAttributeValues: {
+          ':orderStatus': updateOrderCommand.orderData.orderStatus,
+          ':updatedAt': updateOrderCommand.orderData.updatedAt,
+        },
+        ConditionExpression: '#orderStatus <> :orderStatus',
+        ReturnValuesOnConditionCheckFailure: 'ALL_OLD',
+        ReturnValues: 'ALL_NEW',
+      })
     } catch (error) {
-      console.error('DbUpdateOrderClient.updateOrder error:', { error })
-      if (OrderError.hasName(error, OrderError.ConditionalCheckFailedException)) {
-        const attributes = unmarshall((error as ConditionalCheckFailedException).Item)
-        const orderData = this.buildOrderData(attributes)
-        console.info('DbUpdateOrderClient.updateOrder exit: Order status update redundant', { orderData })
-        return orderData
-      }
-      throw error
+      const logContext = 'DbUpdateOrderClient.buildDdbCommand'
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, updateOrderCommand })
+      throw invalidArgumentsError
     }
   }
 
-  //
-  //
-  //
-  private buildDdbUpdateCommand(updateOrderCommand: UpdateOrderCommand): UpdateCommand {
-    return new UpdateCommand({
-      TableName: process.env.ORDER_TABLE_NAME,
-      Key: {
-        pk: `ORDER_ID#${updateOrderCommand.orderData.orderId}`,
-        sk: `ORDER_ID#${updateOrderCommand.orderData.orderId}`,
-      },
-      UpdateExpression: 'SET #orderStatus = :orderStatus, #updatedAt = :updatedAt',
-      ExpressionAttributeNames: {
-        '#orderStatus': 'orderStatus',
-        '#updatedAt': 'updatedAt',
-      },
-      ExpressionAttributeValues: {
-        ':orderStatus': updateOrderCommand.orderData.orderStatus,
-        ':updatedAt': updateOrderCommand.orderData.updatedAt,
-      },
-      ConditionExpression: '#orderStatus <> :orderStatus',
-      ReturnValuesOnConditionCheckFailure: 'ALL_OLD',
-      ReturnValues: 'ALL_NEW',
-    })
+  /**
+   * @throws {UnrecognizedError}
+   */
+  private async sendDdbCommand(ddbCommand: UpdateCommand): Promise<OrderData> {
+    const logContext = 'DbUpdateOrderClient.sendDdbCommand'
+    console.info(`${logContext} init:`, { ddbCommand })
+
+    try {
+      const { Attributes } = await this.ddbDocClient.send(ddbCommand)
+      const orderData = this.buildOrderData(Attributes)
+      console.info(`${logContext} exit success:`, { orderData })
+      return orderData
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+
+      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
+        const attributes = unmarshall(error.Item)
+        const orderData = this.buildOrderData(attributes)
+        console.info(`${logContext} exit success: from-error:`, { error, orderData })
+        return orderData
+      }
+
+      const unrecognizedError = UnrecognizedError.from(error)
+      console.error(`${logContext} exit error:`, { unrecognizedError, ddbCommand })
+      throw unrecognizedError
+    }
   }
 
-  //
-  //
-  //
-  private buildOrderData(attributes: Record<string, NativeAttributeValue>) {
+  /**
+   *
+   */
+  private buildOrderData(attributes: Record<string, NativeAttributeValue>): OrderData {
     const orderData: OrderData = {
       orderId: attributes.orderId,
       orderStatus: attributes.orderStatus,

@@ -2,7 +2,7 @@ import { AttributeValue } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { EventBridgeEvent } from 'aws-lambda'
 import { z } from 'zod'
-import { OrderError } from '../../errors/OrderError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderEvent, OrderEventData } from '../../model/OrderEvent'
 import { OrderEventName } from '../../model/OrderEventName'
 import { ValueValidators } from '../../model/ValueValidators'
@@ -22,7 +22,13 @@ export type IncomingOrderEventInput = EventBridgeEvent<string, EventDetail>
 
 type IncomingOrderEventProps = OrderEvent<OrderEventName, OrderEventData>
 
+/**
+ *
+ */
 export class IncomingOrderEvent implements IncomingOrderEventProps {
+  /**
+   *
+   */
   private constructor(
     readonly eventName: OrderEventName,
     readonly eventData: OrderEventData,
@@ -30,26 +36,42 @@ export class IncomingOrderEvent implements IncomingOrderEventProps {
     readonly updatedAt: string,
   ) {}
 
-  public static validateAndBuild(incomingOrderEventInput: IncomingOrderEventInput) {
+  /**
+   *
+   */
+  public static isOrderPlacedEvent(incomingOrderEvent: IncomingOrderEvent): boolean {
+    return incomingOrderEvent.eventName === OrderEventName.ORDER_PLACED_EVENT
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  public static validateAndBuild(incomingOrderEventInput: IncomingOrderEventInput): IncomingOrderEvent {
+    const logContext = 'IncomingOrderEvent.validateAndBuild'
+    console.info(`${logContext} init:`, { incomingOrderEventInput })
+
     try {
-      const { eventName, eventData, createdAt, updatedAt } = this.buildIncomingOrderEventProps(incomingOrderEventInput)
-      return new IncomingOrderEvent(eventName, eventData, createdAt, updatedAt)
+      const { eventName, eventData, createdAt, updatedAt } = this.buildProps(incomingOrderEventInput)
+      const incomingOrderEvent = new IncomingOrderEvent(eventName, eventData, createdAt, updatedAt)
+      console.info(`${logContext} exit success:`, { incomingOrderEvent, incomingOrderEventInput })
+      return incomingOrderEvent
     } catch (error) {
-      console.error('IncomingOrderEvent.validateAndBuild', { error, incomingOrderEventInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingOrderEventInput })
       throw error
     }
   }
 
-  //
-  //
-  //
-  private static buildIncomingOrderEventProps(
-    incomingOrderEventInput: IncomingOrderEventInput,
-  ): IncomingOrderEventProps {
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static buildProps(incomingOrderEventInput: IncomingOrderEventInput): IncomingOrderEventProps {
+    const logContext = 'IncomingOrderEvent.buildProps'
+
     try {
       const eventDetail = incomingOrderEventInput.detail
       const unverifiedIncomingOrderEvent = unmarshall(eventDetail.dynamodb.NewImage) as IncomingOrderEventProps
-      const incomingOrderEvent = z
+      const incomingOrderEventProps = z
         .object({
           eventName: ValueValidators.validIncomingEventName(),
           eventData: z.object({
@@ -66,18 +88,12 @@ export class IncomingOrderEvent implements IncomingOrderEventProps {
           updatedAt: ValueValidators.validUpdatedAt(),
         })
         .parse(unverifiedIncomingOrderEvent) as IncomingOrderEventProps
-      return incomingOrderEvent
+      return incomingOrderEventProps
     } catch (error) {
-      OrderError.addName(error, OrderError.InvalidArgumentsError)
-      OrderError.addName(error, OrderError.DoNotRetryError)
-      throw error
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { error, incomingOrderEventInput })
+      throw invalidArgumentsError
     }
-  }
-
-  //
-  //
-  //
-  public static isOrderPlacedEvent(incomingOrderEvent: IncomingOrderEvent) {
-    return incomingOrderEvent.eventName === OrderEventName.ORDER_PLACED_EVENT
   }
 }
