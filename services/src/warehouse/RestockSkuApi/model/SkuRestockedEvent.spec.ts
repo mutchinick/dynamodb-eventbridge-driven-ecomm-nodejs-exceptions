@@ -24,137 +24,179 @@ describe(`Warehouse Service RestockSkuApi SkuRestockedEvent tests`, () => {
     expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).not.toThrow()
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput is undefined`, () => {
     const mockSkuRestockedEventInput = undefined as unknown as SkuRestockedEventInput
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput is null`, () => {
     const mockSkuRestockedEventInput = null as unknown as SkuRestockedEventInput
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
   // Test SkuRestockedEventData.sku edge cases
   //
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is missing`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.sku is missing`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     delete mockSkuRestockedEventInput.sku
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.sku is undefined`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = undefined
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.sku is null`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = null
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.sku is empty`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = ''
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.sku is blank`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = '      '
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.sku length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.sku length < 4`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.sku = '123'
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
   // Test SkuRestockedEventData.units edge cases
   //
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is missing`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.units is missing`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     delete mockSkuRestockedEventInput.units
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.units is undefined`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = undefined
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.units is null`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = null
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units < 0`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.units < 0`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = -1
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units == 0`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.units == 0`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = 0
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is not an integer`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.units is not an integer`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = 2.34
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.units is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.units is not a number`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.units = '1' as unknown as number
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
   // Test SkuRestockedEventData.lotId edge cases
   //
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is missing`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.lotId is missing`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     delete mockSkuRestockedEventInput.lotId
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.lotId is undefined`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = undefined
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.lotId is null`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = null
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.lotId is empty`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = ''
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.lotId is blank`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = '      '
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input SkuRestockedEventInput.lotId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEventInput.lotId length < 4`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
     mockSkuRestockedEventInput.lotId = '123'
-    expect(() => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -162,7 +204,8 @@ describe(`Warehouse Service RestockSkuApi SkuRestockedEvent tests`, () => {
   //
   it(`returns the expected SkuRestockedEvent with eventName and eventData`, () => {
     const mockSkuRestockedEventInput = buildMockValidSkuRestockedEventInput()
-    const expected: SkuRestockedEvent = {
+    const result = SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
+    const expectedResult: SkuRestockedEvent = {
       eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,
       eventData: {
         sku: mockSkuRestockedEventInput.sku,
@@ -172,7 +215,6 @@ describe(`Warehouse Service RestockSkuApi SkuRestockedEvent tests`, () => {
       createdAt: mockDate,
       updatedAt: mockDate,
     }
-    const skuRestockedEvent = SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
-    expect(skuRestockedEvent).toMatchObject(expected)
+    expect(result).toMatchObject(expectedResult)
   })
 })
