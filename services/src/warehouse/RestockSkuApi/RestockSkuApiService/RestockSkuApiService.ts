@@ -1,5 +1,5 @@
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
-import { AsyncResult, InvalidArgumentsError, DuplicateEventRaisedError, UnrecognizedError } from '../../errors/AppError'
+import { AsyncResult, DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { IEsRaiseSkuRestockedEventClient } from '../EsRaiseSkuRestockedEventClient/EsRaiseSkuRestockedEventClient'
 import { IncomingRestockSkuRequest } from '../model/IncomingRestockSkuRequest'
 import { SkuRestockedEvent } from '../model/SkuRestockedEvent'
@@ -11,10 +11,10 @@ export interface IRestockSkuApiService {
    */
   restockSku: (
     incomingRestockSkuRequest: IncomingRestockSkuRequest,
-  ) => AsyncResult<ServiceOutput, InvalidArgumentsError | UnrecognizedError>
+  ) => AsyncResult<RestockSkuApiServiceOutput, InvalidArgumentsError | UnrecognizedError>
 }
 
-export type ServiceOutput = TypeUtilsPretty<IncomingRestockSkuRequest>
+export type RestockSkuApiServiceOutput = TypeUtilsPretty<IncomingRestockSkuRequest>
 
 /**
  *
@@ -31,20 +31,36 @@ export class RestockSkuApiService implements IRestockSkuApiService {
    */
   public async restockSku(
     incomingRestockSkuRequest: IncomingRestockSkuRequest,
-  ): AsyncResult<ServiceOutput, InvalidArgumentsError | UnrecognizedError> {
+  ): AsyncResult<RestockSkuApiServiceOutput, InvalidArgumentsError | UnrecognizedError> {
     const logContext = 'RestockSkuApiService.restockSku'
     console.info(`${logContext} init:`, { incomingRestockSkuRequest })
 
     try {
+      this.validateIncomingRestockSkuRequest(incomingRestockSkuRequest)
       await this.raiseSkuRestockedEvent(incomingRestockSkuRequest)
+      const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
       console.info(`${logContext} exit success:`, { incomingRestockSkuRequest })
-      return incomingRestockSkuRequest
+      return serviceOutput
     } catch (error) {
-      console.error(`${logContext} exit error:`, { error })
+      console.error(`${logContext} error caught:`, { error })
+
       if (error instanceof DuplicateEventRaisedError) {
-        return incomingRestockSkuRequest
+        const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
+        console.info(`${logContext} exit success: from-error:`, { error, serviceOutput })
+        return serviceOutput
       }
+
+      console.error(`${logContext} exit error:`, { error })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateIncomingRestockSkuRequest(incomingRestockSkuRequest: IncomingRestockSkuRequest): void {
+    if (incomingRestockSkuRequest instanceof IncomingRestockSkuRequest === false) {
+      throw InvalidArgumentsError.from()
     }
   }
 

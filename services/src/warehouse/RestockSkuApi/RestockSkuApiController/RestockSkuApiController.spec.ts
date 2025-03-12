@@ -2,7 +2,7 @@ import { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { HttpResponse } from '../../../shared/HttpResponse'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { IncomingRestockSkuRequest } from '../model/IncomingRestockSkuRequest'
-import { IRestockSkuApiService, ServiceOutput } from '../RestockSkuApiService/RestockSkuApiService'
+import { IRestockSkuApiService, RestockSkuApiServiceOutput } from '../RestockSkuApiService/RestockSkuApiService'
 import { RestockSkuApiController } from './RestockSkuApiController'
 
 const mockSku = 'mockSku'
@@ -31,7 +31,7 @@ function buildMockApiEvent(incomingRestockSkuRequest: IncomingRestockSkuRequest)
 
 function buildMockRestockSkuApiService_restockSku_resolves(): IRestockSkuApiService {
   const mockApiEventBody = buildMockApiEventBody()
-  const mockServiceOutput: ServiceOutput = mockApiEventBody
+  const mockServiceOutput: RestockSkuApiServiceOutput = mockApiEventBody
   return { restockSku: jest.fn().mockResolvedValue(mockServiceOutput) }
 }
 

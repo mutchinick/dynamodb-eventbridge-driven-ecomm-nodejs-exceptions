@@ -1,35 +1,23 @@
-import { InvalidArgumentsError, DuplicateEventRaisedError, UnrecognizedError } from '../../errors/AppError'
+import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseSkuRestockedEventClient } from '../EsRaiseSkuRestockedEventClient/EsRaiseSkuRestockedEventClient'
-import { IncomingRestockSkuRequest as IncomingRestockSkuRequestInput } from '../model/IncomingRestockSkuRequest'
+import { IncomingRestockSkuRequest } from '../model/IncomingRestockSkuRequest'
 import { SkuRestockedEvent } from '../model/SkuRestockedEvent'
-import { RestockSkuApiService, ServiceOutput } from './RestockSkuApiService'
+import { RestockSkuApiService } from './RestockSkuApiService'
 
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
-const mockValidIncomingRestockSkuRequestInput: IncomingRestockSkuRequestInput = {
+const mockValidIncomingRestockSkuRequestInput = IncomingRestockSkuRequest.validateAndBuild({
   sku: 'mockSku',
   units: 2,
   lotId: 'mockLotId',
-}
-
-const expectedSkuRestockedEvent = SkuRestockedEvent.validateAndBuild(mockValidIncomingRestockSkuRequestInput)
-
-const expectedValidOutput: ServiceOutput = {
-  ...mockValidIncomingRestockSkuRequestInput,
-}
+})
 
 function buildMockDdbRestockSkuEventClient_raiseEvent_resolves(): IEsRaiseSkuRestockedEventClient {
   return { raiseSkuRestockedEvent: jest.fn() }
 }
 
-function buildMockDdbRestockSkuEventClient_raiseEvent_throws(): IEsRaiseSkuRestockedEventClient {
-  const error = UnrecognizedError.from()
-  return { raiseSkuRestockedEvent: jest.fn().mockRejectedValue(error) }
-}
-
-function buildMockDdbRestockSkuEventClient_raiseEvent_throws_DuplicateEventRaisedError(): IEsRaiseSkuRestockedEventClient {
-  const error = DuplicateEventRaisedError.from()
-  return { raiseSkuRestockedEvent: jest.fn().mockRejectedValue(error) }
+function buildMockDdbRestockSkuEventClient_raiseEvent_throws(error?: unknown): IEsRaiseSkuRestockedEventClient {
+  return { raiseSkuRestockedEvent: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
 describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
@@ -42,16 +30,20 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
     await expect(restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)).resolves.not.toThrow()
   })
 
-  it(`throws an InvalidArgumentsError if the input RestockSkuApiServiceInput is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuApiServiceInput is undefined`, async () => {
     const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockDdbRestockSkuEventClient)
-    await expect(restockSkuApiService.restockSku(undefined)).rejects.toThrow(InvalidArgumentsError)
+    const resultPromise = restockSkuApiService.restockSku(undefined)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws an InvalidArgumentsError if the input RestockSkuApiServiceInput is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuApiServiceInput is null`, async () => {
     const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockDdbRestockSkuEventClient)
-    await expect(restockSkuApiService.restockSku(null)).rejects.toThrow(InvalidArgumentsError)
+    const resultPromise = restockSkuApiService.restockSku(null)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -68,30 +60,35 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
     const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockDdbRestockSkuEventClient)
     await restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)
+    const expectedSkuRestockedEvent = SkuRestockedEvent.validateAndBuild(mockValidIncomingRestockSkuRequestInput)
     expect(mockDdbRestockSkuEventClient.raiseSkuRestockedEvent).toHaveBeenCalledWith(expectedSkuRestockedEvent)
   })
 
-  it(`throws an Error if DdbRestockSkuEventClient.restockSku throws`, async () => {
-    const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_throws()
+  it(`throws a the same Error if DdbRestockSkuEventClient.restockSku throws a generic Error`, async () => {
+    const mockError = new Error('mockError')
+    const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_throws(mockError)
     const restockSkuApiService = new RestockSkuApiService(mockDdbRestockSkuEventClient)
-    await expect(restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)).rejects.toThrow()
+    await expect(restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)).rejects.toThrow(mockError)
   })
 
   it(`returns a RestockSkuApiServiceOutput with the expected sku if DdbRestockSkuEventClient.restockSku 
       throws DuplicateEventRaisedError`, async () => {
-    const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_throws_DuplicateEventRaisedError()
+    const mockError = DuplicateEventRaisedError.from()
+    const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_throws(mockError)
     const restockSkuApiService = new RestockSkuApiService(mockDdbRestockSkuEventClient)
-    const actualOutput = await restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)
-    expect(actualOutput).toStrictEqual(expectedValidOutput)
+    const result = await restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)
+    const expectedServiceOutput = { ...mockValidIncomingRestockSkuRequestInput }
+    expect(result).toStrictEqual(expectedServiceOutput)
   })
 
   //
   // Test expected results
   //
-  it(`returns a RestockSkuApiServiceOutput with the expected sku`, async () => {
+  it(`returns a RestockSkuApiServiceOutput with the expected data`, async () => {
     const mockDdbRestockSkuEventClient = buildMockDdbRestockSkuEventClient_raiseEvent_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockDdbRestockSkuEventClient)
-    const actualOutput = await restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)
-    expect(actualOutput).toStrictEqual(expectedValidOutput)
+    const result = await restockSkuApiService.restockSku(mockValidIncomingRestockSkuRequestInput)
+    const expectedServiceOutput = { ...mockValidIncomingRestockSkuRequestInput }
+    expect(result).toStrictEqual(expectedServiceOutput)
   })
 })
