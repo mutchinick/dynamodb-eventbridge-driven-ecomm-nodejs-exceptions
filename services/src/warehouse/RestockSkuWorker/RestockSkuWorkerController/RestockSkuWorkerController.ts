@@ -57,7 +57,7 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
     console.info(`${logContext} init:`, { sqsRecord })
 
     try {
-      const unverifiedInput = this.parseIncomingEventInput(sqsRecord)
+      const unverifiedInput = this.parseInputSqsRecord(sqsRecord)
       const incomingSkuRestockedEvent = IncomingSkuRestockedEvent.validateAndBuild(unverifiedInput)
       await this.restockSkuWorkerService.restockSku(incomingSkuRestockedEvent)
       console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent, sqsRecord })
@@ -70,8 +70,8 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseIncomingEventInput(sqsRecord: SQSRecord): IncomingSkuRestockedEventInput {
-    const logContext = 'RestockSkuWorkerController.parseInput'
+  private parseInputSqsRecord(sqsRecord: SQSRecord): IncomingSkuRestockedEventInput {
+    const logContext = 'RestockSkuWorkerController.parseInputSqsRecord'
 
     try {
       return JSON.parse(sqsRecord.body) as IncomingSkuRestockedEventInput

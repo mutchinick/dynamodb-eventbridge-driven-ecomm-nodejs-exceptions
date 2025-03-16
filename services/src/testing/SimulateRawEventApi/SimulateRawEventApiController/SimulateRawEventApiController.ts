@@ -30,7 +30,7 @@ export class SimulateRawEventApiController implements ISimulateRawEventApiContro
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedInput = this.parseInput(apiEvent)
+      const unverifiedInput = this.parseInputApiEvent(apiEvent)
       const incomingSimulateRawEventRequest = IncomingSimulateRawEventRequest.validateAndBuild(unverifiedInput)
       const serviceOutput = await this.simulateRawEventApiService.simulateRawEvent(incomingSimulateRawEventRequest)
       const successResponse = HttpResponse.Accepted(serviceOutput)
@@ -52,8 +52,8 @@ export class SimulateRawEventApiController implements ISimulateRawEventApiContro
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInput(apiEvent: APIGatewayProxyEventV2): IncomingSimulateRawEventRequest {
-    const logContext = 'SimulateRawEventApiController.parseInput'
+  private parseInputApiEvent(apiEvent: APIGatewayProxyEventV2): IncomingSimulateRawEventRequest {
+    const logContext = 'SimulateRawEventApiController.parseInputApiEvent'
 
     try {
       return JSON.parse(apiEvent.body) as IncomingSimulateRawEventRequestInput

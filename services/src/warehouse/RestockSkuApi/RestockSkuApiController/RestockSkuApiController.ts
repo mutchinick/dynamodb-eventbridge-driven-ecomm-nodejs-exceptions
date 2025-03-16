@@ -32,7 +32,7 @@ export class RestockSkuApiController implements IRestockSkuApiController {
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedInput = this.parseInput(apiEvent)
+      const unverifiedInput = this.parseInputApiEvent(apiEvent)
       const incomingRestockSkuRequest = IncomingRestockSkuRequest.validateAndBuild(unverifiedInput)
       const restockSkuOutput = await this.restockSkuApiService.restockSku(incomingRestockSkuRequest)
       const successResponse = HttpResponse.Accepted(restockSkuOutput)
@@ -54,8 +54,8 @@ export class RestockSkuApiController implements IRestockSkuApiController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInput(apiEvent: APIGatewayProxyEventV2): IncomingRestockSkuRequest {
-    const logContext = 'RestockSkuApiController.parseInput'
+  private parseInputApiEvent(apiEvent: APIGatewayProxyEventV2): IncomingRestockSkuRequest {
+    const logContext = 'RestockSkuApiController.parseInputApiEvent'
 
     try {
       return JSON.parse(apiEvent.body) as IncomingRestockSkuRequestInput

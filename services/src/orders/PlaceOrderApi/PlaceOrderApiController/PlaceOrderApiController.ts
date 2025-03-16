@@ -27,7 +27,7 @@ export class PlaceOrderApiController implements IPlaceOrderApiController {
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedInput = this.parseInput(apiEvent)
+      const unverifiedInput = this.parseInputApiEvent(apiEvent)
       const incomingPlaceOrderRequest = IncomingPlaceOrderRequest.validateAndBuild(unverifiedInput)
       const placeOrderOutput = await this.placeOrderApiService.placeOrder(incomingPlaceOrderRequest)
       const successResponse = HttpResponse.Accepted(placeOrderOutput)
@@ -49,8 +49,8 @@ export class PlaceOrderApiController implements IPlaceOrderApiController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInput(apiEvent: APIGatewayProxyEventV2): IncomingPlaceOrderRequestInput {
-    const logContext = 'PlaceOrderApiController.parseInput'
+  private parseInputApiEvent(apiEvent: APIGatewayProxyEventV2): IncomingPlaceOrderRequestInput {
+    const logContext = 'PlaceOrderApiController.parseInputApiEvent'
 
     try {
       return JSON.parse(apiEvent.body) as IncomingPlaceOrderRequestInput

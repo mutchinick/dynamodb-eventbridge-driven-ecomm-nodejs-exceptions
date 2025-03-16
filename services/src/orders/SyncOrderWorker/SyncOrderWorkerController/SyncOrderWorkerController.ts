@@ -61,7 +61,7 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
     console.info(`${logContext} init:`, { sqsRecord })
 
     try {
-      const unverifiedInput = this.parseIncomingEventInput(sqsRecord)
+      const unverifiedInput = this.parseInputSqsRecord(sqsRecord)
       const incomingOrderEvent = IncomingOrderEvent.validateAndBuild(unverifiedInput)
       await this.syncOrderWorkerService.syncOrder(incomingOrderEvent)
       console.info(`${logContext} exit success:`, { incomingOrderEvent, sqsRecord })
@@ -74,8 +74,8 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseIncomingEventInput(sqsRecord: SQSRecord): IncomingOrderEventInput {
-    const logContext = 'SyncOrderWorkerController.parseInput'
+  private parseInputSqsRecord(sqsRecord: SQSRecord): IncomingOrderEventInput {
+    const logContext = 'SyncOrderWorkerController.parseInputSqsRecord'
 
     try {
       return JSON.parse(sqsRecord.body) as IncomingOrderEventInput
