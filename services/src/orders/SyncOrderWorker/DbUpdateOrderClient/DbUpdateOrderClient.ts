@@ -29,16 +29,24 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
   public async updateOrder(updateOrderCommand: UpdateOrderCommand): Promise<OrderData> {
     const logContext = 'DbUpdateOrderClient.updateOrder'
     console.info(`${logContext} init:`, { updateOrderCommand })
-    const ddbCommand = this.buildDdbCommand(updateOrderCommand)
-    const orderData = await this.sendDdbCommand(ddbCommand)
-    console.info(`${logContext} exit success:`, { orderData })
-    return orderData
+    try {
+      const ddbCommand = this.buildDdbCommand(updateOrderCommand)
+      const orderData = await this.sendDdbCommand(ddbCommand)
+      console.info(`${logContext} exit success:`, { orderData })
+      return orderData
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, updateOrderCommand })
+      throw error
+    }
   }
 
   /**
    * @throws {InvalidArgumentsError}
    */
   private buildDdbCommand(updateOrderCommand: UpdateOrderCommand): UpdateCommand {
+    const logContext = 'DbUpdateOrderClient.buildDdbCommand'
+
     try {
       return new UpdateCommand({
         TableName: process.env.ORDER_TABLE_NAME,
@@ -60,7 +68,6 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
         ReturnValues: 'ALL_NEW',
       })
     } catch (error) {
-      const logContext = 'DbUpdateOrderClient.buildDdbCommand'
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, updateOrderCommand })
@@ -86,7 +93,7 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const attributes = unmarshall(error.Item)
         const orderData = this.buildOrderData(attributes)
-        console.info(`${logContext} exit success: from-error:`, { error, orderData })
+        console.info(`${logContext} exit success: from-error:`, { orderData, error })
         return orderData
       }
 

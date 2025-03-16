@@ -48,11 +48,17 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
   public static validateAndBuild(
     incomingSkuRestockedEventInput: IncomingSkuRestockedEventInput,
   ): Result<IncomingSkuRestockedEvent, InvalidArgumentsError> {
+    const logContext = 'IncomingSkuRestockedEvent.validateAndBuild'
+    console.info(`${logContext} init:`, { incomingSkuRestockedEventInput })
+
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(incomingSkuRestockedEventInput)
-      return new IncomingSkuRestockedEvent(eventName, eventData, createdAt, updatedAt)
+      const incomingSkuRestockedEvent = new IncomingSkuRestockedEvent(eventName, eventData, createdAt, updatedAt)
+      console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent })
+      return incomingSkuRestockedEvent
     } catch (error) {
-      console.error('IncomingSkuRestockedEvent.validateAndBuild', { error, incomingSkuRestockedEventInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingSkuRestockedEventInput })
       throw error
     }
   }
@@ -63,26 +69,38 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
   private static buildProps(
     incomingSkuRestockedEventInput: IncomingSkuRestockedEventInput,
   ): Result<IncomingSkuRestockedEventProps, InvalidArgumentsError> {
+    return this.parseValidateInput(incomingSkuRestockedEventInput)
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static parseValidateInput(
+    incomingSkuRestockedEventInput: IncomingSkuRestockedEventInput,
+  ): Result<IncomingSkuRestockedEventProps, InvalidArgumentsError> {
+    const logContext = 'IncomingSkuRestockedEvent.parseValidateInput'
+
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      eventName: ValueValidators.validSkuRestockedEventName(),
+      eventData: z.object({
+        sku: ValueValidators.validSku(),
+        units: ValueValidators.validUnits(),
+        lotId: ValueValidators.validLotId(),
+      }),
+      createdAt: ValueValidators.validCreatedAt(),
+      updatedAt: ValueValidators.validUpdatedAt(),
+    })
+
     try {
       const eventDetail = incomingSkuRestockedEventInput.detail
-      const unverifiedIncomingSkuRestockedEvent = unmarshall(
-        eventDetail.dynamodb.NewImage,
-      ) as IncomingSkuRestockedEventProps
-      const incomingSkuRestockedEvent = z
-        .object({
-          eventName: ValueValidators.validSkuRestockedEventName(),
-          eventData: z.object({
-            sku: ValueValidators.validSku(),
-            units: ValueValidators.validUnits(),
-            lotId: ValueValidators.validLotId(),
-          }),
-          createdAt: ValueValidators.validCreatedAt(),
-          updatedAt: ValueValidators.validUpdatedAt(),
-        })
-        .parse(unverifiedIncomingSkuRestockedEvent) as IncomingSkuRestockedEventProps
+      const unverifiedEvent = unmarshall(eventDetail.dynamodb.NewImage)
+      const incomingSkuRestockedEvent = schema.parse(unverifiedEvent) as IncomingSkuRestockedEventProps
       return incomingSkuRestockedEvent
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingSkuRestockedEventInput })
       throw invalidArgumentsError
     }
   }

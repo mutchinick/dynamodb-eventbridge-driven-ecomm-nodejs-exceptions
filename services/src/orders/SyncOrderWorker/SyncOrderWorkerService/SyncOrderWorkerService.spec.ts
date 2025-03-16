@@ -63,39 +63,39 @@ function buildMockIncomingOrderEvent(incomingOrderEventProps: IncomingOrderEvent
 //
 // Mock Clients
 //
-function buildMockDbGetOrderClient_getOrder_resolves_OrderData(): IDbGetOrderClient {
+function buildMockDbGetOrderClient_resolves_OrderData(): IDbGetOrderClient {
   return { getOrder: jest.fn().mockResolvedValue(mockValidExistingOrderData) }
 }
 
-function buildMockDbGetOrderClient_getOrder_throws(error?: unknown): IDbGetOrderClient {
+function buildMockDbGetOrderClient_throws(error?: unknown): IDbGetOrderClient {
   return { getOrder: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
-function buildMockDbGetOrderClient_getOrder_resolves_null(): IDbGetOrderClient {
+function buildMockDbGetOrderClient_resolves_null(): IDbGetOrderClient {
   return { getOrder: jest.fn().mockResolvedValue(null) }
 }
 
-function buildMockDbCreateOrderClient_createOrder_resolves(): IDbCreateOrderClient {
+function buildMockDbCreateOrderClient_resolves(): IDbCreateOrderClient {
   return { createOrder: jest.fn().mockResolvedValue(mockValidExistingOrderData) }
 }
 
-function buildMockDbCreateOrderClient_createOrder_throws(error?: unknown): IDbCreateOrderClient {
+function buildMockDbCreateOrderClient_throws(error?: unknown): IDbCreateOrderClient {
   return { createOrder: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
-function buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves(): IEsRaiseOrderCreatedEventClient {
+function buildMockEsRaiseOrderCreatedEventClient_resolves(): IEsRaiseOrderCreatedEventClient {
   return { raiseOrderCreatedEvent: jest.fn() }
 }
 
-function buildMockEsRaiseOrderCreatedEventClient_raiseEvent_throws(error?: unknown): IEsRaiseOrderCreatedEventClient {
+function buildMockEsRaiseOrderCreatedEventClient_throws(error?: unknown): IEsRaiseOrderCreatedEventClient {
   return { raiseOrderCreatedEvent: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
-function buildMockDbUpdateOrderClient_updateOrder_resolves(): IDbUpdateOrderClient {
+function buildMockDbUpdateOrderClient_resolves(): IDbUpdateOrderClient {
   return { updateOrder: jest.fn().mockResolvedValue(mockValidExistingOrderData) }
 }
 
-function buildMockDbUpdateOrderClient_updateOrder_throws(error?: unknown): IDbUpdateOrderClient {
+function buildMockDbUpdateOrderClient_throws(error?: unknown): IDbUpdateOrderClient {
   return { updateOrder: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
@@ -123,10 +123,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
   // Test IncomingOrderEvent edge cases
   //
   it(`throws a non-transient InvalidArgumentsError if IncomingOrderEvent is undefined`, async () => {
-    const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_throws()
-    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_throws()
+    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
     const syncOrderWorkerService = new SyncOrderWorkerService(
       mockDbGetOrderClient,
       mockDbCreateOrderClient,
@@ -139,10 +139,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if IncomingOrderEvent.eventName is undefined`, async () => {
-    const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_throws()
-    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_throws()
+    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
     const syncOrderWorkerService = new SyncOrderWorkerService(
       mockDbGetOrderClient,
       mockDbCreateOrderClient,
@@ -157,10 +157,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if IncomingOrderEvent.eventData is undefined`, async () => {
-    const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_throws()
-    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_throws()
+    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
     const syncOrderWorkerService = new SyncOrderWorkerService(
       mockDbGetOrderClient,
       mockDbCreateOrderClient,
@@ -175,10 +175,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if IncomingOrderEvent.eventData.orderId is undefined`, async () => {
-    const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_throws()
-    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+    const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+    const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_throws()
+    const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
     const syncOrderWorkerService = new SyncOrderWorkerService(
       mockDbGetOrderClient,
       mockDbCreateOrderClient,
@@ -225,11 +225,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -244,10 +244,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -259,10 +259,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder with the expected GetOrderCommand`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -273,12 +273,12 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
       const mockError = new Error('mockError')
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_throws(mockError)
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -291,11 +291,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it creates the Order in the database
     //
-    it(`throws the same Error if CreateOrderCommand.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if CreateOrderCommand.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -310,10 +310,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbCreateOrderClient.createOrder a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -325,10 +325,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbCreateOrderClient.createOrder with the expected CreateOrderCommand`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -339,12 +339,12 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbCreateOrderClient.createOrder).toHaveBeenCalledWith(expectedCreateOrderCommand)
     })
 
-    it(`throws the same Error if DbCreateOrderClient.createOrder throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
+    it(`throws the same Error if DbCreateOrderClient.createOrder throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockError = new Error('mockError')
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_throws(mockError)
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_throws(mockError)
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -354,11 +354,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(syncOrderWorkerService.syncOrder(mockValidOrderPlacedEvent)).rejects.toThrow(mockError)
     })
 
-    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -376,10 +376,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     // Test that it raises the OrderCreatedEvent
     //
     it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -391,10 +391,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent with the expected OrderCreatedEvent`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -405,12 +405,12 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
     })
 
-    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
+    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
       const mockError = new Error('mockError')
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_throws(mockError)
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_throws(mockError)
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -420,11 +420,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(syncOrderWorkerService.syncOrder(mockValidOrderPlacedEvent)).rejects.toThrow(mockError)
     })
 
-    it(`returns a void promise if all components succeed`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`returns a void if all components succeed`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -463,11 +463,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -482,10 +482,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -497,10 +497,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder with the expected GetOrderCommand`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -511,12 +511,12 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
       const mockError = new Error('mockError')
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_throws(mockError)
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -530,10 +530,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     // Test that it DOES NOT create the Order in the database
     //
     it(`does not call DbCreateOrderClient.createOrder`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -544,11 +544,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbCreateOrderClient.createOrder).toHaveBeenCalledTimes(0)
     })
 
-    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -563,10 +563,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -578,10 +578,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent with the expected OrderCreatedEvent`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -592,12 +592,12 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
     })
 
-    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
+    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
       const mockError = new Error('mockError')
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_throws(mockError)
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_throws(mockError)
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -607,11 +607,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(syncOrderWorkerService.syncOrder(mockValidOrderPlacedEvent)).rejects.toThrow(mockError)
     })
 
-    it(`returns a void promise if all components succeed`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`returns a void if all components succeed`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -646,11 +646,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -665,10 +665,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -680,10 +680,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder with the expected GetOrderCommand`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -694,12 +694,12 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
       const mockError = new Error('mockError')
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_throws(mockError)
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -712,11 +712,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it updates the Order in the database
     //
-    it(`throws the same Error if UpdateOrderCommand.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if UpdateOrderCommand.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -731,10 +731,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbUpdateOrderClient.updateOrder a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -746,10 +746,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbUpdateOrderClient.updateOrder with the expected UpdateOrderCommand`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -760,25 +760,26 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbUpdateOrderClient.updateOrder).toHaveBeenCalledWith(expectedUpdateOrderCommand)
     })
 
-    it(`throws if DbUpdateOrderClient.updateOrder throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_throws()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if DbUpdateOrderClient.updateOrder throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockError = new Error('mockError')
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_throws(mockError)
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
         mockDbUpdateOrderClient,
         mockEsRaiseOrderCreatedEventClient,
       )
-      await expect(syncOrderWorkerService.syncOrder(mockValidOrderStockAllocatedEvent)).rejects.toThrow()
+      await expect(syncOrderWorkerService.syncOrder(mockValidOrderStockAllocatedEvent)).rejects.toThrow(mockError)
     })
 
     it(`does not call EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -789,11 +790,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledTimes(0)
     })
 
-    it(`returns a void promise if all components succeed`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_OrderData()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`returns a void if all components succeed`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -821,11 +822,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -840,10 +841,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder a single time`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -855,10 +856,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`calls DbGetOrderClient.getOrder with the expected GetOrderCommand`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -869,12 +870,12 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
       const mockError = new Error('mockError')
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_throws(mockError)
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -888,10 +889,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     // Test that DOES NOT act on the Order
     //
     it(`does not call DbCreateOrderClient.createOrder`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -903,10 +904,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`does not call EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -918,10 +919,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`does not call DbUpdateOrderClient.updateOrder`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,
@@ -933,10 +934,10 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     })
 
     it(`returns a non-transient InvalidOperationError`, async () => {
-      const mockDbGetOrderClient = buildMockDbGetOrderClient_getOrder_resolves_null()
-      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_createOrder_resolves()
-      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_updateOrder_resolves()
-      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_raiseEvent_resolves()
+      const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
+      const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
+      const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
+      const mockEsRaiseOrderCreatedEventClient = buildMockEsRaiseOrderCreatedEventClient_resolves()
       const syncOrderWorkerService = new SyncOrderWorkerService(
         mockDbGetOrderClient,
         mockDbCreateOrderClient,

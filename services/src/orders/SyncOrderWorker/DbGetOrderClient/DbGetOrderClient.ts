@@ -27,30 +27,37 @@ export class DbGetOrderClient implements IDbGetOrderClient {
   public async getOrder(getOrderCommand: GetOrderCommand): Promise<OrderData> {
     const logContext = 'DbGetOrderClient.getOrder'
     console.info(`${logContext} init:`, { getOrderCommand })
-    const ddbCommand = this.buildDdbCommand(getOrderCommand.orderId)
-    const orderData = await this.sendDdbCommand(ddbCommand)
-    console.info(`${logContext} exit success:`, { orderData })
-    return orderData
+
+    try {
+      const ddbCommand = this.buildDdbCommand(getOrderCommand)
+      const orderData = await this.sendDdbCommand(ddbCommand)
+      console.info(`${logContext} exit success:`, { orderData })
+      return orderData
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, getOrderCommand })
+      throw error
+    }
   }
 
   /**
    * @throws {InvalidArgumentsError}
    */
-  private buildDdbCommand(orderId: string): GetCommand {
+  private buildDdbCommand(getOrderCommand: GetOrderCommand): GetCommand {
     const logContext = 'DbGetOrderClient.buildDdbCommand'
 
     try {
       return new GetCommand({
         TableName: process.env.EVENT_STORE_TABLE_NAME,
         Key: {
-          pk: `ORDER_ID#${orderId}`,
-          sk: `ORDER_ID#${orderId}`,
+          pk: `ORDER_ID#${getOrderCommand.orderId}`,
+          sk: `ORDER_ID#${getOrderCommand.orderId}`,
         },
       })
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderId })
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, getOrderCommand })
       throw invalidArgumentsError
     }
   }

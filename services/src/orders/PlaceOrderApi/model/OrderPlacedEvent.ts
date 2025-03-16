@@ -1,4 +1,3 @@
-// Review error handling
 import { z } from 'zod'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
@@ -75,14 +74,17 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
   private static validateInput(orderPlacedEventInput: OrderPlacedEventData): void {
     const logContext = 'OrderPlacedEvent.validateInput'
 
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      orderId: ValueValidators.validOrderId(),
+      sku: ValueValidators.validSku(),
+      units: ValueValidators.validUnits(),
+      price: ValueValidators.validPrice(),
+      userId: ValueValidators.validUserId(),
+    })
+
     try {
-      z.object({
-        orderId: ValueValidators.validOrderId(),
-        sku: ValueValidators.validSku(),
-        units: ValueValidators.validUnits(),
-        price: ValueValidators.validPrice(),
-        userId: ValueValidators.validUserId(),
-      }).parse(orderPlacedEventInput)
+      schema.parse(orderPlacedEventInput)
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)

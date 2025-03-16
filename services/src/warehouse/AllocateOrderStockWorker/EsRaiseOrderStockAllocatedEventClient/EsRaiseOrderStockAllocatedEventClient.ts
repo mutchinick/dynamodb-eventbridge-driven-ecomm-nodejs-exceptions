@@ -1,12 +1,6 @@
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import {
-  AsyncResult,
-  InvalidArgumentsError,
-  DuplicateEventRaisedError,
-  Result,
-  UnrecognizedError,
-} from '../../errors/AppError'
+import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
+import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
 import { OrderStockAllocatedEvent } from '../model/OrderStockAllocatedEvent'
 
 export interface IEsRaiseOrderStockAllocatedEventClient {
@@ -15,9 +9,7 @@ export interface IEsRaiseOrderStockAllocatedEventClient {
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  raiseOrderStockAllocatedEvent: (
-    orderStockAllocatedEvent: OrderStockAllocatedEvent,
-  ) => AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError>
+  raiseOrderStockAllocatedEvent: (orderStockAllocatedEvent: OrderStockAllocatedEvent) => Promise<void>
 }
 
 /**
@@ -34,24 +26,29 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  public async raiseOrderStockAllocatedEvent(
-    orderStockAllocatedEvent: OrderStockAllocatedEvent,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
+  public async raiseOrderStockAllocatedEvent(orderStockAllocatedEvent: OrderStockAllocatedEvent): Promise<void> {
     const logContext = 'EsRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent'
     console.info(`${logContext} init:`, { orderStockAllocatedEvent })
-    const ddbPutCommand = this.buildDdbPutCommand(orderStockAllocatedEvent)
-    await this.sendDdbPutCommand(ddbPutCommand)
-    console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
+
+    try {
+      const ddbCommand = this.buildDdbCommand(orderStockAllocatedEvent)
+      await this.sendDdbCommand(ddbCommand)
+      console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, orderStockAllocatedEvent })
+      throw error
+    }
   }
 
   /**
    * @throws {InvalidArgumentsError}
    */
-  private buildDdbPutCommand(
-    orderStockAllocatedEvent: OrderStockAllocatedEvent,
-  ): Result<PutCommand, InvalidArgumentsError> {
+  private buildDdbCommand(orderStockAllocatedEvent: OrderStockAllocatedEvent): PutCommand {
+    const logContext = 'EsRaiseOrderStockAllocatedEventClient.buildDdbCommand'
+
     try {
-      const ddbPutCommand = new PutCommand({
+      const ddbCommand = new PutCommand({
         TableName: process.env.EVENT_STORE_TABLE_NAME,
         Item: {
           pk: `ORDER_ID#${orderStockAllocatedEvent.eventData.orderId}`,
@@ -61,9 +58,11 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
         },
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })
-      return ddbPutCommand
+      return ddbCommand
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderStockAllocatedEvent })
       throw invalidArgumentsError
     }
   }
@@ -72,28 +71,26 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  private async sendDdbPutCommand(
-    ddbPutCommand: PutCommand,
-  ): AsyncResult<void, DuplicateEventRaisedError | UnrecognizedError> {
-    const logContext = 'EsRaiseOrderStockAllocatedEventClient.sendDdbPutCommand'
-    console.info(`${logContext} init:`, { ddbPutCommand })
+  private async sendDdbCommand(ddbCommand: PutCommand): Promise<void> {
+    const logContext = 'EsRaiseOrderStockAllocatedEventClient.sendDdbCommand'
+    console.info(`${logContext} init:`, { ddbCommand })
 
     try {
-      await this.ddbDocClient.send(ddbPutCommand)
-      console.info(`${logContext} exit success:`, { ddbPutCommand })
+      await this.ddbDocClient.send(ddbCommand)
+      console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      console.error(`${logContext} error log:`, { error: JSON.stringify(error) })
+      console.error(`${logContext} error caught:`, { error })
 
-      // If the condition fails, the event has already been raised, so we throw a non transient
+      // If the condition fails, the event has already been raised, so we throw a non-transient
       // DuplicateEventRaisedError
-      if (error instanceof ConditionalCheckFailedException) {
+      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const duplicationError = DuplicateEventRaisedError.from(error)
-        console.error(`${logContext} exit error:`, { duplicationError, ddbPutCommand })
+        console.error(`${logContext} exit error:`, { duplicationError, ddbCommand })
         throw duplicationError
       }
 
       const unrecognizedError = UnrecognizedError.from(error)
-      console.error(`${logContext} exit error:`, { unrecognizedError, ddbPutCommand })
+      console.error(`${logContext} exit error:`, { unrecognizedError, ddbCommand })
       throw unrecognizedError
     }
   }

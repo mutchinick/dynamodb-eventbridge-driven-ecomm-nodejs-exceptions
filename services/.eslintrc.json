@@ -27,7 +27,7 @@
   },
   "overrides": [
     {
-      "files": ["*.spec.ts", "src/testing/**/*.ts", "src/shared/**/*.ts"],
+      "files": ["*.spec.ts", "src/shared/**/*.ts"],
       "rules": {
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/explicit-function-return-type": "off",

@@ -48,11 +48,17 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
   public static validateAndBuild(
     incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
   ): Result<IncomingOrderCreatedEvent, InvalidArgumentsError> {
+    const logContext = 'IncomingOrderCreatedEvent.validateInput'
+    console.info(`${logContext} init:`, { incomingOrderCreatedEventInput })
+
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(incomingOrderCreatedEventInput)
-      return new IncomingOrderCreatedEvent(eventName, eventData, createdAt, updatedAt)
+      const incomingOrderCreated = new IncomingOrderCreatedEvent(eventName, eventData, createdAt, updatedAt)
+      console.info(`${logContext} exit success:`, { incomingOrderCreated })
+      return incomingOrderCreated
     } catch (error) {
-      console.error('IncomingOrderCreatedEvent.validateAndBuild', { error, incomingOrderCreatedEventInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEventInput })
       throw error
     }
   }
@@ -63,24 +69,38 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
   private static buildProps(
     incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
   ): Result<IncomingOrderCreatedEventProps, InvalidArgumentsError> {
+    return this.parseValidateInput(incomingOrderCreatedEventInput)
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static parseValidateInput(
+    incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
+  ): Result<IncomingOrderCreatedEventProps, InvalidArgumentsError> {
+    const logContext = 'IncomingOrderCreatedEvent.parseValidateInput'
+
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      eventName: ValueValidators.validOrderCreatedEventName(),
+      eventData: z.object({
+        sku: ValueValidators.validSku(),
+        units: ValueValidators.validUnits(),
+        orderId: ValueValidators.validOrderId(),
+      }),
+      createdAt: ValueValidators.validCreatedAt(),
+      updatedAt: ValueValidators.validUpdatedAt(),
+    })
+
     try {
       const eventDetail = incomingOrderCreatedEventInput.detail
-      const unverifiedIncomingOrderCreatedEvent = unmarshall(eventDetail.dynamodb.NewImage)
-      const incomingOrderCreatedEvent = z
-        .object({
-          eventName: ValueValidators.validOrderCreatedEventName(),
-          eventData: z.object({
-            sku: ValueValidators.validSku(),
-            units: ValueValidators.validUnits(),
-            orderId: ValueValidators.validOrderId(),
-          }),
-          createdAt: ValueValidators.validCreatedAt(),
-          updatedAt: ValueValidators.validUpdatedAt(),
-        })
-        .parse(unverifiedIncomingOrderCreatedEvent) as IncomingOrderCreatedEventProps
+      const unverifiedEvent = unmarshall(eventDetail.dynamodb.NewImage)
+      const incomingOrderCreatedEvent = schema.parse(unverifiedEvent) as IncomingOrderCreatedEventProps
       return incomingOrderCreatedEvent
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingOrderCreatedEventInput })
       throw invalidArgumentsError
     }
   }

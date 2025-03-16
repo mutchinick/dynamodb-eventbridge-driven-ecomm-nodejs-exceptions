@@ -1,7 +1,7 @@
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { GetOrderCommand, GetOrderCommandInput } from './GetOrderCommand'
 
-function buildMockValidGetOrderCommandInput() {
+function buildMockGetOrderCommandInput() {
   const mockValidInput: GetOrderCommandInput = {
     orderId: 'mockOrderId',
   }
@@ -13,30 +13,24 @@ describe(`Orders Service SyncOrderWorker GetOrderCommand tests`, () => {
   // Test GetOrderCommandInput edge cases
   //
   it(`does not throw if the input GetOrderCommandInput is valid`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput is undefined`, () => {
     const mockGetOrderCommandInput: GetOrderCommandInput = undefined
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput is null`, () => {
     const mockGetOrderCommandInput: GetOrderCommandInput = null
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -44,81 +38,63 @@ describe(`Orders Service SyncOrderWorker GetOrderCommand tests`, () => {
   //
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput.orderId is missing`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     delete mockGetOrderCommandInput.orderId
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput.orderId is undefined`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     mockGetOrderCommandInput.orderId = undefined
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput.orderId is null`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     mockGetOrderCommandInput.orderId = null
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput.orderId is empty`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     mockGetOrderCommandInput.orderId = ''
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput.orderId is blank`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     mockGetOrderCommandInput.orderId = '      '
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       GetOrderCommandInput.orderId length < 4`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     mockGetOrderCommandInput.orderId = '123'
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(InvalidArgumentsError)
-    expect(() => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)).toThrow(
-      expect.objectContaining({
-        transient: false,
-      }),
-    )
+    const testingFunc = () => GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
   // Test expected results
   //
   it(`returns the expected GetOrderCommand with the expected data`, () => {
-    const mockGetOrderCommandInput = buildMockValidGetOrderCommandInput()
+    const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     const getOrderCommand = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
     const expected: GetOrderCommand = {
       orderId: mockGetOrderCommandInput.orderId,

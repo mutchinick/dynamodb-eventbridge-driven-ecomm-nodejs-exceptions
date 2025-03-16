@@ -1,4 +1,3 @@
-// Review error handling
 import { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from 'aws-lambda'
 import { HttpResponse } from '../../../shared/HttpResponse'
 import { InvalidArgumentsError } from '../../errors/AppError'
@@ -28,7 +27,8 @@ export class PlaceOrderApiController implements IPlaceOrderApiController {
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const incomingPlaceOrderRequest = this.parseValidateRequest(apiEvent)
+      const unverifiedInput = this.parseInput(apiEvent)
+      const incomingPlaceOrderRequest = IncomingPlaceOrderRequest.validateAndBuild(unverifiedInput)
       const placeOrderOutput = await this.placeOrderApiService.placeOrder(incomingPlaceOrderRequest)
       const successResponse = HttpResponse.Accepted(placeOrderOutput)
       console.info(`${logContext} exit success:`, { successResponse })
@@ -38,12 +38,12 @@ export class PlaceOrderApiController implements IPlaceOrderApiController {
 
       if (error instanceof InvalidArgumentsError) {
         const badRequestError = HttpResponse.BadRequestError()
-        console.error(`${logContext} exit error:`, { error, badRequestError })
+        console.error(`${logContext} exit error:`, { badRequestError, error, apiEvent })
         return badRequestError
       }
 
       const internalServerError = HttpResponse.InternalServerError()
-      console.error(`${logContext} exit error:`, { error, internalServerError })
+      console.error(`${logContext} exit error:`, { internalServerError, error, apiEvent })
       return internalServerError
     }
   }
@@ -51,14 +51,11 @@ export class PlaceOrderApiController implements IPlaceOrderApiController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseValidateRequest(apiEvent: APIGatewayProxyEventV2): IncomingPlaceOrderRequest {
-    const logContext = 'PlaceOrderApiController.parseValidateRequest'
+  private parseInput(apiEvent: APIGatewayProxyEventV2): IncomingPlaceOrderRequestInput {
+    const logContext = 'PlaceOrderApiController.parseInput'
 
     try {
-      const apiEventBody = apiEvent.body
-      const unverifiedRequest = JSON.parse(apiEventBody) as IncomingPlaceOrderRequestInput
-      const incomingPlaceOrderRequest = IncomingPlaceOrderRequest.validateAndBuild(unverifiedRequest)
-      return incomingPlaceOrderRequest
+      return JSON.parse(apiEvent.body) as IncomingPlaceOrderRequestInput
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)

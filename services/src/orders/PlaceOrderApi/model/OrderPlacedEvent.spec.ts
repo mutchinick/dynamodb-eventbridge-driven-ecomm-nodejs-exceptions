@@ -1,4 +1,3 @@
-// Review error handling
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderEventName } from '../../model/OrderEventName'
 import { OrderPlacedEvent, OrderPlacedEventInput } from './OrderPlacedEvent'
@@ -7,7 +6,7 @@ jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-function buildMockValidOrderPlacedEventInput() {
+function buildMockOrderPlacedEventInput() {
   const mockValidInput: OrderPlacedEventInput = {
     orderId: 'mockOrderId',
     sku: 'mockSku',
@@ -23,20 +22,24 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
   // Test OrderPlacedEventData edge cases
   //
   it(`does not throw if the input OrderPlacedEventInput is valid`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput is undefined`, () => {
     const mockOrderPlacedEventInput = undefined as unknown as OrderPlacedEventInput
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput is null`, () => {
     const mockOrderPlacedEventInput = null as unknown as OrderPlacedEventInput
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -44,44 +47,56 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
   //
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.orderId is missing`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     delete mockOrderPlacedEventInput.orderId
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.orderId is undefined`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.orderId = undefined
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.orderId is null`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.orderId = null
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.orderId is empty`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.orderId = ''
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.orderId is blank`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.orderId = '      '
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.orderId length < 4`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.orderId = '123'
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -89,44 +104,56 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
   //
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.sku is missing`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     delete mockOrderPlacedEventInput.sku
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.sku is undefined`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.sku = undefined
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.sku is null`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.sku = null
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.sku is empty`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.sku = ''
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.sku is blank`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.sku = '      '
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.sku length < 4`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.sku = '123'
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -134,51 +161,65 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
   //
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.units is missing`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     delete mockOrderPlacedEventInput.units
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.units is undefined`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.units = undefined
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.units is null`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.units = null
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.units < 0`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.units = -1
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.units == 0`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.units = 0
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.units is not an integer`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.units = 3.45
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.units is not a number`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.units = '1' as unknown as number
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -186,37 +227,47 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
   //
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.price is missing`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     delete mockOrderPlacedEventInput.price
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.price is undefined`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.price = undefined
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.price is null`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.price = null
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.price < 0`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.price = -1
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.price is not a number`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.price = '1' as unknown as number
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
@@ -224,51 +275,63 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
   //
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.userId is missing`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     delete mockOrderPlacedEventInput.userId
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.userId is undefined`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.userId = undefined
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.userId is null`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.userId = null
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.userId is empty`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.userId = ''
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.userId is blank`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.userId = '      '
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
       OrderPlacedEventInput.userId length < 4`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     mockOrderPlacedEventInput.userId = '123'
-    expect(() => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)).toThrow(InvalidArgumentsError)
+    const testingFunc = () => OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
   // Test expected results
   //
   it(`returns the expected OrderPlacedEvent with eventName and eventData`, () => {
-    const mockOrderPlacedEventInput = buildMockValidOrderPlacedEventInput()
+    const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     const result = OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
     const expected: OrderPlacedEvent = {
       eventName: OrderEventName.ORDER_PLACED_EVENT,

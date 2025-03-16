@@ -1,4 +1,3 @@
-// Review error handling
 import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseOrderPlacedEventClient } from '../EsRaiseOrderPlacedEventClient/EsRaiseOrderPlacedEventClient'
 import { IncomingPlaceOrderRequest } from '../model/IncomingPlaceOrderRequest'
@@ -42,7 +41,7 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
 
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }
-        console.info(`${logContext} exit success: from-error:`, { error, serviceOutput })
+        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
         return serviceOutput
       }
 
@@ -55,8 +54,11 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
    * @throws {InvalidArgumentsError}
    */
   private validateIncomingPlaceOrderRequest(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): void {
+    const logContext = 'PlaceOrderApiService.validateIncomingPlaceOrderRequest'
+
     if (incomingPlaceOrderRequest instanceof IncomingPlaceOrderRequest === false) {
       const invalidArgumentsError = InvalidArgumentsError.from()
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingPlaceOrderRequest })
       throw invalidArgumentsError
     }
   }
@@ -67,7 +69,17 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
    * @throws {UnrecognizedError}
    */
   private async raiseOrderPlacedEvent(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): Promise<void> {
-    const orderPlacedEvent = OrderPlacedEvent.validateAndBuild(incomingPlaceOrderRequest)
-    await this.ddbOrderPlacedEventClient.raiseOrderPlacedEvent(orderPlacedEvent)
+    const logContext = 'PlaceOrderApiService.raiseOrderPlacedEvent'
+    console.info(`${logContext} init:`, { incomingPlaceOrderRequest })
+
+    try {
+      const orderPlacedEvent = OrderPlacedEvent.validateAndBuild(incomingPlaceOrderRequest)
+      await this.ddbOrderPlacedEventClient.raiseOrderPlacedEvent(orderPlacedEvent)
+      console.info(`${logContext} exit success:`, { orderPlacedEvent })
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingPlaceOrderRequest })
+      throw error
+    }
   }
 }

@@ -1,4 +1,3 @@
-// Review error handling
 import {
   AppError,
   DuplicateEventRaisedError,
@@ -30,7 +29,7 @@ const testCases: ErrorTestCase<AppError>[] = [
   },
   {
     name: 'InvalidOperationError (non-transient)',
-    from: (cause, message) => InvalidOperationError.from('non_transient', cause, message),
+    from: (cause, message) => InvalidOperationError.from('non-transient', cause, message),
     expectedMessage: 'Invalid operation error.',
     expectedTransient: false,
     expectedInstance: InvalidOperationError,
@@ -138,18 +137,18 @@ describe(`Orders Service AppError tests`, () => {
   //
   // Test isTransientError Function
   //
-  describe('Test isTransientError Function', () => {
-    it('isTransientError returns true for transient errors', () => {
+  describe(`Test isTransientError Function`, () => {
+    it(`isTransientError returns true for transient errors`, () => {
       const err = UnrecognizedError.from()
       expect(isTransientError(err)).toBe(true)
     })
 
-    it('isTransientError returns false for non-transient errors', () => {
+    it(`isTransientError returns false for non-transient errors`, () => {
       const err = InvalidArgumentsError.from()
       expect(isTransientError(err)).toBe(false)
     })
 
-    it('isTransientError returns true for non-AppError values (defaulting to transient)', () => {
+    it(`isTransientError returns true for non-AppError values (defaulting to transient)`, () => {
       expect(isTransientError('Mock error')).toBe(true)
       expect(isTransientError(undefined)).toBe(true)
       expect(isTransientError(null)).toBe(true)

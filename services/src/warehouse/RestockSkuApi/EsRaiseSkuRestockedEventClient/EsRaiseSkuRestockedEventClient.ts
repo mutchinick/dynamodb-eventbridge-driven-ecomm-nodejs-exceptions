@@ -1,12 +1,6 @@
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import {
-  AsyncResult,
-  DuplicateEventRaisedError,
-  InvalidArgumentsError,
-  Result,
-  UnrecognizedError,
-} from '../../errors/AppError'
+import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
+import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
 import { SkuRestockedEvent } from '../model/SkuRestockedEvent'
 
 export interface IEsRaiseSkuRestockedEventClient {
@@ -15,9 +9,7 @@ export interface IEsRaiseSkuRestockedEventClient {
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  raiseSkuRestockedEvent: (
-    skuRestockedEvent: SkuRestockedEvent,
-  ) => AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError>
+  raiseSkuRestockedEvent: (skuRestockedEvent: SkuRestockedEvent) => Promise<void>
 }
 
 /**
@@ -34,20 +26,25 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  public async raiseSkuRestockedEvent(
-    skuRestockedEvent: SkuRestockedEvent,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
+  public async raiseSkuRestockedEvent(skuRestockedEvent: SkuRestockedEvent): Promise<void> {
     const logContext = 'EsRaiseSkuRestockedEventClient.raiseSkuRestockedEvent'
     console.info(`${logContext} init:`, { skuRestockedEvent })
-    const ddbCommand = this.buildDdbCommand(skuRestockedEvent)
-    await this.sendDdbCommand(ddbCommand)
-    console.info(`${logContext} exit success:`, { skuRestockedEvent })
+
+    try {
+      const ddbCommand = this.buildDdbCommand(skuRestockedEvent)
+      await this.sendDdbCommand(ddbCommand)
+      console.info(`${logContext} exit success:`, { ddbCommand })
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, skuRestockedEvent })
+      throw error
+    }
   }
 
   /**
    * @throws {InvalidArgumentsError}
    */
-  private buildDdbCommand(skuRestockedEvent: SkuRestockedEvent): Result<PutCommand, InvalidArgumentsError> {
+  private buildDdbCommand(skuRestockedEvent: SkuRestockedEvent): PutCommand {
     const logContext = 'EsRaiseSkuRestockedEventClient.buildDdbCommand'
 
     try {
@@ -74,9 +71,7 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  private async sendDdbCommand(
-    ddbCommand: PutCommand,
-  ): AsyncResult<void, DuplicateEventRaisedError | UnrecognizedError> {
+  private async sendDdbCommand(ddbCommand: PutCommand): Promise<void> {
     const logContext = 'EsRaiseSkuRestockedEventClient.sendDdbCommand'
     console.info(`${logContext} init:`, { ddbCommand })
 
@@ -88,7 +83,7 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
 
       // If the ConditionExpression fails, the event has already been raised, so we throw a
       // non-transient DuplicateEventRaisedError
-      if (error instanceof ConditionalCheckFailedException) {
+      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const duplicationError = DuplicateEventRaisedError.from(error)
         console.error(`${logContext} exit error:`, { duplicationError, ddbCommand })
         throw duplicationError

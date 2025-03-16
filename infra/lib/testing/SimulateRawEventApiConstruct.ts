@@ -11,6 +11,9 @@ export interface ISimulateRawEventApiConstructProps {
   dynamoDbTable: Table
 }
 
+//
+//
+//
 export class SimulateRawEventApiConstruct extends Construct {
   //
   //
@@ -50,12 +53,12 @@ export class SimulateRawEventApiConstruct extends Construct {
   //
   //
   private createSimulateRawEventApiFunction(scope: Construct, id: string, dynamoDbTable: Table) {
-    const lambdaFuncName = `${id}-LambdaFunc`
+    const lambdaFuncName = `${id}-Lambda`
     const lambdaFunc = new NodejsFunction(scope, lambdaFuncName, {
       functionName: lambdaFuncName,
       runtime: Runtime.NODEJS_20_X,
       handler: 'handler',
-      entry: join(__dirname, './simulateRawEventApiHandler.ts'),
+      entry: join(__dirname, './simulateRawEventApiEntry.ts'),
       environment: {
         EVENT_STORE_TABLE_NAME: dynamoDbTable.tableName,
       },

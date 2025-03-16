@@ -1,4 +1,3 @@
-// Review error handling
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
@@ -31,33 +30,14 @@ export class EsRaiseOrderPlacedEventClient implements IEsRaiseOrderPlacedEventCl
     const logContext = 'EsRaiseOrderPlacedEventClient.raiseOrderPlacedEvent'
     console.info(`${logContext} init:`, { orderPlacedEvent })
 
-    const ddbCommand = this.buildDdbCommand(orderPlacedEvent)
-    await this.sendDdbCommand(ddbCommand)
-
-    console.info(`${logContext} exit success:`, { orderPlacedEvent })
-  }
-
-  /**
-   * @throws {DuplicateEventRaisedError}
-   * @throws {UnrecognizedError}
-   */
-  private async sendDdbCommand(ddbPutCommand: PutCommand): Promise<void> {
-    const logContext = 'EsRaiseOrderPlacedEventClient.sendDdbCommand'
-
     try {
-      await this.ddbDocClient.send(ddbPutCommand)
+      const ddbCommand = this.buildDdbCommand(orderPlacedEvent)
+      await this.sendDdbCommand(ddbCommand)
+      console.info(`${logContext} exit success:`, { orderPlacedEvent })
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
-
-      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
-        const duplicationError = DuplicateEventRaisedError.from(error)
-        console.error(`${logContext} exit error:`, { duplicationError, ddbPutCommand })
-        throw duplicationError
-      }
-
-      const unrecognizedError = UnrecognizedError.from(error)
-      console.error(`${logContext} exit error:`, { unrecognizedError, ddbPutCommand })
-      throw unrecognizedError
+      console.error(`${logContext} exit error:`, { error, orderPlacedEvent })
+      throw error
     }
   }
 
@@ -83,6 +63,30 @@ export class EsRaiseOrderPlacedEventClient implements IEsRaiseOrderPlacedEventCl
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderPlacedEvent })
       throw invalidArgumentsError
+    }
+  }
+
+  /**
+   * @throws {DuplicateEventRaisedError}
+   * @throws {UnrecognizedError}
+   */
+  private async sendDdbCommand(ddbPutCommand: PutCommand): Promise<void> {
+    const logContext = 'EsRaiseOrderPlacedEventClient.sendDdbCommand'
+
+    try {
+      await this.ddbDocClient.send(ddbPutCommand)
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+
+      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
+        const duplicationError = DuplicateEventRaisedError.from(error)
+        console.error(`${logContext} exit error:`, { duplicationError, ddbPutCommand })
+        throw duplicationError
+      }
+
+      const unrecognizedError = UnrecognizedError.from(error)
+      console.error(`${logContext} exit error:`, { unrecognizedError, ddbPutCommand })
+      throw unrecognizedError
     }
   }
 }

@@ -8,17 +8,6 @@ Content-Type: application/json
 {
   "sku": "APPLES",
   "units": 100,
-  "lotId": "A00001"
-}
-
-### POST ###
-POST {{restockSkuBaseUrl}}/api/v1/warehouse/restockSku
-Origin: https://localhost
-Content-Type: application/json
-
-{
-  "sku": "APPLES",
-  "units": 200,
   "lotId": "A00002"
 }
 
@@ -29,6 +18,18 @@ Content-Type: application/json
 
 {
   "sku": "GRAPES",
-  "units": 10,
+  "units": 1000,
   "lotId": "B00001"
 }
+
+### POST ###
+POST {{restockSkuBaseUrl}}/api/v1/warehouse/restockSku
+Origin: https://localhost
+Content-Type: application/json
+
+{
+  "sku": "ORANGES",
+  "units": 175,
+  "lotId": "C00001"
+}
+

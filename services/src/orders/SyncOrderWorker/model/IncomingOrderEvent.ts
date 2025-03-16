@@ -66,33 +66,41 @@ export class IncomingOrderEvent implements IncomingOrderEventProps {
    * @throws {InvalidArgumentsError}
    */
   private static buildProps(incomingOrderEventInput: IncomingOrderEventInput): IncomingOrderEventProps {
-    const logContext = 'IncomingOrderEvent.buildProps'
+    return this.parseValidateInput(incomingOrderEventInput)
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static parseValidateInput(incomingOrderEventInput: IncomingOrderEventInput): IncomingOrderEventProps {
+    const logContext = 'IncomingOrderEvent.parseValidateInput'
+
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      eventName: ValueValidators.validIncomingEventName(),
+      eventData: z.object({
+        orderId: ValueValidators.validOrderId(),
+        orderStatus: ValueValidators.validOrderStatus().optional(),
+        sku: ValueValidators.validSku().optional(),
+        units: ValueValidators.validUnits().optional(),
+        price: ValueValidators.validPrice().optional(),
+        userId: ValueValidators.validUserId().optional(),
+        createdAt: ValueValidators.validCreatedAt().optional(),
+        updatedAt: ValueValidators.validUpdatedAt().optional(),
+      }),
+      createdAt: ValueValidators.validCreatedAt(),
+      updatedAt: ValueValidators.validUpdatedAt(),
+    })
 
     try {
       const eventDetail = incomingOrderEventInput.detail
-      const unverifiedIncomingOrderEvent = unmarshall(eventDetail.dynamodb.NewImage) as IncomingOrderEventProps
-      const incomingOrderEventProps = z
-        .object({
-          eventName: ValueValidators.validIncomingEventName(),
-          eventData: z.object({
-            orderId: ValueValidators.validOrderId(),
-            orderStatus: ValueValidators.validOrderStatus().optional(),
-            sku: ValueValidators.validSku().optional(),
-            units: ValueValidators.validUnits().optional(),
-            price: ValueValidators.validPrice().optional(),
-            userId: ValueValidators.validUserId().optional(),
-            createdAt: ValueValidators.validCreatedAt().optional(),
-            updatedAt: ValueValidators.validUpdatedAt().optional(),
-          }),
-          createdAt: ValueValidators.validCreatedAt(),
-          updatedAt: ValueValidators.validUpdatedAt(),
-        })
-        .parse(unverifiedIncomingOrderEvent) as IncomingOrderEventProps
-      return incomingOrderEventProps
+      const unverifiedEvent = unmarshall(eventDetail.dynamodb.NewImage)
+      const incomingOrderEvent = schema.parse(unverifiedEvent) as IncomingOrderEventProps
+      return incomingOrderEvent
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { error, incomingOrderEventInput })
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingOrderEventInput })
       throw invalidArgumentsError
     }
   }

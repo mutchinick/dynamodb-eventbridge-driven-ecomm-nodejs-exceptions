@@ -1,5 +1,5 @@
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
-import { AsyncResult, DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
+import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseSkuRestockedEventClient } from '../EsRaiseSkuRestockedEventClient/EsRaiseSkuRestockedEventClient'
 import { IncomingRestockSkuRequest } from '../model/IncomingRestockSkuRequest'
 import { SkuRestockedEvent } from '../model/SkuRestockedEvent'
@@ -9,9 +9,7 @@ export interface IRestockSkuApiService {
    * @throws {InvalidArgumentsError}
    * @throws {UnrecognizedError}
    */
-  restockSku: (
-    incomingRestockSkuRequest: IncomingRestockSkuRequest,
-  ) => AsyncResult<RestockSkuApiServiceOutput, InvalidArgumentsError | UnrecognizedError>
+  restockSku: (incomingRestockSkuRequest: IncomingRestockSkuRequest) => Promise<RestockSkuApiServiceOutput>
 }
 
 export type RestockSkuApiServiceOutput = TypeUtilsPretty<IncomingRestockSkuRequest>
@@ -29,9 +27,7 @@ export class RestockSkuApiService implements IRestockSkuApiService {
    * @throws {InvalidArgumentsError}
    * @throws {UnrecognizedError}
    */
-  public async restockSku(
-    incomingRestockSkuRequest: IncomingRestockSkuRequest,
-  ): AsyncResult<RestockSkuApiServiceOutput, InvalidArgumentsError | UnrecognizedError> {
+  public async restockSku(incomingRestockSkuRequest: IncomingRestockSkuRequest): Promise<RestockSkuApiServiceOutput> {
     const logContext = 'RestockSkuApiService.restockSku'
     console.info(`${logContext} init:`, { incomingRestockSkuRequest })
 
@@ -46,7 +42,7 @@ export class RestockSkuApiService implements IRestockSkuApiService {
 
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
-        console.info(`${logContext} exit success: from-error:`, { error, serviceOutput })
+        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
         return serviceOutput
       }
 
@@ -59,8 +55,12 @@ export class RestockSkuApiService implements IRestockSkuApiService {
    * @throws {InvalidArgumentsError}
    */
   private validateIncomingRestockSkuRequest(incomingRestockSkuRequest: IncomingRestockSkuRequest): void {
+    const logContext = 'RestockSkuApiService.validateIncomingRestockSkuRequest'
+
     if (incomingRestockSkuRequest instanceof IncomingRestockSkuRequest === false) {
-      throw InvalidArgumentsError.from()
+      const invalidArgumentsError = InvalidArgumentsError.from()
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingRestockSkuRequest })
+      throw invalidArgumentsError
     }
   }
 
@@ -69,10 +69,18 @@ export class RestockSkuApiService implements IRestockSkuApiService {
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  private async raiseSkuRestockedEvent(
-    incomingRestockSkuRequest: IncomingRestockSkuRequest,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
-    const skuRestockedEvent = SkuRestockedEvent.validateAndBuild(incomingRestockSkuRequest)
-    await this.ddbSkuRestockedEventClient.raiseSkuRestockedEvent(skuRestockedEvent)
+  private async raiseSkuRestockedEvent(incomingRestockSkuRequest: IncomingRestockSkuRequest): Promise<void> {
+    const logContext = 'RestockSkuApiService.raiseSkuRestockedEvent'
+    console.info(`${logContext} init:`, { incomingRestockSkuRequest })
+
+    try {
+      const skuRestockedEvent = SkuRestockedEvent.validateAndBuild(incomingRestockSkuRequest)
+      await this.ddbSkuRestockedEventClient.raiseSkuRestockedEvent(skuRestockedEvent)
+      console.info(`${logContext} exit success:`, { skuRestockedEvent })
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingRestockSkuRequest })
+      throw error
+    }
   }
 }

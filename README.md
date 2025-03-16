@@ -1,2 +1,3 @@
 # eda-order-flow-nodejs
-Experiment of an event driven architecture focused on the flow of an order in an e-commerce application
+
+An experiment of an event-driven architecture using DynamoDB as an event store, and EventBridge Rules for event routing. It uses a simplified flow of an order in an e-commerce application as an example.

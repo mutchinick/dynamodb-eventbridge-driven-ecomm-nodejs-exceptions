@@ -1,5 +1,4 @@
-// Review error handling
-import { DuplicateEventRaisedError } from '../../errors/AppError'
+import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseOrderPlacedEventClient } from '../EsRaiseOrderPlacedEventClient/EsRaiseOrderPlacedEventClient'
 import { IncomingPlaceOrderRequest } from '../model/IncomingPlaceOrderRequest'
 import { OrderPlacedEvent } from '../model/OrderPlacedEvent'
@@ -17,15 +16,11 @@ const mockIncomingPlaceOrderRequestInput = IncomingPlaceOrderRequest.validateAnd
 
 const expectedOrderPlacedEvent = OrderPlacedEvent.validateAndBuild(mockIncomingPlaceOrderRequestInput)
 
-const expectedValidOutput: PlaceOrderApiServiceOutput = {
-  ...mockIncomingPlaceOrderRequestInput,
-}
-
-function buildMockDdbPlaceOrderEventClient_raiseEvent_resolves(): IEsRaiseOrderPlacedEventClient {
+function buildMockDdbPlaceOrderEventClient_resolves(): IEsRaiseOrderPlacedEventClient {
   return { raiseOrderPlacedEvent: jest.fn() }
 }
 
-function buildMockDdbPlaceOrderEventClient_raiseEvent_throws(error?: unknown): IEsRaiseOrderPlacedEventClient {
+function buildMockDdbPlaceOrderEventClient_throws(error?: unknown): IEsRaiseOrderPlacedEventClient {
   return { raiseOrderPlacedEvent: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
@@ -34,62 +29,72 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
   // Test IncomingPlaceOrderRequestInput edge cases
   //
   it(`does not throw if the input PlaceOrderApiServiceInput is valid`, async () => {
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_resolves()
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
     await expect(placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)).resolves.not.toThrow()
   })
 
-  it(`throws if the input PlaceOrderApiServiceInput is undefined`, async () => {
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_resolves()
+  it(`throws a non-transient InvalidArgumentsError if the input PlaceOrderApiServiceInput is undefined`, async () => {
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
-    await expect(placeOrderApiService.placeOrder(undefined)).rejects.toThrow()
+    const mockTestRequest = undefined as never
+    const resultPromise = placeOrderApiService.placeOrder(mockTestRequest)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws if the input PlaceOrderApiServiceInput is null`, async () => {
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_resolves()
+  it(`throws a non-transient InvalidArgumentsError if the input PlaceOrderApiServiceInput is null`, async () => {
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
-    await expect(placeOrderApiService.placeOrder(null)).rejects.toThrow()
+    const mockTestRequest = null as never
+    const resultPromise = placeOrderApiService.placeOrder(mockTestRequest)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
   //
   // Test internal logic
   //
   it(`calls DdbPlaceOrderEventClient.placeOrder a single time`, async () => {
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_resolves()
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
     await placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)
     expect(mockDdbPlaceOrderEventClient.raiseOrderPlacedEvent).toHaveBeenCalledTimes(1)
   })
 
   it(`calls DdbPlaceOrderEventClient.placeOrder with the expected input`, async () => {
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_resolves()
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
     await placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)
     expect(mockDdbPlaceOrderEventClient.raiseOrderPlacedEvent).toHaveBeenCalledWith(expectedOrderPlacedEvent)
   })
 
-  it(`throws if DdbPlaceOrderEventClient.placeOrder throws`, async () => {
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_throws()
+  it(`throws the same Error if DdbPlaceOrderEventClient.placeOrder throws a native Error`, async () => {
+    const mockError = new Error('mockError')
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_throws(mockError)
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
-    await expect(placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)).rejects.toThrow()
+    const resultPromise = placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)
+    await expect(resultPromise).rejects.toThrow(mockError)
   })
 
   it(`returns a PlaceOrderApiServiceOutput with the expected data if 
       DdbPlaceOrderEventClient.placeOrder throws DuplicateEventRaisedError`, async () => {
-    const error = DuplicateEventRaisedError.from()
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_throws(error)
+    const mockError = DuplicateEventRaisedError.from()
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_throws(mockError)
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
-    const actualOutput = await placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)
-    expect(actualOutput).toStrictEqual(expectedValidOutput)
+    const result = await placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)
+    const expectedResult: PlaceOrderApiServiceOutput = { ...mockIncomingPlaceOrderRequestInput }
+    expect(result).toStrictEqual(expectedResult)
   })
 
   //
   // Test expected results
   //
   it(`returns a PlaceOrderApiServiceOutput with the expected data`, async () => {
-    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_raiseEvent_resolves()
+    const mockDdbPlaceOrderEventClient = buildMockDdbPlaceOrderEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockDdbPlaceOrderEventClient)
-    const actualOutput = await placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)
-    expect(actualOutput).toStrictEqual(expectedValidOutput)
+    const result = await placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequestInput)
+    const expectedResult: PlaceOrderApiServiceOutput = { ...mockIncomingPlaceOrderRequestInput }
+    expect(result).toStrictEqual(expectedResult)
   })
 })

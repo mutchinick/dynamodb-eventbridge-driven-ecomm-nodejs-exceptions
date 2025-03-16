@@ -19,7 +19,7 @@ export class InvalidOperationError extends AppError {
   private static readonly _defaultMessage = 'Unrecognized error.'
 
   public static from(
-    transitivity: 'transient' | 'non_transient',
+    transitivity: 'transient' | 'non-transient',
     cause?: unknown,
     message?: string,
   ): InvalidOperationError {

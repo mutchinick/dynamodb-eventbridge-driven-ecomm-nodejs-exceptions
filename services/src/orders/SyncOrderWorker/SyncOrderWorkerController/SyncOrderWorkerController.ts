@@ -1,6 +1,6 @@
 import { SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
 import { InvalidArgumentsError, isTransientError } from '../../errors/AppError'
-import { IncomingOrderEvent } from '../model/IncomingOrderEvent'
+import { IncomingOrderEvent, IncomingOrderEventInput } from '../model/IncomingOrderEvent'
 import { ISyncOrderWorkerService } from '../SyncOrderWorkerService/SyncOrderWorkerService'
 
 export interface ISyncOrderWorkerController {
@@ -26,9 +26,16 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
     console.info(`${logContext} init:`, { sqsEvent })
 
     const sqsBatchResponse: SQSBatchResponse = { batchItemFailures: [] }
+
+    if (!sqsEvent || !sqsEvent.Records) {
+      const error = new Error(`Expected SQSEvent but got ${sqsEvent}`)
+      console.error(`${logContext} exit error:`, { error, sqsEvent })
+      return sqsBatchResponse
+    }
+
     for (const record of sqsEvent.Records) {
       try {
-        await this.syncOrder(record)
+        await this.syncOrderSingle(record)
       } catch (error) {
         if (isTransientError(error)) {
           sqsBatchResponse.batchItemFailures.push({ itemIdentifier: record.messageId })
@@ -49,14 +56,15 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
    * @throws {InvalidOperationError}
    * @throws {UnrecognizedError}
    */
-  private async syncOrder(sqsRecord: SQSRecord): Promise<void> {
-    const logContext = 'SyncOrderWorkerController.syncOrder'
+  private async syncOrderSingle(sqsRecord: SQSRecord): Promise<void> {
+    const logContext = 'SyncOrderWorkerController.syncOrderSingle'
     console.info(`${logContext} init:`, { sqsRecord })
 
     try {
-      const incomingOrderEvent = this.parseValidateEvent(sqsRecord)
+      const unverifiedInput = this.parseIncomingEventInput(sqsRecord)
+      const incomingOrderEvent = IncomingOrderEvent.validateAndBuild(unverifiedInput)
       await this.syncOrderWorkerService.syncOrder(incomingOrderEvent)
-      console.info(`${logContext} exit success:`)
+      console.info(`${logContext} exit success:`, { incomingOrderEvent })
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, sqsRecord })
@@ -67,13 +75,11 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseValidateEvent(sqsRecord: SQSRecord): IncomingOrderEvent {
-    const logContext = 'SyncOrderWorkerController.parseValidateEvent'
+  private parseIncomingEventInput(sqsRecord: SQSRecord): IncomingOrderEventInput {
+    const logContext = 'SyncOrderWorkerController.parseInput'
 
     try {
-      const eventBridgeEvent = JSON.parse(sqsRecord.body)
-      const incomingOrderEvent = IncomingOrderEvent.validateAndBuild(eventBridgeEvent)
-      return incomingOrderEvent
+      return JSON.parse(sqsRecord.body) as IncomingOrderEventInput
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)

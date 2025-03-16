@@ -1,14 +1,14 @@
 import { SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
 import {
   AsyncResult,
+  DuplicateEventRaisedError,
   InvalidArgumentsError,
   isTransientError,
-  DuplicateEventRaisedError,
   Result,
   UnrecognizedError,
 } from '../../errors/AppError'
 import { IAllocateOrderStockWorkerService } from '../AllocateOrderStockWorkerService/AllocateOrderStockWorkerService'
-import { IncomingOrderCreatedEvent } from '../model/IncomingOrderCreatedEvent'
+import { IncomingOrderCreatedEvent, IncomingOrderCreatedEventInput } from '../model/IncomingOrderCreatedEvent'
 
 export interface IAllocateOrderStockWorkerController {
   allocateOrdersStock: (sqsEvent: SQSEvent) => Promise<SQSBatchResponse>
@@ -33,9 +33,16 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
     console.info(`${logContext} init:`, { sqsEvent })
 
     const sqsBatchResponse: SQSBatchResponse = { batchItemFailures: [] }
+
+    if (!sqsEvent || !sqsEvent.Records) {
+      const error = new Error(`Expected SQSEvent but got ${sqsEvent}`)
+      console.error(`${logContext} exit error:`, { error, sqsEvent })
+      return sqsBatchResponse
+    }
+
     for (const record of sqsEvent.Records) {
       try {
-        await this.allocateSingleOrder(record)
+        await this.allocateOrderSingle(record)
       } catch (error) {
         if (isTransientError(error)) {
           sqsBatchResponse.batchItemFailures.push({ itemIdentifier: record.messageId })
@@ -52,18 +59,20 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  private async allocateSingleOrder(
+  private async allocateOrderSingle(
     sqsRecord: SQSRecord,
   ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
-    const logContext = 'AllocateOrderStockWorkerController.allocateSingleOrder'
+    const logContext = 'AllocateOrderStockWorkerController.allocateOrderSingle'
     console.info(`${logContext} init:`, { sqsRecord })
 
     try {
-      const incomingOrderCreatedEvent = this.parseValidateEvent(sqsRecord.body)
+      const unverifiedInput = this.parseIncomingEventInput(sqsRecord)
+      const incomingOrderCreatedEvent = IncomingOrderCreatedEvent.validateAndBuild(unverifiedInput)
       await this.allocateOrderStockWorkerService.allocateOrderStock(incomingOrderCreatedEvent)
       console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent })
     } catch (error) {
-      console.error(`${logContext} exit error:`, { error })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, sqsRecord })
       throw error
     }
   }
@@ -71,24 +80,15 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseValidateEvent(sqsRecordBody: string): Result<IncomingOrderCreatedEvent, InvalidArgumentsError> {
-    const logContext = 'AllocateOrderStockWorkerController.parseValidateEvent'
-    console.info(`${logContext} init:`, { sqsRecordBody })
+  private parseIncomingEventInput(sqsRecord: SQSRecord): Result<IncomingOrderCreatedEventInput, InvalidArgumentsError> {
+    const logContext = 'AllocateOrderStockWorkerController.parseInput'
 
     try {
-      const eventBridgeEvent = JSON.parse(sqsRecordBody)
-      const incomingOrderCreatedEvent = IncomingOrderCreatedEvent.validateAndBuild(eventBridgeEvent)
-      console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent })
-      return incomingOrderCreatedEvent
+      return JSON.parse(sqsRecord.body) as IncomingOrderCreatedEventInput
     } catch (error) {
-      // If it already throws and InvalidArgumentsError we just passthrough, no need to re-wrap it
-      if (error instanceof InvalidArgumentsError) {
-        console.error(`${logContext} exit error:`, { error, sqsRecordBody })
-        throw error
-      }
-
+      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { invalidArgumentsError, sqsRecordBody })
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, sqsRecord })
       throw invalidArgumentsError
     }
   }

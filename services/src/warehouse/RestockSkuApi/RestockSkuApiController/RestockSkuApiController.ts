@@ -5,6 +5,10 @@ import { IRestockSkuApiService } from '../RestockSkuApiService/RestockSkuApiServ
 import { IncomingRestockSkuRequest, IncomingRestockSkuRequestInput } from '../model/IncomingRestockSkuRequest'
 
 export interface IRestockSkuApiController {
+  /**
+   * @throws {InvalidArgumentsError}
+   * @throws {UnrecognizedError}
+   */
   restockSku: (apiEvent: APIGatewayProxyEventV2) => Promise<APIGatewayProxyStructuredResultV2>
 }
 
@@ -20,46 +24,45 @@ export class RestockSkuApiController implements IRestockSkuApiController {
   }
 
   /**
-   *
+   * @throws {InvalidArgumentsError}
+   * @throws {UnrecognizedError}
    */
   public async restockSku(apiEvent: APIGatewayProxyEventV2): Promise<APIGatewayProxyStructuredResultV2> {
     const logContext = 'RestockSkuApiController.restockSku'
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const incomingRestockSkuRequest = this.parseValidateRequest(apiEvent)
+      const unverifiedInput = this.parseInput(apiEvent)
+      const incomingRestockSkuRequest = IncomingRestockSkuRequest.validateAndBuild(unverifiedInput)
       const restockSkuOutput = await this.restockSkuApiService.restockSku(incomingRestockSkuRequest)
-      const apiResponse = HttpResponse.Accepted(restockSkuOutput)
-      console.info(`${logContext} exit success:`, { apiResponse })
-      return apiResponse
+      const successResponse = HttpResponse.Accepted(restockSkuOutput)
+      console.info(`${logContext} exit success:`, { successResponse })
+      return successResponse
     } catch (error) {
-      console.error(`${logContext} error caught:`, { apiEvent })
+      console.error(`${logContext} error caught:`, { error })
 
       if (error instanceof InvalidArgumentsError) {
         const badRequestError = HttpResponse.BadRequestError()
-        console.error(`${logContext} exit error:`, { badRequestError })
+        console.error(`${logContext} exit error:`, { badRequestError, error, apiEvent })
         return badRequestError
       }
 
       const internalServerError = HttpResponse.InternalServerError()
-      console.error(`${logContext} exit error:`, { internalServerError })
+      console.error(`${logContext} exit error:`, { internalServerError, error, apiEvent })
       return internalServerError
     }
   }
 
   /**
-   *
+   * @throws {InvalidArgumentsError}
    */
-  private parseValidateRequest(apiEvent: APIGatewayProxyEventV2): IncomingRestockSkuRequest {
-    const logContext = 'RestockSkuApiController.parseValidateRequest'
-    console.info(`${logContext} init:`, { apiEvent })
+  private parseInput(apiEvent: APIGatewayProxyEventV2): IncomingRestockSkuRequest {
+    const logContext = 'RestockSkuApiController.parseInput'
 
     try {
-      const unverifiedRequest = JSON.parse(apiEvent.body) as IncomingRestockSkuRequestInput
-      const incomingRestockSkuRequest = IncomingRestockSkuRequest.validateAndBuild(unverifiedRequest)
-      console.info(`${logContext} exit success:`, { apiEvent })
-      return incomingRestockSkuRequest
+      return JSON.parse(apiEvent.body) as IncomingRestockSkuRequestInput
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, apiEvent })
       throw invalidArgumentsError

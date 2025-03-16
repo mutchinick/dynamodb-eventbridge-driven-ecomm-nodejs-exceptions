@@ -1,14 +1,18 @@
 import { z } from 'zod'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { EventProps } from './EventProps'
 
 export type IncomingSimulateRawEventRequestInput = EventProps
 
 type IncomingSimulateRawEventRequestProps = EventProps
 
+/**
+ *
+ */
 export class IncomingSimulateRawEventRequest implements IncomingSimulateRawEventRequestProps {
-  //
-  //
-  //
+  /**
+   *
+   */
   private constructor(
     readonly pk: string,
     readonly sk: string,
@@ -18,29 +22,56 @@ export class IncomingSimulateRawEventRequest implements IncomingSimulateRawEvent
     readonly updatedAt: string,
   ) {}
 
-  //
-  //
-  //
-  public static validateAndBuild(input: IncomingSimulateRawEventRequestInput) {
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  public static validateAndBuild(
+    incomingSimulateRawEventRequestInput: IncomingSimulateRawEventRequestInput,
+  ): IncomingSimulateRawEventRequest {
+    const logContext = 'IncomingSimulateRawEventRequest.validateAndBuild'
+    console.info(`${logContext} init:`, { incomingSimulateRawEventRequestInput })
+
     try {
-      const { pk, sk, eventName, eventData, createdAt, updatedAt } = this.validateAndBuildProps(input)
-      return new IncomingSimulateRawEventRequest(pk, sk, eventName, eventData, createdAt, updatedAt)
+      const { pk, sk, eventName, eventData, createdAt, updatedAt } = this.buildProps(
+        incomingSimulateRawEventRequestInput,
+      )
+
+      const incomingSimulateRawEventRequest = new IncomingSimulateRawEventRequest(
+        pk,
+        sk,
+        eventName,
+        eventData,
+        createdAt,
+        updatedAt,
+      )
+
+      console.info(`${logContext} exit success:`, { incomingSimulateRawEventRequest })
+      return incomingSimulateRawEventRequest
     } catch (error) {
-      console.error('IncomingSimulateRawEventRequest.validateAndBuild', {
-        error,
-        incomingSimulateRawEventRequestInput: input,
-      })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingSimulateRawEventRequestInput })
       throw error
     }
   }
 
-  //
-  //
-  //
-  private static validateAndBuildProps(
-    input: IncomingSimulateRawEventRequestInput,
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static buildProps(
+    incomingSimulateRawEventRequestInput: IncomingSimulateRawEventRequestInput,
   ): IncomingSimulateRawEventRequestProps {
-    z.object({
+    this.validateInput(incomingSimulateRawEventRequestInput)
+    return incomingSimulateRawEventRequestInput
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static validateInput(incomingSimulateRawEventRequestInput: IncomingSimulateRawEventRequestInput): void {
+    const logContext = 'IncomingSimulateRawEventRequest.validateInput'
+
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
       pk: z.string().trim().min(1),
       sk: z.string().trim().min(1),
       eventName: z.string().trim().min(1),
@@ -48,9 +79,14 @@ export class IncomingSimulateRawEventRequest implements IncomingSimulateRawEvent
       createdAt: z.string().optional(),
       updatedAt: z.string().optional(),
     })
-      .strict()
-      .parse(input)
 
-    return input
+    try {
+      schema.strict().parse(incomingSimulateRawEventRequestInput)
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingSimulateRawEventRequestInput })
+      throw invalidArgumentsError
+    }
   }
 }

@@ -15,7 +15,13 @@ export interface IRestockSkuWorkerConstructProps {
   eventBus: EventBus
 }
 
+//
+//
+//
 export class RestockSkuWorkerConstruct extends Construct {
+  //
+  //
+  //
   constructor(scope: Construct, id: string, props: IRestockSkuWorkerConstructProps) {
     super(scope, id)
     const dlq = this.createRestockSkuWorkerDlq(scope, id)
@@ -24,6 +30,9 @@ export class RestockSkuWorkerConstruct extends Construct {
     this.createRestockSkuWorkerRoutingRule(scope, id, props.dynamoDbTable, props.eventBus, queue)
   }
 
+  //
+  //
+  //
   private createRestockSkuWorkerDlq(scope: Construct, id: string) {
     const dlqName = `${id}-Dlq`
     const dlq = new Queue(scope, dlqName, {
@@ -33,6 +42,9 @@ export class RestockSkuWorkerConstruct extends Construct {
     return dlq
   }
 
+  //
+  //
+  //
   private createRestockSkuWorkerQueue(scope: Construct, id: string, dlq: Queue) {
     const queueName = `${id}-Queue`
     const { maxReceiveCount, receiveMessageWaitTime, visibilityTimeout } = settings.SQS
@@ -48,13 +60,16 @@ export class RestockSkuWorkerConstruct extends Construct {
     return queue
   }
 
+  //
+  //
+  //
   private createRestockSkuWorkerFunction(scope: Construct, id: string, dynamoDbTable: Table, queue: Queue) {
-    const lambdaFuncName = `${id}-LambdaFunc`
+    const lambdaFuncName = `${id}-Lambda`
     const lambdaFunc = new NodejsFunction(scope, lambdaFuncName, {
       functionName: lambdaFuncName,
       runtime: Runtime.NODEJS_20_X,
       handler: 'handler',
-      entry: join(__dirname, './restockSkuWorkerHandler.ts'),
+      entry: join(__dirname, './restockSkuWorkerEntry.ts'),
       environment: {
         EVENT_STORE_TABLE_NAME: dynamoDbTable.tableName,
         WAREHOUSE_TABLE_NAME: dynamoDbTable.tableName,
@@ -79,6 +94,9 @@ export class RestockSkuWorkerConstruct extends Construct {
     return lambdaFunc
   }
 
+  //
+  //
+  //
   private createRestockSkuWorkerRoutingRule(
     scope: Construct,
     id: string,
@@ -90,7 +108,7 @@ export class RestockSkuWorkerConstruct extends Construct {
     const routingRule = new Rule(scope, ruleName, {
       eventBus,
       eventPattern: {
-        source: ['edaof-event-store.dynamodb.stream'],
+        source: ['event-store.dynamodb.stream'],
         detailType: ['DynamoDBStreamRecord'],
         detail: {
           eventSourceARN: [dynamoDbTable.tableStreamArn],

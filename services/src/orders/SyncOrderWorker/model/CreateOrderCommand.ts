@@ -6,7 +6,7 @@ import { OrderStatus } from '../../model/OrderStatus'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderEvent } from './IncomingOrderEvent'
 
-export interface CreateOrderCommandInput {
+export type CreateOrderCommandInput = {
   incomingOrderEvent: IncomingOrderEvent
 }
 
@@ -55,10 +55,10 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     this.validateInput(createOrderCommandInput)
 
     const { incomingOrderEvent } = createOrderCommandInput
-    const incomingEventData = incomingOrderEvent.eventData
-    const incomingEventName = incomingOrderEvent.eventName
-    const { orderId, sku, units, price, userId } = incomingEventData
-    const newOrderStatus = this.getNewOrderStatus(incomingEventName)
+    const { eventData, eventName } = incomingOrderEvent
+
+    const { orderId, sku, units, price, userId } = eventData
+    const newOrderStatus = this.getNewOrderStatus(eventName)
     const currentDate = new Date().toISOString()
 
     return {
@@ -82,6 +82,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
   private static validateInput(createOrderCommandInput: CreateOrderCommandInput): void {
     const logContext = 'CreateOrderCommand.validateInput'
 
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
       incomingOrderEvent: z.object({
         eventName: ValueValidators.validIncomingEventName(),
@@ -102,7 +103,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { error, createOrderCommandInput })
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, createOrderCommandInput })
       throw invalidArgumentsError
     }
   }

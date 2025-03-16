@@ -1,4 +1,3 @@
-// Review error handling
 import { z } from 'zod'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
@@ -67,14 +66,17 @@ export class IncomingPlaceOrderRequest implements IncomingPlaceOrderRequestProps
   private static validateInput(incomingPlaceOrderRequestInput: IncomingPlaceOrderRequestInput): void {
     const logContext = 'IncomingPlaceOrderRequest.validateInput'
 
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      orderId: ValueValidators.validOrderId(),
+      sku: ValueValidators.validSku(),
+      units: ValueValidators.validUnits(),
+      price: ValueValidators.validPrice(),
+      userId: ValueValidators.validUserId(),
+    })
+
     try {
-      z.object({
-        orderId: ValueValidators.validOrderId(),
-        sku: ValueValidators.validSku(),
-        units: ValueValidators.validUnits(),
-        price: ValueValidators.validPrice(),
-        userId: ValueValidators.validUserId(),
-      }).parse(incomingPlaceOrderRequestInput)
+      schema.parse(incomingPlaceOrderRequestInput)
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)

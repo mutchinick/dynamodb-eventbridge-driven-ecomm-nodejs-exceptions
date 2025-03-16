@@ -54,14 +54,14 @@ const expectedUpdatedOrderData: OrderData = {
   updatedAt: mockValidCommand.orderData.updatedAt,
 }
 
-function buildMockDdbDocClient_send_resolves(): DynamoDBDocumentClient {
+function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
   const mockSendReturnValues: UpdateCommandOutput = {
     Attributes: { ...expectedUpdatedOrderData },
   } as unknown as UpdateCommandOutput
   return { send: jest.fn().mockResolvedValue(mockSendReturnValues) } as unknown as DynamoDBDocumentClient
 }
 
-function buildMockDdbDocClient_send_throws(error?: unknown): DynamoDBDocumentClient {
+function buildMockDdbDocClient_throws(error?: unknown): DynamoDBDocumentClient {
   return { send: jest.fn().mockRejectedValue(error ?? new Error()) } as unknown as DynamoDBDocumentClient
 }
 
@@ -76,14 +76,14 @@ const expectedExistingOrderData: OrderData = {
   updatedAt: mockValidCommand.orderData.updatedAt,
 }
 
-function buildMockDdbDocClient_send_throws_ConditionalCheckFailedException(): DynamoDBDocumentClient {
-  const error = new ConditionalCheckFailedException({
+function buildMockDdbDocClient_throws_ConditionalCheckFailedException(): DynamoDBDocumentClient {
+  const mockError = new ConditionalCheckFailedException({
     $metadata: {},
     message: '',
     Item: marshall(expectedExistingOrderData),
   })
   return {
-    send: jest.fn().mockRejectedValue(error),
+    send: jest.fn().mockRejectedValue(mockError),
   } as unknown as DynamoDBDocumentClient
 }
 
@@ -92,13 +92,13 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   // Test UpdateOrderCommand edge cases
   //
   it(`does not throw if the input UpdateOrderCommand is valid`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     await expect(dbUpdateOrderClient.updateOrder(mockValidCommand)).resolves.not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand is undefined`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws()
+    const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const mockTestCommand = undefined as UpdateOrderCommand
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
@@ -107,7 +107,7 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand is null`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws()
+    const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const mockTestCommand = null as UpdateOrderCommand
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
@@ -116,7 +116,7 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand is empty`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws()
+    const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const mockTestCommand = {} as UpdateOrderCommand
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
@@ -125,7 +125,7 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.orderData is undefined`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws()
+    const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const mockTestCommand = { orderData: undefined } as UpdateOrderCommand
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
@@ -134,7 +134,7 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.orderData is null`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws()
+    const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const mockTestCommand = { orderData: null } as UpdateOrderCommand
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
@@ -146,14 +146,14 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   // Test internal logic
   //
   it(`calls DynamoDBDocumentClient.send a single time`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     await dbUpdateOrderClient.updateOrder(mockValidCommand)
     expect(mockDdbDocClient.send).toHaveBeenCalledTimes(1)
   })
 
   it(`calls DynamoDBDocumentClient.send with the expected input`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     await dbUpdateOrderClient.updateOrder(mockValidCommand)
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(
@@ -161,14 +161,12 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
     )
   })
 
-  it(`throws a transient UnrecognizedError with the original Error as cause
-      if DynamoDBDocumentClient.send throws a generic Error`, async () => {
-    const error = new Error('mockError')
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws(error)
+  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws a native Error`, async () => {
+    const mockError = new Error('mockError')
+    const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
-    const expectedError = UnrecognizedError.from(error)
     const resultPromise = dbUpdateOrderClient.updateOrder(mockValidCommand)
-    await expect(resultPromise).rejects.toThrow(expectedError)
+    await expect(resultPromise).rejects.toThrow(UnrecognizedError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
 
@@ -177,14 +175,14 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   //
   it(`returns the expected OrderData existing in the database if DynamoDBDocumentClient.send
       throws a ConditionalCheckFailedException error`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_throws_ConditionalCheckFailedException()
+    const mockDdbDocClient = buildMockDdbDocClient_throws_ConditionalCheckFailedException()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const existingOrderData = await dbUpdateOrderClient.updateOrder(mockValidCommand)
     expect(existingOrderData).toStrictEqual(expectedExistingOrderData)
   })
 
   it(`returns the expected OrderData updated in the database`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_send_resolves()
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const orderData = await dbUpdateOrderClient.updateOrder(mockValidCommand)
     expect(orderData).toStrictEqual(expectedUpdatedOrderData)

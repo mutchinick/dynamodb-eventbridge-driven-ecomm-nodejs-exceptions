@@ -37,7 +37,7 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(skuRestockedEventInput)
       const skuRestockedEvent = new SkuRestockedEvent(eventName, eventData, createdAt, updatedAt)
-      console.info(`${logContext} exit success:`, { skuRestockedEventInput })
+      console.info(`${logContext} exit success:`, { skuRestockedEvent })
       return skuRestockedEvent
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
@@ -52,16 +52,7 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
   private static buildProps(
     skuRestockedEventInput: SkuRestockedEventInput,
   ): Result<SkuRestockedEventProps, InvalidArgumentsError> {
-    const logContext = 'SkuRestockedEvent.buildProps'
-
-    try {
-      this.validateInput(skuRestockedEventInput)
-    } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-      const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { invalidArgumentsError, skuRestockedEventInput })
-      throw invalidArgumentsError
-    }
+    this.validateInput(skuRestockedEventInput)
 
     const { sku, units, lotId } = skuRestockedEventInput
     const date = new Date().toISOString()
@@ -74,13 +65,25 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
   }
 
   /**
-   *
+   * @throws {InvalidArgumentsError}
    */
   private static validateInput(skuRestockedEventInput: SkuRestockedEventData): void {
-    z.object({
+    const logContext = 'SkuRestockedEvent.validateInput'
+
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
       sku: ValueValidators.validSku(),
       units: ValueValidators.validUnits(),
       lotId: ValueValidators.validLotId(),
-    }).parse(skuRestockedEventInput)
+    })
+
+    try {
+      schema.parse(skuRestockedEventInput)
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, skuRestockedEventInput })
+      throw invalidArgumentsError
+    }
   }
 }

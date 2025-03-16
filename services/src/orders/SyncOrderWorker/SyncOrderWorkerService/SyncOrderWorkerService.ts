@@ -51,38 +51,48 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     const logContext = 'SyncOrderWorkerService.syncOrder'
     console.info(`${logContext} init:`, { incomingOrderEvent })
 
-    // The input IncomingOrderEvent should already be valid because it can only be built through the same
-    // IncomingOrderEvent class which enforces strict validation. Still we perform just enough validation to
-    // prevent unlikely but possible uncaught exceptions for some properties that are accessed directly.
-    this.validateIncomingOrderEvent(incomingOrderEvent)
+    try {
+      // The input IncomingOrderEvent should already be valid because it can only be built through the same
+      // IncomingOrderEvent class which enforces strict validation. Still we perform just enough validation to
+      // prevent unlikely but possible uncaught exceptions for some properties that are accessed directly.
+      this.validateIncomingOrderEvent(incomingOrderEvent)
 
-    const isOrderPlacedEvent = IncomingOrderEvent.isOrderPlacedEvent(incomingOrderEvent)
-    const existingOrderData = await this.getOrder(incomingOrderEvent.eventData.orderId)
+      const isOrderPlacedEvent = IncomingOrderEvent.isOrderPlacedEvent(incomingOrderEvent)
+      const existingOrderData = await this.getOrder(incomingOrderEvent.eventData.orderId)
 
-    // When IT IS an OrderPlacedEvent and the OrderData DOES NOT exist in the database then we need to
-    // create the Order and then raise the event. This is the starting point for the Order.
-    if (isOrderPlacedEvent && !existingOrderData) {
-      const orderData = await this.createOrder(incomingOrderEvent)
-      await this.raiseOrderCreatedEvent(incomingOrderEvent.eventName, orderData)
-      return
+      // When IT IS an OrderPlacedEvent and the OrderData DOES NOT exist in the database then we need to
+      // create the Order and then raise the event. This is the starting point for the Order.
+      if (isOrderPlacedEvent && !existingOrderData) {
+        const orderData = await this.createOrder(incomingOrderEvent)
+        await this.raiseOrderCreatedEvent(incomingOrderEvent.eventName, orderData)
+        console.info(`${logContext} exit success: create order:`, { isOrderPlacedEvent, existingOrderData })
+        return
+      }
+
+      // When IT IS an OrderPlacedEvent and the OrderData DOES exist in the database, then we only try
+      // to raise the event again because the intuition is that is was tried before but it failed.
+      if (isOrderPlacedEvent && existingOrderData) {
+        await this.raiseOrderCreatedEvent(incomingOrderEvent.eventName, existingOrderData)
+        console.info(`${logContext} exit success: raise event:`, { isOrderPlacedEvent, existingOrderData })
+        return
+      }
+
+      // When IT IS NOT an OrderPlacedEvent and the OrderData DOES exist in the database, then we need to
+      // update the Order to a new state. No event needs to be raised because we are in tracking mode.
+      if (!isOrderPlacedEvent && existingOrderData) {
+        await this.updateOrder(incomingOrderEvent, existingOrderData)
+        console.info(`${logContext} exit success: update order:`, { isOrderPlacedEvent, existingOrderData })
+        return
+      }
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingOrderEvent })
+      throw error
     }
 
-    // When IT IS an OrderPlacedEvent and the OrderData DOES exist in the database, then we only try
-    // to raise the event again because the intuition is that is was tried before but it failed.
-    if (isOrderPlacedEvent && existingOrderData) {
-      await this.raiseOrderCreatedEvent(incomingOrderEvent.eventName, existingOrderData)
-      return
-    }
-
-    // When IT IS NOT an OrderPlacedEvent and the OrderData DOES exist in the database, then we need to
-    // update the Order to a new state. No event needs to be raised because we are in tracking mode.
-    if (!isOrderPlacedEvent && existingOrderData) {
-      await this.updateOrder(incomingOrderEvent, existingOrderData)
-      return
-    }
-
-    const invalidOpsError = InvalidOperationError.from('non_transient')
-    throw invalidOpsError
+    const invalidOperationError = InvalidOperationError.from('non-transient')
+    console.error(`${logContext} exit error:`)
+    throw invalidOperationError
   }
 
   /**
@@ -90,7 +100,6 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
    */
   private validateIncomingOrderEvent(incomingOrderEvent: IncomingOrderEvent): void {
     const logContext = 'SyncOrderWorkerService.validateIncomingOrderEvent'
-    console.info(`${logContext} init:`, { incomingOrderEvent })
 
     if (
       incomingOrderEvent instanceof IncomingOrderEvent === false ||
@@ -98,6 +107,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       incomingOrderEvent.eventData.orderId == null
     ) {
       const invalidArgumentsError = InvalidArgumentsError.from()
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingOrderEvent })
       throw invalidArgumentsError
     }
   }
@@ -110,9 +120,16 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     const logContext = 'SyncOrderWorkerService.getOrder'
     console.info(`${logContext} init:`, { orderId })
 
-    const getOrderCommand = GetOrderCommand.validateAndBuild({ orderId })
-    const existingOrderData = await this.dbGetOrderClient.getOrder(getOrderCommand)
-    return existingOrderData
+    try {
+      const getOrderCommand = GetOrderCommand.validateAndBuild({ orderId })
+      const existingOrderData = await this.dbGetOrderClient.getOrder(getOrderCommand)
+      console.info(`${logContext} exit success:`, { existingOrderData })
+      return existingOrderData
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, orderId })
+      throw error
+    }
   }
 
   /**
@@ -124,9 +141,16 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     const logContext = 'SyncOrderWorkerService.createOrder'
     console.info(`${logContext} init:`, { incomingOrderEvent })
 
-    const createOrderCommand = CreateOrderCommand.validateAndBuild({ incomingOrderEvent })
-    const orderData = await this.dbCreateOrderClient.createOrder(createOrderCommand)
-    return orderData
+    try {
+      const createOrderCommand = CreateOrderCommand.validateAndBuild({ incomingOrderEvent })
+      const orderData = await this.dbCreateOrderClient.createOrder(createOrderCommand)
+      console.info(`${logContext} exit success:`, { orderData })
+      return orderData
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingOrderEvent })
+      throw error
+    }
   }
 
   /**
@@ -140,8 +164,15 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     const logContext = 'SyncOrderWorkerService.updateOrder'
     console.info(`${logContext} init:`, { incomingOrderEvent, existingOrderData })
 
-    const updateOrderCommand = UpdateOrderCommand.validateAndBuild({ incomingOrderEvent, existingOrderData })
-    await this.dbUpdateOrderClient.updateOrder(updateOrderCommand)
+    try {
+      const updateOrderCommand = UpdateOrderCommand.validateAndBuild({ incomingOrderEvent, existingOrderData })
+      const updatedOrderData = await this.dbUpdateOrderClient.updateOrder(updateOrderCommand)
+      console.info(`${logContext} exit success:`, { updatedOrderData })
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingOrderEvent, existingOrderData })
+      throw error
+    }
   }
 
   /**
@@ -153,7 +184,14 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     const logContext = 'SyncOrderWorkerService.raiseOrderCreatedEvent'
     console.info(`${logContext} init:`, { incomingEventName, orderData })
 
-    const orderCreatedEvent = OrderCreatedEvent.validateAndBuild({ incomingEventName, orderData })
-    await this.esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(orderCreatedEvent)
+    try {
+      const orderCreatedEvent = OrderCreatedEvent.validateAndBuild({ incomingEventName, orderData })
+      await this.esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(orderCreatedEvent)
+      console.info(`${logContext} exit success:`, { incomingEventName, orderData })
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingEventName, orderData })
+      throw error
+    }
   }
 }

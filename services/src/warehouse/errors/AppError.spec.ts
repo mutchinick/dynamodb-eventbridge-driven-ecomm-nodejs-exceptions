@@ -28,7 +28,7 @@ const testCases: ErrorTestCase<AppError>[] = [
   },
   {
     name: 'InvalidOperationError (non-transient)',
-    from: (cause, message) => InvalidOperationError.from('non_transient', cause, message),
+    from: (cause, message) => InvalidOperationError.from('non-transient', cause, message),
     expectedMessage: 'Unrecognized error.',
     expectedTransient: false,
     expectedInstance: InvalidOperationError,
@@ -81,7 +81,7 @@ describe(`Warehouse Service AppError tests`, () => {
   //
   // Test AppError subclasses builder functions
   //
-  describe('Test AppError subclasses builder functions', () => {
+  describe(`Test AppError subclasses builder functions`, () => {
     testCases.forEach(({ name, from, expectedMessage, expectedTransient, expectedInstance }) => {
       describe(name, () => {
         it(`${name} is an instance of ${expectedInstance.name}`, () => {
@@ -122,18 +122,18 @@ describe(`Warehouse Service AppError tests`, () => {
   //
   // Test isTransientError Function
   //
-  describe('Test isTransientError Function', () => {
-    it('isTransientError returns true for transient errors', () => {
+  describe(`Test isTransientError Function`, () => {
+    it(`isTransientError returns true for transient errors`, () => {
       const err = UnrecognizedError.from()
       expect(isTransientError(err)).toBe(true)
     })
 
-    it('isTransientError returns false for non-transient errors', () => {
+    it(`isTransientError returns false for non-transient errors`, () => {
       const err = InvalidArgumentsError.from()
       expect(isTransientError(err)).toBe(false)
     })
 
-    it('isTransientError returns true for non-AppError values (defaulting to transient)', () => {
+    it(`isTransientError returns true for non-AppError values (defaulting to transient)`, () => {
       expect(isTransientError('Mock error')).toBe(true)
       expect(isTransientError(undefined)).toBe(true)
       expect(isTransientError(null)).toBe(true)

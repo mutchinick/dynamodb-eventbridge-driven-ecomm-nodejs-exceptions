@@ -12,7 +12,7 @@ import { OrderStatus } from '../../model/OrderStatus'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderEvent } from './IncomingOrderEvent'
 
-export interface UpdateOrderCommandInput {
+export type UpdateOrderCommandInput = {
   existingOrderData: OrderData
   incomingOrderEvent: IncomingOrderEvent
 }
@@ -92,23 +92,8 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
   private static validateInput(updateOrderCommandInput: UpdateOrderCommandInput): void {
     const logContext = 'UpdateOrderCommand.validateInput'
 
-    try {
-      const { existingOrderData, incomingOrderEvent } = updateOrderCommandInput
-      this.validateOrderData(existingOrderData)
-      this.validateOrderEvent(incomingOrderEvent)
-    } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-      const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { error, updateOrderCommandInput })
-      throw invalidArgumentsError
-    }
-  }
-
-  /**
-   * @throws {Error}
-   */
-  private static validateOrderData(existingOrderData: OrderData): void {
-    z.object({
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const existingOrderDataSchema = z.object({
       orderId: ValueValidators.validOrderId(),
       orderStatus: ValueValidators.validOrderStatus(),
       sku: ValueValidators.validSku(),
@@ -117,14 +102,10 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
       userId: ValueValidators.validUserId(),
       createdAt: ValueValidators.validCreatedAt(),
       updatedAt: ValueValidators.validUpdatedAt(),
-    }).parse(existingOrderData)
-  }
+    })
 
-  /**
-   * @throws {Error}
-   */
-  private static validateOrderEvent(incomingOrderEvent: IncomingOrderEvent): void {
-    z.object({
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const incomingOrderEventSchema = z.object({
       eventName: ValueValidators.validIncomingEventName(),
       eventData: z.object({
         orderId: ValueValidators.validOrderId(),
@@ -138,7 +119,21 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
       }),
       createdAt: ValueValidators.validCreatedAt(),
       updatedAt: ValueValidators.validUpdatedAt(),
-    }).parse(incomingOrderEvent)
+    })
+
+    const schema = z.object({
+      existingOrderData: existingOrderDataSchema,
+      incomingOrderEvent: incomingOrderEventSchema,
+    })
+
+    try {
+      schema.parse(updateOrderCommandInput)
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, updateOrderCommandInput })
+      throw invalidArgumentsError
+    }
   }
 
   /**
@@ -154,6 +149,8 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     existingOrderStatus: OrderStatus
     incomingEventName: OrderEventName
   }): OrderStatus {
+    const logContext = 'UpdateOrderCommand.getNewOrderStatus'
+
     const forbiddenError = ForbiddenOrderStatusTransitionError.from()
     const redundancyError = RedundantOrderStatusTransitionError.from()
     const notReadyError = NotReadyOrderStatusTransitionError.from()
@@ -301,15 +298,13 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
       },
     }
 
-    const logContext = 'UpdateOrderCommand.getNewOrderStatus'
-
     const eventNameToOrderStatusMap = orderStatusTransitionRules[existingOrderStatus]
     const newOrderStatus = eventNameToOrderStatusMap?.[incomingEventName]
 
     if (!newOrderStatus) {
-      const invalidOpsError = InvalidOperationError.from('non_transient')
-      console.error(`${logContext} exit error:`, { invalidOpsError, existingOrderStatus, incomingEventName })
-      throw invalidOpsError
+      const invalidOperationError = InvalidOperationError.from('non-transient')
+      console.error(`${logContext} exit error:`, { invalidOperationError, existingOrderStatus, incomingEventName })
+      throw invalidOperationError
     }
 
     if (newOrderStatus instanceof Error) {

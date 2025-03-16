@@ -1,4 +1,3 @@
-// Review error handling
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { z } from 'zod'
 import { OrderEventName } from './OrderEventName'

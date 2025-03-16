@@ -60,14 +60,17 @@ export class GetOrderCommand implements GetOrderCommandProps {
   private static validateInput(getOrderCommandInput: GetOrderCommandInput): void {
     const logContext = 'GetOrderCommand.validateInput'
 
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      orderId: ValueValidators.validOrderId(),
+    })
+
     try {
-      z.object({
-        orderId: ValueValidators.validOrderId(),
-      }).parse(getOrderCommandInput)
+      schema.parse(getOrderCommandInput)
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { error, getOrderCommandInput })
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, getOrderCommandInput })
       throw invalidArgumentsError
     }
   }

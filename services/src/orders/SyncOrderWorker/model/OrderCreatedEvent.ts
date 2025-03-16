@@ -7,7 +7,7 @@ import { ValueValidators } from '../../model/ValueValidators'
 
 type OrderCreatedEventData = Required<OrderEventData>
 
-export interface OrderCreatedEventInput {
+export type OrderCreatedEventInput = {
   incomingEventName: OrderEventName
   orderData: OrderData
 }
@@ -80,6 +80,7 @@ export class OrderCreatedEvent implements OrderCreatedEventProps {
   private static validateInput(orderCreatedEventInput: OrderCreatedEventInput): void {
     const logContext = 'OrderCreatedEvent.validateInput'
 
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
       incomingEventName: ValueValidators.validOrderPlacedEventName(),
       orderData: z.object({
@@ -99,7 +100,7 @@ export class OrderCreatedEvent implements OrderCreatedEventProps {
     } catch (error) {
       console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
-      console.error(`${logContext} exit error:`, { error, orderCreatedEventInput })
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderCreatedEventInput })
       throw invalidArgumentsError
     }
   }

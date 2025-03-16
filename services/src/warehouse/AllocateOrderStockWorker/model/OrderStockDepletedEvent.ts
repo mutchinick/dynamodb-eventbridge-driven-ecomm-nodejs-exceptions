@@ -34,11 +34,17 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
   public static validateAndBuild(
     orderStockDepletedEventInput: OrderStockDepletedEventInput,
   ): Result<OrderStockDepletedEvent, InvalidArgumentsError> {
+    const logContext = 'OrderStockDepletedEvent.validateAndBuild'
+    console.info(`${logContext} init:`, { orderStockDepletedEventInput })
+
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(orderStockDepletedEventInput)
-      return new OrderStockDepletedEvent(eventName, eventData, createdAt, updatedAt)
+      const orderStockDepletedEvent = new OrderStockDepletedEvent(eventName, eventData, createdAt, updatedAt)
+      console.info(`${logContext} exit success:`, { orderStockDepletedEvent })
+      return orderStockDepletedEvent
     } catch (error) {
-      console.error('OrderStockDepletedEvent.validateAndBuild', { error, orderStockDepletedEventInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, orderStockDepletedEventInput })
       throw error
     }
   }
@@ -49,16 +55,7 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
   private static buildProps(
     orderStockDepletedEventInput: OrderStockDepletedEventInput,
   ): Result<OrderStockDepletedEventProps, InvalidArgumentsError> {
-    try {
-      z.object({
-        orderId: ValueValidators.validOrderId(),
-        sku: ValueValidators.validSku(),
-        units: ValueValidators.validUnits(),
-      }).parse(orderStockDepletedEventInput)
-    } catch (error) {
-      const invalidArgumentsError = InvalidArgumentsError.from(error)
-      throw invalidArgumentsError
-    }
+    this.validateInput(orderStockDepletedEventInput)
 
     const { orderId, sku, units } = orderStockDepletedEventInput
     const date = new Date().toISOString()
@@ -73,6 +70,29 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
       eventData: orderStockDepletedEventData,
       createdAt: date,
       updatedAt: date,
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private static validateInput(orderStockDepletedEventInput: OrderStockDepletedEventInput): void {
+    const logContext = 'OrderStockDepletedEvent.validateInput'
+
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      orderId: ValueValidators.validOrderId(),
+      sku: ValueValidators.validSku(),
+      units: ValueValidators.validUnits(),
+    })
+
+    try {
+      schema.parse(orderStockDepletedEventInput)
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderStockDepletedEventInput })
+      throw invalidArgumentsError
     }
   }
 }

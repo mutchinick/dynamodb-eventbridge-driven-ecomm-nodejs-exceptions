@@ -29,10 +29,17 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
   public async createOrder(createOrderCommand: CreateOrderCommand): Promise<OrderData> {
     const logContext = 'DbCreateOrderClient.createOrder'
     console.info(`${logContext} init:`, { createOrderCommand })
-    const ddbCommand = this.buildDdbCommand(createOrderCommand)
-    const orderData = await this.sendDdbCommand(ddbCommand)
-    console.info(`${logContext} exit success:`, { orderData })
-    return orderData
+
+    try {
+      const ddbCommand = this.buildDdbCommand(createOrderCommand)
+      const orderData = await this.sendDdbCommand(ddbCommand)
+      console.info(`${logContext} exit success:`, { orderData })
+      return orderData
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, createOrderCommand })
+      throw error
+    }
   }
 
   /**
@@ -111,7 +118,7 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const attributes = unmarshall(error.Item)
         const orderData = this.buildOrderData(attributes)
-        console.info(`${logContext} exit success: from-error:`, { error, orderData })
+        console.info(`${logContext} exit success: from-error:`, { orderData, error })
         return orderData
       }
 

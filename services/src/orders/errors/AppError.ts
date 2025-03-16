@@ -1,4 +1,3 @@
-// Review error handling
 /* eslint-disable jsdoc/require-jsdoc */
 export abstract class AppError extends Error {
   constructor(
@@ -20,7 +19,7 @@ export class InvalidOperationError extends AppError {
   private static readonly _defaultMessage = 'Invalid operation error.'
 
   public static from(
-    transitivity: 'transient' | 'non_transient',
+    transitivity: 'transient' | 'non-transient',
     cause?: unknown,
     message?: string,
   ): InvalidOperationError {

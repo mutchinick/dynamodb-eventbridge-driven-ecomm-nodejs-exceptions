@@ -1,11 +1,5 @@
 import { DynamoDBDocumentClient, TransactWriteCommand } from '@aws-sdk/lib-dynamodb'
-import {
-  AsyncResult,
-  InvalidArgumentsError,
-  DuplicateRestockOperationError,
-  Result,
-  UnrecognizedError,
-} from '../../errors/AppError'
+import { DuplicateRestockOperationError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
 import { RestockSkuCommand } from '../model/RestockSkuCommand'
 
@@ -15,9 +9,7 @@ export interface IDbRestockSkuClient {
    * @throws {DuplicateRestockOperationError}
    * @throws {UnrecognizedError}
    */
-  restockSku: (
-    restockSkuCommand: RestockSkuCommand,
-  ) => AsyncResult<void, InvalidArgumentsError | DuplicateRestockOperationError | UnrecognizedError>
+  restockSku: (restockSkuCommand: RestockSkuCommand) => Promise<void>
 }
 
 /**
@@ -34,23 +26,31 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
    * @throws {DuplicateRestockOperationError}
    * @throws {UnrecognizedError}
    */
-  public async restockSku(
-    restockSkuCommand: RestockSkuCommand,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateRestockOperationError | UnrecognizedError> {
-    const ddbUpdateCommand = this.buildDdbUpdateCommand(restockSkuCommand)
-    await this.sendDdbUpdateCommand(ddbUpdateCommand)
+  public async restockSku(restockSkuCommand: RestockSkuCommand): Promise<void> {
+    const logContext = 'DbRestockSkuClient.restockSku'
+    console.info(`${logContext} init:`, { restockSkuCommand })
+
+    try {
+      const ddbCommand = this.buildDdbCommand(restockSkuCommand)
+      await this.sendDdbCommand(ddbCommand)
+      console.info(`${logContext} exit success:`, { ddbCommand })
+    } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, restockSkuCommand })
+      throw error
+    }
   }
 
   /**
    * @throws {InvalidArgumentsError}
    */
-  private buildDdbUpdateCommand(
-    restockSkuCommand: RestockSkuCommand,
-  ): Result<TransactWriteCommand, InvalidArgumentsError> {
+  private buildDdbCommand(restockSkuCommand: RestockSkuCommand): TransactWriteCommand {
+    const logContext = 'DbRestockSkuClient.buildDdbCommand'
+
     try {
       const tableName = process.env.WAREHOUSE_TABLE_NAME
       const { sku, units, lotId, createdAt, updatedAt } = restockSkuCommand.restockSkuData
-      const ddbUpdateCommand = new TransactWriteCommand({
+      const ddbCommand = new TransactWriteCommand({
         TransactItems: [
           {
             Put: {
@@ -101,9 +101,11 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
           },
         ],
       })
-      return ddbUpdateCommand
+      return ddbCommand
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, restockSkuCommand })
       throw invalidArgumentsError
     }
   }
@@ -112,21 +114,27 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
    * @throws {DuplicateRestockOperationError}
    * @throws {UnrecognizedError}
    */
-  private async sendDdbUpdateCommand(
-    ddbUpdateCommand: TransactWriteCommand,
-  ): AsyncResult<void, DuplicateRestockOperationError | UnrecognizedError> {
+  private async sendDdbCommand(ddbCommand: TransactWriteCommand): Promise<void> {
+    const logContext = 'DbRestockSkuClient.sendDdbCommand'
+    console.info(`${logContext} init:`, { ddbCommand })
+
     try {
-      await this.ddbDocClient.send(ddbUpdateCommand)
+      await this.ddbDocClient.send(ddbCommand)
+      console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      // When possible multiple transaction errors:
+      console.error(`${logContext} error caught:`, { error })
+
+      // When possible multiple transaction errors can occur:
       // Prioritize tagging the "Duplicate Errors", because if we get one, this means that the operation
       // has already executed successfully, thus we don't care about other possible transaction errors
-      if (this.isDuplicateRestockError(error)) {
+      if (this.isDuplicateRestockOperationError(error)) {
         const duplicationError = DuplicateRestockOperationError.from(error)
+        console.error(`${logContext} exit error:`, { duplicationError, ddbCommand })
         throw duplicationError
       }
 
       const unrecognizedError = UnrecognizedError.from(error)
+      console.error(`${logContext} exit error:`, { unrecognizedError, ddbCommand })
       throw unrecognizedError
     }
   }
@@ -134,7 +142,7 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
   /**
    *
    */
-  private isDuplicateRestockError(error: unknown): boolean {
+  private isDuplicateRestockOperationError(error: unknown): boolean {
     const errorCode = DynamoDbUtils.getTransactionCancellationCode(error, 0)
     return errorCode === 'ConditionalCheckFailed'
   }

@@ -4,7 +4,7 @@ import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
 
-export interface AllocateOrderStockCommandInput {
+export type AllocateOrderStockCommandInput = {
   incomingOrderCreatedEvent: IncomingOrderCreatedEvent
 }
 
@@ -33,17 +33,23 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
   public static validateAndBuild(
     allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
   ): Result<AllocateOrderStockCommand, InvalidArgumentsError> {
+    const logContext = 'AllocateOrderStockCommand.validateAndBuild'
+    console.info(`${logContext} init:`, { allocateOrderStockCommandInput })
+
     try {
       const { allocateOrderStockData, options } = this.buildProps(allocateOrderStockCommandInput)
-      return new AllocateOrderStockCommand(allocateOrderStockData, options)
+      const allocateOrderStockCommand = new AllocateOrderStockCommand(allocateOrderStockData, options)
+      console.info(`${logContext} exit success:`, { allocateOrderStockCommand })
+      return allocateOrderStockCommand
     } catch (error) {
-      console.error('AllocateOrderStockCommand.validateAndBuild exit error:', { error, allocateOrderStockCommandInput })
+      console.error(`${logContext} error caught:`, { error })
+      console.error(`${logContext} exit error:`, { error, allocateOrderStockCommandInput })
       throw error
     }
   }
 
   /**
-   *
+   * @throws {InvalidArgumentsError}
    */
   private static buildProps(
     allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
@@ -71,21 +77,28 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
   private static validateInput(
     allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
   ): Result<void, InvalidArgumentsError> {
-    try {
-      z.object({
-        incomingOrderCreatedEvent: z.object({
-          eventName: ValueValidators.validOrderCreatedEventName(),
-          eventData: z.object({
-            sku: ValueValidators.validSku(),
-            units: ValueValidators.validUnits(),
-            orderId: ValueValidators.validOrderId(),
-          }),
-          createdAt: ValueValidators.validCreatedAt(),
-          updatedAt: ValueValidators.validUpdatedAt(),
+    const logContext = 'AllocateOrderStockCommand.validateInput'
+
+    // COMBAK: Maybe some schemas can be converted to shared models at some point.
+    const schema = z.object({
+      incomingOrderCreatedEvent: z.object({
+        eventName: ValueValidators.validOrderCreatedEventName(),
+        eventData: z.object({
+          sku: ValueValidators.validSku(),
+          units: ValueValidators.validUnits(),
+          orderId: ValueValidators.validOrderId(),
         }),
-      }).parse(allocateOrderStockCommandInput)
+        createdAt: ValueValidators.validCreatedAt(),
+        updatedAt: ValueValidators.validUpdatedAt(),
+      }),
+    })
+
+    try {
+      schema.parse(allocateOrderStockCommandInput)
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, allocateOrderStockCommandInput })
       throw invalidArgumentsError
     }
   }

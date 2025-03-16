@@ -1,11 +1,4 @@
-import {
-  AsyncResult,
-  InvalidArgumentsError,
-  DuplicateEventRaisedError,
-  DepletedStockAllocationError,
-  DuplicateStockAllocationError,
-  UnrecognizedError,
-} from '../../errors/AppError'
+import { DepletedStockAllocationError, DuplicateStockAllocationError } from '../../errors/AppError'
 import { IDbAllocateOrderStockClient } from '../DbAllocateOrderStockClient/DbAllocateOrderStockClient'
 import { IEsRaiseOrderStockAllocatedEventClient } from '../EsRaiseOrderStockAllocatedEventClient/EsRaiseOrderStockAllocatedEventClient'
 import { IEsRaiseOrderStockDepletedEventClient } from '../EsRaiseOrderStockDepletedEventClient/EsRaiseOrderStockDepletedEventClient'
@@ -20,9 +13,7 @@ export interface IAllocateOrderStockWorkerService {
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  allocateOrderStock: (
-    incomingOrderCreatedEvent: IncomingOrderCreatedEvent,
-  ) => AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError>
+  allocateOrderStock: (incomingOrderCreatedEvent: IncomingOrderCreatedEvent) => Promise<void>
 }
 
 /**
@@ -43,9 +34,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  public async allocateOrderStock(
-    incomingOrderCreatedEvent: IncomingOrderCreatedEvent,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
+  public async allocateOrderStock(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
     const logContext = 'AllocateOrderStockWorkerService.allocateOrderStock'
     console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
 
@@ -55,15 +44,17 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent })
       return
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
+
       if (error instanceof DuplicateStockAllocationError) {
         await this.raiseAllocatedEvent(incomingOrderCreatedEvent)
-        console.info(`${logContext} exit success:`, { error, incomingOrderCreatedEvent })
+        console.info(`${logContext} exit success: form-error:`, { incomingOrderCreatedEvent, error })
         return
       }
 
       if (error instanceof DepletedStockAllocationError) {
         await this.raiseDepletedEvent(incomingOrderCreatedEvent)
-        console.info(`${logContext} exit success:`, { error, incomingOrderCreatedEvent })
+        console.info(`${logContext} exit success: form-error:`, { incomingOrderCreatedEvent, error })
         return
       }
 
@@ -78,20 +69,17 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
    * @throws {DepletedStockAllocationError}
    * @throws {UnrecognizedError}
    */
-  private async allocateOrder(
-    incomingOrderCreatedEvent: IncomingOrderCreatedEvent,
-  ): AsyncResult<
-    void,
-    InvalidArgumentsError | DuplicateStockAllocationError | DepletedStockAllocationError | UnrecognizedError
-  > {
+  private async allocateOrder(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
     const logContext = 'AllocateOrderStockWorkerService.allocateOrder'
+    console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
+
     try {
-      console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
       const allocateOrderStockCommand = AllocateOrderStockCommand.validateAndBuild({ incomingOrderCreatedEvent })
       await this.dbAllocateOrderStockClient.allocateOrderStock(allocateOrderStockCommand)
-      console.info(`${logContext} exit success:`)
+      console.info(`${logContext} exit success:`, { allocateOrderStockCommand })
       return
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
     }
@@ -102,17 +90,17 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  private async raiseAllocatedEvent(
-    incomingOrderCreatedEvent: IncomingOrderCreatedEvent,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
+  private async raiseAllocatedEvent(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
     const logContext = 'AllocateOrderStockWorkerService.raiseAllocatedEvent'
+    console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
+
     try {
-      console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
       const { eventData } = incomingOrderCreatedEvent
       const orderStockAllocatedEvent = OrderStockAllocatedEvent.validateAndBuild(eventData)
       await this.esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(orderStockAllocatedEvent)
-      console.info(`${logContext} exit success:`)
+      console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
     }
@@ -123,17 +111,17 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  private async raiseDepletedEvent(
-    incomingOrderCreatedEvent: IncomingOrderCreatedEvent,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
+  private async raiseDepletedEvent(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
     const logContext = 'AllocateOrderStockWorkerService.raiseDepletedEvent'
+    console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
+
     try {
-      console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
       const { eventData } = incomingOrderCreatedEvent
       const orderStockDepletedEvent = OrderStockDepletedEvent.validateAndBuild(eventData)
       await this.esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(orderStockDepletedEvent)
-      console.info(`${logContext} exit success:`)
+      console.info(`${logContext} exit success:`, { orderStockDepletedEvent })
     } catch (error) {
+      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
     }

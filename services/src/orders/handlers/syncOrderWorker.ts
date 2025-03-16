@@ -1,13 +1,17 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
-import { DbGetOrderClient } from '../SyncOrderWorker/DbGetOrderClient/DbGetOrderClient'
+import { SQSBatchResponse, SQSEvent } from 'aws-lambda'
 import { DbCreateOrderClient } from '../SyncOrderWorker/DbCreateOrderClient/DbCreateOrderClient'
-import { EsRaiseOrderCreatedEventClient } from '../SyncOrderWorker/EsRaiseOrderCreatedEventClient/EsRaiseOrderCreatedEventClient'
+import { DbGetOrderClient } from '../SyncOrderWorker/DbGetOrderClient/DbGetOrderClient'
 import { DbUpdateOrderClient } from '../SyncOrderWorker/DbUpdateOrderClient/DbUpdateOrderClient'
+import { EsRaiseOrderCreatedEventClient } from '../SyncOrderWorker/EsRaiseOrderCreatedEventClient/EsRaiseOrderCreatedEventClient'
 import { SyncOrderWorkerController } from '../SyncOrderWorker/SyncOrderWorkerController/SyncOrderWorkerController'
 import { SyncOrderWorkerService } from '../SyncOrderWorker/SyncOrderWorkerService/SyncOrderWorkerService'
 
-function createHandler() {
+/**
+ *
+ */
+function createHandler(): (sqsEvent: SQSEvent) => Promise<SQSBatchResponse> {
   const ddbClient = new DynamoDBClient({})
   const ddbDocClient = DynamoDBDocumentClient.from(ddbClient)
   const getOrderClient = new DbGetOrderClient(ddbDocClient)
