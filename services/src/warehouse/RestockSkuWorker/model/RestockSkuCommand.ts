@@ -39,7 +39,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
     try {
       const { restockSkuData, options } = this.buildProps(restockSkuCommandInput)
       const restockSkuCommand = new RestockSkuCommand(restockSkuData, options)
-      console.info(`${logContext} exit success:`, { restockSkuCommand })
+      console.info(`${logContext} exit success:`, { restockSkuCommand, restockSkuCommandInput })
       return restockSkuCommand
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, restockSkuCommandInput })

@@ -33,7 +33,7 @@ export class EsRaiseOrderStockDepletedEventClient implements IEsRaiseOrderStockD
     try {
       const ddbCommand = this.buildDdbCommand(orderStockDepletedEvent)
       await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { ddbCommand })
+      console.info(`${logContext} exit success:`, { ddbCommand, orderStockDepletedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderStockDepletedEvent })
       throw error

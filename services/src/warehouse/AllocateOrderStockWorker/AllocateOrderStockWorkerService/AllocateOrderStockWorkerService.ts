@@ -74,7 +74,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
     try {
       const allocateOrderStockCommand = AllocateOrderStockCommand.validateAndBuild({ incomingOrderCreatedEvent })
       await this.dbAllocateOrderStockClient.allocateOrderStock(allocateOrderStockCommand)
-      console.info(`${logContext} exit success:`, { allocateOrderStockCommand })
+      console.info(`${logContext} exit success:`, { allocateOrderStockCommand, incomingOrderCreatedEvent })
       return
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
@@ -95,7 +95,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       const { eventData } = incomingOrderCreatedEvent
       const orderStockAllocatedEvent = OrderStockAllocatedEvent.validateAndBuild(eventData)
       await this.esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(orderStockAllocatedEvent)
-      console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
+      console.info(`${logContext} exit success:`, { orderStockAllocatedEvent, incomingOrderCreatedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
@@ -115,7 +115,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       const { eventData } = incomingOrderCreatedEvent
       const orderStockDepletedEvent = OrderStockDepletedEvent.validateAndBuild(eventData)
       await this.esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(orderStockDepletedEvent)
-      console.info(`${logContext} exit success:`, { orderStockDepletedEvent })
+      console.info(`${logContext} exit success:`, { orderStockDepletedEvent, incomingOrderCreatedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error

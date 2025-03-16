@@ -33,7 +33,7 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
     try {
       const ddbCommand = this.buildDdbCommand(restockSkuCommand)
       await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { ddbCommand })
+      console.info(`${logContext} exit success:`, { ddbCommand, restockSkuCommand })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, restockSkuCommand })
       throw error

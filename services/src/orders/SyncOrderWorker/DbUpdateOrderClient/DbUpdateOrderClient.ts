@@ -32,7 +32,7 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
     try {
       const ddbCommand = this.buildDdbCommand(updateOrderCommand)
       const orderData = await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { orderData })
+      console.info(`${logContext} exit success:`, { orderData, ddbCommand, updateOrderCommand })
       return orderData
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, updateOrderCommand })
@@ -83,7 +83,7 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
     try {
       const { Attributes } = await this.ddbDocClient.send(ddbCommand)
       const orderData = this.buildOrderData(Attributes)
-      console.info(`${logContext} exit success:`, { orderData })
+      console.info(`${logContext} exit success:`, { orderData, ddbCommand })
       return orderData
     } catch (error) {
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {

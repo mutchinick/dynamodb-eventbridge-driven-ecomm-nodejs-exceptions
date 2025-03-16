@@ -34,7 +34,7 @@ export class SimulateRawEventApiController implements ISimulateRawEventApiContro
       const incomingSimulateRawEventRequest = IncomingSimulateRawEventRequest.validateAndBuild(unverifiedInput)
       const serviceOutput = await this.simulateRawEventApiService.simulateRawEvent(incomingSimulateRawEventRequest)
       const successResponse = HttpResponse.Accepted(serviceOutput)
-      console.info(`${logContext} exit success:`, { successResponse })
+      console.info(`${logContext} exit success:`, { successResponse, apiEvent })
       return successResponse
     } catch (error) {
       if (error instanceof InvalidArgumentsError) {

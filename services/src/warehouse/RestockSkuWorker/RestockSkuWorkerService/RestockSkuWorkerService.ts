@@ -32,7 +32,7 @@ export class RestockSkuWorkerService implements IRestockSkuWorkerService {
     try {
       const restockSkuCommand = RestockSkuCommand.validateAndBuild({ incomingSkuRestockedEvent })
       await this.dbRestockSkuClient.restockSku(restockSkuCommand)
-      console.info(`${logContext} exit success:`, { restockSkuCommand })
+      console.info(`${logContext} exit success:`, { restockSkuCommand, incomingSkuRestockedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingSkuRestockedEvent })
       throw error

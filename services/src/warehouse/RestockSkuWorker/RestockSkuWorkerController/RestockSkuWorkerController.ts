@@ -50,7 +50,7 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
       }
     }
 
-    console.info(`${logContext} exit success:`, { sqsEvent })
+    console.info(`${logContext} exit success:`, { sqsBatchResponse, sqsEvent })
     return sqsBatchResponse
   }
 
@@ -69,7 +69,7 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
       const unverifiedInput = this.parseIncomingEventInput(sqsRecord)
       const incomingSkuRestockedEvent = IncomingSkuRestockedEvent.validateAndBuild(unverifiedInput)
       await this.restockSkuWorkerService.restockSku(incomingSkuRestockedEvent)
-      console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent })
+      console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent, sqsRecord })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, sqsRecord })
       throw error

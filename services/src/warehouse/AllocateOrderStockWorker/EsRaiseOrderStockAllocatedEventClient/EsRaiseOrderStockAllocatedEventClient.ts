@@ -33,7 +33,7 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
     try {
       const ddbCommand = this.buildDdbCommand(orderStockAllocatedEvent)
       await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
+      console.info(`${logContext} exit success:`, { ddbCommand, orderStockAllocatedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderStockAllocatedEvent })
       throw error

@@ -50,7 +50,7 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
       }
     }
 
-    console.info(`${logContext} exit success:`, { sqsBatchResponse })
+    console.info(`${logContext} exit success:`, { sqsBatchResponse, sqsEvent })
     return sqsBatchResponse
   }
 
@@ -69,7 +69,7 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
       const unverifiedInput = this.parseIncomingEventInput(sqsRecord)
       const incomingOrderCreatedEvent = IncomingOrderCreatedEvent.validateAndBuild(unverifiedInput)
       await this.allocateOrderStockWorkerService.allocateOrderStock(incomingOrderCreatedEvent)
-      console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent })
+      console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent, sqsRecord })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, sqsRecord })
       throw error

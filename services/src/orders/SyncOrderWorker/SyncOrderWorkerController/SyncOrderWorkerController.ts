@@ -43,7 +43,7 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
       }
     }
 
-    console.info(`${logContext} exit success:`, { sqsBatchResponse })
+    console.info(`${logContext} exit success:`, { sqsBatchResponse, sqsEvent })
     return sqsBatchResponse
   }
 
@@ -64,7 +64,7 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
       const unverifiedInput = this.parseIncomingEventInput(sqsRecord)
       const incomingOrderEvent = IncomingOrderEvent.validateAndBuild(unverifiedInput)
       await this.syncOrderWorkerService.syncOrder(incomingOrderEvent)
-      console.info(`${logContext} exit success:`, { incomingOrderEvent })
+      console.info(`${logContext} exit success:`, { incomingOrderEvent, sqsRecord })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, sqsRecord })
       throw error

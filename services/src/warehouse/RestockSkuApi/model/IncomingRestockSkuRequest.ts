@@ -32,7 +32,7 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
     try {
       const { sku, units, lotId } = this.buildProps(incomingRestockSkuRequestInput)
       const incomingRestockSkuRequest = new IncomingRestockSkuRequest(sku, units, lotId)
-      console.info(`${logContext} exit success:`, { incomingRestockSkuRequest })
+      console.info(`${logContext} exit success:`, { incomingRestockSkuRequest, incomingRestockSkuRequestInput })
       return incomingRestockSkuRequest
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingRestockSkuRequestInput })

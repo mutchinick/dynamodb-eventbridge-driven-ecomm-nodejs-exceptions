@@ -40,7 +40,7 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(orderStockAllocatedEventInput)
       const orderStockAllocatedEvent = new OrderStockAllocatedEvent(eventName, eventData, createdAt, updatedAt)
-      console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
+      console.info(`${logContext} exit success:`, { orderStockAllocatedEvent, orderStockAllocatedEventInput })
       return orderStockAllocatedEvent
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderStockAllocatedEventInput })

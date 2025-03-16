@@ -33,7 +33,7 @@ export class EsRaiseOrderPlacedEventClient implements IEsRaiseOrderPlacedEventCl
     try {
       const ddbCommand = this.buildDdbCommand(orderPlacedEvent)
       await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { orderPlacedEvent })
+      console.info(`${logContext} exit success:`, { ddbCommand, orderPlacedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderPlacedEvent })
       throw error

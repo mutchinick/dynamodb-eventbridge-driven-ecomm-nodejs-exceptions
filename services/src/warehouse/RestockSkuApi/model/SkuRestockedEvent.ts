@@ -37,7 +37,7 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(skuRestockedEventInput)
       const skuRestockedEvent = new SkuRestockedEvent(eventName, eventData, createdAt, updatedAt)
-      console.info(`${logContext} exit success:`, { skuRestockedEvent })
+      console.info(`${logContext} exit success:`, { skuRestockedEvent, skuRestockedEventInput })
       return skuRestockedEvent
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, skuRestockedEventInput })

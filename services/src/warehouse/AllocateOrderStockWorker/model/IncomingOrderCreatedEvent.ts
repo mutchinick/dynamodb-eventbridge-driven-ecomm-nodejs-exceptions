@@ -54,7 +54,7 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(incomingOrderCreatedEventInput)
       const incomingOrderCreated = new IncomingOrderCreatedEvent(eventName, eventData, createdAt, updatedAt)
-      console.info(`${logContext} exit success:`, { incomingOrderCreated })
+      console.info(`${logContext} exit success:`, { incomingOrderCreated, incomingOrderCreatedEventInput })
       return incomingOrderCreated
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEventInput })

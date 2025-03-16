@@ -31,7 +31,7 @@ export class DbGetOrderClient implements IDbGetOrderClient {
     try {
       const ddbCommand = this.buildDdbCommand(getOrderCommand)
       const orderData = await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { orderData })
+      console.info(`${logContext} exit success:`, { orderData, ddbCommand, getOrderCommand })
       return orderData
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, getOrderCommand })
@@ -68,13 +68,13 @@ export class DbGetOrderClient implements IDbGetOrderClient {
     console.info(`${logContext} init:`, { ddbCommand })
 
     try {
-      const result = await this.ddbDocClient.send(ddbCommand)
-      if (!result.Item) {
-        console.info(`${logContext} exit success: null-item:`, { orderData: result.Item })
+      const ddbResult = await this.ddbDocClient.send(ddbCommand)
+      if (!ddbResult.Item) {
+        console.info(`${logContext} exit success: null-item:`, { orderData: null, ddbResult, ddbCommand })
         return null
       }
-      const orderData = this.buildOrderData(result.Item)
-      console.info(`${logContext} exit success:`, { orderData })
+      const orderData = this.buildOrderData(ddbResult.Item)
+      console.info(`${logContext} exit success:`, { orderData, ddbResult, ddbCommand })
       return orderData
     } catch (error) {
       const unrecognizedError = UnrecognizedError.from(error)

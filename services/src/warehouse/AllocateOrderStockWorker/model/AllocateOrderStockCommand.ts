@@ -39,7 +39,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     try {
       const { allocateOrderStockData, options } = this.buildProps(allocateOrderStockCommandInput)
       const allocateOrderStockCommand = new AllocateOrderStockCommand(allocateOrderStockData, options)
-      console.info(`${logContext} exit success:`, { allocateOrderStockCommand })
+      console.info(`${logContext} exit success:`, { allocateOrderStockCommand, allocateOrderStockCommandInput })
       return allocateOrderStockCommand
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, allocateOrderStockCommandInput })

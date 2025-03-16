@@ -35,7 +35,7 @@ export class RestockSkuApiService implements IRestockSkuApiService {
       this.validateIncomingRestockSkuRequest(incomingRestockSkuRequest)
       await this.raiseSkuRestockedEvent(incomingRestockSkuRequest)
       const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
-      console.info(`${logContext} exit success:`, { incomingRestockSkuRequest })
+      console.info(`${logContext} exit success:`, { serviceOutput, incomingRestockSkuRequest })
       return serviceOutput
     } catch (error) {
       if (error instanceof DuplicateEventRaisedError) {
@@ -74,7 +74,7 @@ export class RestockSkuApiService implements IRestockSkuApiService {
     try {
       const skuRestockedEvent = SkuRestockedEvent.validateAndBuild(incomingRestockSkuRequest)
       await this.ddbSkuRestockedEventClient.raiseSkuRestockedEvent(skuRestockedEvent)
-      console.info(`${logContext} exit success:`, { skuRestockedEvent })
+      console.info(`${logContext} exit success:`, { skuRestockedEvent, incomingRestockSkuRequest })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingRestockSkuRequest })
       throw error

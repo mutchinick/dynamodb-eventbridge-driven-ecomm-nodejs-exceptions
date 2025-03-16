@@ -33,7 +33,7 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
     try {
       const ddbCommand = this.buildDdbCommand(skuRestockedEvent)
       await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { ddbCommand })
+      console.info(`${logContext} exit success:`, { ddbCommand, skuRestockedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, skuRestockedEvent })
       throw error

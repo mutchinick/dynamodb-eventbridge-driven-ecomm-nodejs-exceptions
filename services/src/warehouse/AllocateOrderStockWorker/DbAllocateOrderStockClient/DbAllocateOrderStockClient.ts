@@ -40,7 +40,7 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
     try {
       const ddbCommand = this.buildDdbCommand(allocateOrderStockCommand)
       await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { ddbCommand })
+      console.info(`${logContext} exit success:`, { ddbCommand, allocateOrderStockCommand })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, allocateOrderStockCommand })
       throw error

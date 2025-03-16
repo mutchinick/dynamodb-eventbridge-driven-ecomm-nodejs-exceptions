@@ -65,7 +65,11 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       if (isOrderPlacedEvent && !existingOrderData) {
         const orderData = await this.createOrder(incomingOrderEvent)
         await this.raiseOrderCreatedEvent(incomingOrderEvent.eventName, orderData)
-        console.info(`${logContext} exit success: create order:`, { isOrderPlacedEvent, existingOrderData })
+        console.info(`${logContext} exit success: create order:`, {
+          isOrderPlacedEvent,
+          existingOrderData,
+          incomingOrderEvent,
+        })
         return
       }
 
@@ -73,7 +77,11 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       // to raise the event again because the intuition is that is was tried before but it failed.
       if (isOrderPlacedEvent && existingOrderData) {
         await this.raiseOrderCreatedEvent(incomingOrderEvent.eventName, existingOrderData)
-        console.info(`${logContext} exit success: raise event:`, { isOrderPlacedEvent, existingOrderData })
+        console.info(`${logContext} exit success: raise event:`, {
+          isOrderPlacedEvent,
+          existingOrderData,
+          incomingOrderEvent,
+        })
         return
       }
 
@@ -81,7 +89,11 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       // update the Order to a new state. No event needs to be raised because we are in tracking mode.
       if (!isOrderPlacedEvent && existingOrderData) {
         await this.updateOrder(incomingOrderEvent, existingOrderData)
-        console.info(`${logContext} exit success: update order:`, { isOrderPlacedEvent, existingOrderData })
+        console.info(`${logContext} exit success: update order:`, {
+          isOrderPlacedEvent,
+          existingOrderData,
+          incomingOrderEvent,
+        })
         return
       }
     } catch (error) {
@@ -122,7 +134,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     try {
       const getOrderCommand = GetOrderCommand.validateAndBuild({ orderId })
       const existingOrderData = await this.dbGetOrderClient.getOrder(getOrderCommand)
-      console.info(`${logContext} exit success:`, { existingOrderData })
+      console.info(`${logContext} exit success:`, { existingOrderData, getOrderCommand, orderId })
       return existingOrderData
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderId })
@@ -142,7 +154,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     try {
       const createOrderCommand = CreateOrderCommand.validateAndBuild({ incomingOrderEvent })
       const orderData = await this.dbCreateOrderClient.createOrder(createOrderCommand)
-      console.info(`${logContext} exit success:`, { orderData })
+      console.info(`${logContext} exit success:`, { orderData, createOrderCommand, incomingOrderEvent })
       return orderData
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderEvent })
@@ -164,7 +176,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     try {
       const updateOrderCommand = UpdateOrderCommand.validateAndBuild({ incomingOrderEvent, existingOrderData })
       const updatedOrderData = await this.dbUpdateOrderClient.updateOrder(updateOrderCommand)
-      console.info(`${logContext} exit success:`, { updatedOrderData })
+      console.info(`${logContext} exit success:`, { updatedOrderData, updateOrderCommand, incomingOrderEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderEvent, existingOrderData })
       throw error
@@ -183,7 +195,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     try {
       const orderCreatedEvent = OrderCreatedEvent.validateAndBuild({ incomingEventName, orderData })
       await this.esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(orderCreatedEvent)
-      console.info(`${logContext} exit success:`, { incomingEventName, orderData })
+      console.info(`${logContext} exit success:`, { orderCreatedEvent, incomingEventName, orderData })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingEventName, orderData })
       throw error

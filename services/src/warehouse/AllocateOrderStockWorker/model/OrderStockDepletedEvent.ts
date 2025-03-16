@@ -40,7 +40,7 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(orderStockDepletedEventInput)
       const orderStockDepletedEvent = new OrderStockDepletedEvent(eventName, eventData, createdAt, updatedAt)
-      console.info(`${logContext} exit success:`, { orderStockDepletedEvent })
+      console.info(`${logContext} exit success:`, { orderStockDepletedEvent, orderStockDepletedEventInput })
       return orderStockDepletedEvent
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderStockDepletedEventInput })

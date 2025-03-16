@@ -54,7 +54,7 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(incomingSkuRestockedEventInput)
       const incomingSkuRestockedEvent = new IncomingSkuRestockedEvent(eventName, eventData, createdAt, updatedAt)
-      console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent })
+      console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent, incomingSkuRestockedEventInput })
       return incomingSkuRestockedEvent
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingSkuRestockedEventInput })

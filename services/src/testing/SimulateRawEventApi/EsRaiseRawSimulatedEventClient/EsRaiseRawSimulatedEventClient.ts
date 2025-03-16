@@ -33,7 +33,7 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
     try {
       const ddbCommand = this.buildDdbCommand(rawSimulatedEvent)
       await this.sendDdbCommand(ddbCommand)
-      console.info(`${logContext} exit success:`, { ddbCommand })
+      console.info(`${logContext} exit success:`, { ddbCommand, rawSimulatedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, rawSimulatedEvent })
       throw error

@@ -31,7 +31,7 @@ export class PlaceOrderApiController implements IPlaceOrderApiController {
       const incomingPlaceOrderRequest = IncomingPlaceOrderRequest.validateAndBuild(unverifiedInput)
       const placeOrderOutput = await this.placeOrderApiService.placeOrder(incomingPlaceOrderRequest)
       const successResponse = HttpResponse.Accepted(placeOrderOutput)
-      console.info(`${logContext} exit success:`, { successResponse })
+      console.info(`${logContext} exit success:`, { successResponse, apiEvent })
       return successResponse
     } catch (error) {
       if (error instanceof InvalidArgumentsError) {

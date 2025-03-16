@@ -36,7 +36,7 @@ export class RestockSkuApiController implements IRestockSkuApiController {
       const incomingRestockSkuRequest = IncomingRestockSkuRequest.validateAndBuild(unverifiedInput)
       const restockSkuOutput = await this.restockSkuApiService.restockSku(incomingRestockSkuRequest)
       const successResponse = HttpResponse.Accepted(restockSkuOutput)
-      console.info(`${logContext} exit success:`, { successResponse })
+      console.info(`${logContext} exit success:`, { successResponse, apiEvent })
       return successResponse
     } catch (error) {
       if (error instanceof InvalidArgumentsError) {
