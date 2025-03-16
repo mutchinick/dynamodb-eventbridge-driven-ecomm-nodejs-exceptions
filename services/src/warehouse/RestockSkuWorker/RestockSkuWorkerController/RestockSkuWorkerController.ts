@@ -1,12 +1,5 @@
 import { SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
-import {
-  AsyncResult,
-  DuplicateRestockOperationError,
-  InvalidArgumentsError,
-  isTransientError,
-  Result,
-  UnrecognizedError,
-} from '../../errors/AppError'
+import { InvalidArgumentsError, isTransientError } from '../../errors/AppError'
 import { IncomingSkuRestockedEvent, IncomingSkuRestockedEventInput } from '../model/IncomingSkuRestockedEvent'
 import { IRestockSkuWorkerService } from '../RestockSkuWorkerService/RestockSkuWorkerService'
 
@@ -59,9 +52,7 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
    * @throws {DuplicateRestockOperationError}
    * @throws {UnrecognizedError}
    */
-  private async restockSkuSingle(
-    sqsRecord: SQSRecord,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateRestockOperationError | UnrecognizedError> {
+  private async restockSkuSingle(sqsRecord: SQSRecord): Promise<void> {
     const logContext = 'RestockSkuWorkerController.restockSkuSingle'
     console.info(`${logContext} init:`, { sqsRecord })
 
@@ -79,7 +70,7 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseIncomingEventInput(sqsRecord: SQSRecord): Result<IncomingSkuRestockedEventInput, InvalidArgumentsError> {
+  private parseIncomingEventInput(sqsRecord: SQSRecord): IncomingSkuRestockedEventInput {
     const logContext = 'RestockSkuWorkerController.parseInput'
 
     try {

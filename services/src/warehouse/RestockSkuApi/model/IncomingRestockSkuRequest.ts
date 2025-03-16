@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { InvalidArgumentsError, Result } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
 
@@ -25,7 +25,7 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
    */
   public static validateAndBuild(
     incomingRestockSkuRequestInput: IncomingRestockSkuRequestInput,
-  ): Result<IncomingRestockSkuRequest, InvalidArgumentsError> {
+  ): IncomingRestockSkuRequest {
     const logContext = 'IncomingRestockSkuRequest.validateAndBuild'
     console.info(`${logContext} init:`, { incomingRestockSkuRequestInput })
 
@@ -45,7 +45,7 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
    */
   private static buildProps(
     incomingRestockSkuRequestInput: IncomingRestockSkuRequestInput,
-  ): Result<IncomingRestockSkuRequestProps, InvalidArgumentsError> {
+  ): IncomingRestockSkuRequestProps {
     this.validateInput(incomingRestockSkuRequestInput)
     const { sku, units, lotId } = incomingRestockSkuRequestInput
     return {

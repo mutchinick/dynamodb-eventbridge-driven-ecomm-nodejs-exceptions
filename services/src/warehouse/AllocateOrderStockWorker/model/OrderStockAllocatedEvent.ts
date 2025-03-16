@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { InvalidArgumentsError, Result } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEvent } from '../../model/WarehouseEvent'
@@ -33,7 +33,7 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
    */
   public static validateAndBuild(
     orderStockAllocatedEventInput: OrderStockAllocatedEventInput,
-  ): Result<OrderStockAllocatedEvent, InvalidArgumentsError> {
+  ): OrderStockAllocatedEvent {
     const logContext = 'OrderStockAllocatedEvent.validateAndBuild'
     console.info(`${logContext} init:`, { orderStockAllocatedEventInput })
 
@@ -53,7 +53,7 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
    */
   private static buildProps(
     orderStockAllocatedEventInput: OrderStockAllocatedEventInput,
-  ): Result<OrderStockAllocatedEventProps, InvalidArgumentsError> {
+  ): OrderStockAllocatedEventProps {
     this.validateInput(orderStockAllocatedEventInput)
 
     const { orderId, sku, units } = orderStockAllocatedEventInput

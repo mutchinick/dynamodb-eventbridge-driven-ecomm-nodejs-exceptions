@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { InvalidArgumentsError, Result } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEvent } from '../../model/WarehouseEvent'
@@ -28,9 +28,7 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  public static validateAndBuild(
-    skuRestockedEventInput: SkuRestockedEventInput,
-  ): Result<SkuRestockedEvent, InvalidArgumentsError> {
+  public static validateAndBuild(skuRestockedEventInput: SkuRestockedEventInput): SkuRestockedEvent {
     const logContext = 'SkuRestockedEvent.validateAndBuild'
     console.info(`${logContext} init:`, { skuRestockedEventInput })
 
@@ -48,9 +46,7 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private static buildProps(
-    skuRestockedEventInput: SkuRestockedEventInput,
-  ): Result<SkuRestockedEventProps, InvalidArgumentsError> {
+  private static buildProps(skuRestockedEventInput: SkuRestockedEventInput): SkuRestockedEventProps {
     this.validateInput(skuRestockedEventInput)
 
     const { sku, units, lotId } = skuRestockedEventInput

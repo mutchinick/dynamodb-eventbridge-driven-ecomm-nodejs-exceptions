@@ -102,9 +102,3 @@ export function isTransientError(error: unknown): boolean {
   }
   return true
 }
-
-/*
- *
- */
-export type Result<T, E extends AppError = never> = E extends never ? T : T & { __throws?: E }
-export type AsyncResult<T, E extends AppError = never> = Promise<Result<T, E extends never ? never : E>>

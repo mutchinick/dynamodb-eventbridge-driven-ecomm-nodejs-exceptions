@@ -2,7 +2,7 @@ import { AttributeValue } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { EventBridgeEvent } from 'aws-lambda'
 import { z } from 'zod'
-import { InvalidArgumentsError, Result } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEvent } from '../../model/WarehouseEvent'
@@ -47,7 +47,7 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
    */
   public static validateAndBuild(
     incomingSkuRestockedEventInput: IncomingSkuRestockedEventInput,
-  ): Result<IncomingSkuRestockedEvent, InvalidArgumentsError> {
+  ): IncomingSkuRestockedEvent {
     const logContext = 'IncomingSkuRestockedEvent.validateAndBuild'
     console.info(`${logContext} init:`, { incomingSkuRestockedEventInput })
 
@@ -67,7 +67,7 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
    */
   private static buildProps(
     incomingSkuRestockedEventInput: IncomingSkuRestockedEventInput,
-  ): Result<IncomingSkuRestockedEventProps, InvalidArgumentsError> {
+  ): IncomingSkuRestockedEventProps {
     return this.parseValidateInput(incomingSkuRestockedEventInput)
   }
 
@@ -76,7 +76,7 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
    */
   private static parseValidateInput(
     incomingSkuRestockedEventInput: IncomingSkuRestockedEventInput,
-  ): Result<IncomingSkuRestockedEventProps, InvalidArgumentsError> {
+  ): IncomingSkuRestockedEventProps {
     const logContext = 'IncomingSkuRestockedEvent.parseValidateInput'
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.

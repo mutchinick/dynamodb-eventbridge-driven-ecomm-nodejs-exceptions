@@ -1,12 +1,5 @@
 import { SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
-import {
-  AsyncResult,
-  DuplicateEventRaisedError,
-  InvalidArgumentsError,
-  isTransientError,
-  Result,
-  UnrecognizedError,
-} from '../../errors/AppError'
+import { InvalidArgumentsError, isTransientError } from '../../errors/AppError'
 import { IAllocateOrderStockWorkerService } from '../AllocateOrderStockWorkerService/AllocateOrderStockWorkerService'
 import { IncomingOrderCreatedEvent, IncomingOrderCreatedEventInput } from '../model/IncomingOrderCreatedEvent'
 
@@ -59,9 +52,7 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  private async allocateOrderSingle(
-    sqsRecord: SQSRecord,
-  ): AsyncResult<void, InvalidArgumentsError | DuplicateEventRaisedError | UnrecognizedError> {
+  private async allocateOrderSingle(sqsRecord: SQSRecord): Promise<void> {
     const logContext = 'AllocateOrderStockWorkerController.allocateOrderSingle'
     console.info(`${logContext} init:`, { sqsRecord })
 
@@ -79,7 +70,7 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseIncomingEventInput(sqsRecord: SQSRecord): Result<IncomingOrderCreatedEventInput, InvalidArgumentsError> {
+  private parseIncomingEventInput(sqsRecord: SQSRecord): IncomingOrderCreatedEventInput {
     const logContext = 'AllocateOrderStockWorkerController.parseInput'
 
     try {

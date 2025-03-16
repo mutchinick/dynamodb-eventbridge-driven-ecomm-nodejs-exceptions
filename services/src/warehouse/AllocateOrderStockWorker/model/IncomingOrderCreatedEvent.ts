@@ -2,7 +2,7 @@ import { AttributeValue } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { EventBridgeEvent } from 'aws-lambda'
 import { z } from 'zod'
-import { InvalidArgumentsError, Result } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEvent } from '../../model/WarehouseEvent'
@@ -47,7 +47,7 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
    */
   public static validateAndBuild(
     incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
-  ): Result<IncomingOrderCreatedEvent, InvalidArgumentsError> {
+  ): IncomingOrderCreatedEvent {
     const logContext = 'IncomingOrderCreatedEvent.validateInput'
     console.info(`${logContext} init:`, { incomingOrderCreatedEventInput })
 
@@ -67,7 +67,7 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
    */
   private static buildProps(
     incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
-  ): Result<IncomingOrderCreatedEventProps, InvalidArgumentsError> {
+  ): IncomingOrderCreatedEventProps {
     return this.parseValidateInput(incomingOrderCreatedEventInput)
   }
 
@@ -76,7 +76,7 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
    */
   private static parseValidateInput(
     incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
-  ): Result<IncomingOrderCreatedEventProps, InvalidArgumentsError> {
+  ): IncomingOrderCreatedEventProps {
     const logContext = 'IncomingOrderCreatedEvent.parseValidateInput'
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.

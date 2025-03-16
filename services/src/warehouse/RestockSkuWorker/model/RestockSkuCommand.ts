@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { InvalidArgumentsError, Result } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingSkuRestockedEvent } from './IncomingSkuRestockedEvent'
@@ -30,9 +30,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  public static validateAndBuild(
-    restockSkuCommandInput: RestockSkuCommandInput,
-  ): Result<RestockSkuCommand, InvalidArgumentsError> {
+  public static validateAndBuild(restockSkuCommandInput: RestockSkuCommandInput): RestockSkuCommand {
     const logContext = 'RestockSkuCommand.validateAndBuild'
     console.info(`${logContext} init:`, { restockSkuCommandInput })
 
@@ -50,9 +48,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private static buildProps(
-    restockSkuCommandInput: RestockSkuCommandInput,
-  ): Result<RestockSkuCommandProps, InvalidArgumentsError> {
+  private static buildProps(restockSkuCommandInput: RestockSkuCommandInput): RestockSkuCommandProps {
     this.validateInput(restockSkuCommandInput)
 
     const { incomingSkuRestockedEvent } = restockSkuCommandInput
@@ -73,7 +69,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private static validateInput(restockSkuCommandInput: RestockSkuCommandInput): Result<void, InvalidArgumentsError> {
+  private static validateInput(restockSkuCommandInput: RestockSkuCommandInput): void {
     const logContext = 'RestockSkuCommand.buildProps'
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.

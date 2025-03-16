@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { InvalidArgumentsError, Result } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
@@ -32,7 +32,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
    */
   public static validateAndBuild(
     allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
-  ): Result<AllocateOrderStockCommand, InvalidArgumentsError> {
+  ): AllocateOrderStockCommand {
     const logContext = 'AllocateOrderStockCommand.validateAndBuild'
     console.info(`${logContext} init:`, { allocateOrderStockCommandInput })
 
@@ -52,7 +52,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
    */
   private static buildProps(
     allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
-  ): Result<AllocateOrderStockCommandProps, InvalidArgumentsError> {
+  ): AllocateOrderStockCommandProps {
     this.validateInput(allocateOrderStockCommandInput)
 
     const { incomingOrderCreatedEvent } = allocateOrderStockCommandInput
@@ -73,9 +73,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
   /**
    * @throws {InvalidArgumentsError}
    */
-  private static validateInput(
-    allocateOrderStockCommandInput: AllocateOrderStockCommandInput,
-  ): Result<void, InvalidArgumentsError> {
+  private static validateInput(allocateOrderStockCommandInput: AllocateOrderStockCommandInput): void {
     const logContext = 'AllocateOrderStockCommand.validateInput'
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.
