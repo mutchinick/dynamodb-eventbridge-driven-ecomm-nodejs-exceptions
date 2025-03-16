@@ -37,8 +37,6 @@ export class SimulateRawEventApiController implements ISimulateRawEventApiContro
       console.info(`${logContext} exit success:`, { successResponse })
       return successResponse
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (error instanceof InvalidArgumentsError) {
         const badRequestError = HttpResponse.BadRequestError()
         console.error(`${logContext} exit error:`, { badRequestError, error, apiEvent })
@@ -60,7 +58,6 @@ export class SimulateRawEventApiController implements ISimulateRawEventApiContro
     try {
       return JSON.parse(apiEvent.body) as IncomingSimulateRawEventRequestInput
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, apiEvent })
       throw invalidArgumentsError

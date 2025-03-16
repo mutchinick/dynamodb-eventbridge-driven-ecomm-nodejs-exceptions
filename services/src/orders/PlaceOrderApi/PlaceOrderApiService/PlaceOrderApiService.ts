@@ -37,15 +37,13 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
       console.info(`${logContext} exit success:`, { serviceOutput })
       return serviceOutput
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }
         console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
         return serviceOutput
       }
 
-      console.error(`${logContext} exit error:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingPlaceOrderRequest })
       throw error
     }
   }
@@ -77,7 +75,6 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
       await this.ddbOrderPlacedEventClient.raiseOrderPlacedEvent(orderPlacedEvent)
       console.info(`${logContext} exit success:`, { orderPlacedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingPlaceOrderRequest })
       throw error
     }

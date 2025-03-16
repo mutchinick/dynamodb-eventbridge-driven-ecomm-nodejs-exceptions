@@ -42,7 +42,6 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
       console.info(`${logContext} exit success:`, { restockSkuCommand })
       return restockSkuCommand
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, restockSkuCommandInput })
       throw error
     }
@@ -94,7 +93,6 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
     try {
       schema.parse(restockSkuCommandInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, restockSkuCommandInput })
       throw invalidArgumentsError

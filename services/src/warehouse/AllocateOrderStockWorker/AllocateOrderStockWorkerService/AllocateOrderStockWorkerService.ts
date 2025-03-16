@@ -44,8 +44,6 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent })
       return
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (error instanceof DuplicateStockAllocationError) {
         await this.raiseAllocatedEvent(incomingOrderCreatedEvent)
         console.info(`${logContext} exit success: form-error:`, { incomingOrderCreatedEvent, error })
@@ -79,7 +77,6 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       console.info(`${logContext} exit success:`, { allocateOrderStockCommand })
       return
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
     }
@@ -100,7 +97,6 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       await this.esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(orderStockAllocatedEvent)
       console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
     }
@@ -121,7 +117,6 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       await this.esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(orderStockDepletedEvent)
       console.info(`${logContext} exit success:`, { orderStockDepletedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
     }

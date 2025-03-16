@@ -35,7 +35,6 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
       console.info(`${logContext} exit success:`, { incomingRestockSkuRequest })
       return incomingRestockSkuRequest
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingRestockSkuRequestInput })
       throw error
     }
@@ -72,7 +71,6 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
     try {
       schema.parse(incomingRestockSkuRequestInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingRestockSkuRequestInput })
       throw invalidArgumentsError

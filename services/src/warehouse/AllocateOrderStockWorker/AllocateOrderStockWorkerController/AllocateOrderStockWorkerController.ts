@@ -71,7 +71,6 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
       await this.allocateOrderStockWorkerService.allocateOrderStock(incomingOrderCreatedEvent)
       console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, sqsRecord })
       throw error
     }
@@ -86,7 +85,6 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
     try {
       return JSON.parse(sqsRecord.body) as IncomingOrderCreatedEventInput
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, sqsRecord })
       throw invalidArgumentsError

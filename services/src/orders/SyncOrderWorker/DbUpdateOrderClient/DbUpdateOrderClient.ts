@@ -35,7 +35,6 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
       console.info(`${logContext} exit success:`, { orderData })
       return orderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, updateOrderCommand })
       throw error
     }
@@ -68,7 +67,6 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
         ReturnValues: 'ALL_NEW',
       })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, updateOrderCommand })
       throw invalidArgumentsError
@@ -88,8 +86,6 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
       console.info(`${logContext} exit success:`, { orderData })
       return orderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const attributes = unmarshall(error.Item)
         const orderData = this.buildOrderData(attributes)

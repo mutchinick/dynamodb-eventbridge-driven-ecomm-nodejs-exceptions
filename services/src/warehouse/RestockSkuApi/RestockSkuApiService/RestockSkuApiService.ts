@@ -38,15 +38,13 @@ export class RestockSkuApiService implements IRestockSkuApiService {
       console.info(`${logContext} exit success:`, { incomingRestockSkuRequest })
       return serviceOutput
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
         console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
         return serviceOutput
       }
 
-      console.error(`${logContext} exit error:`, { error })
+      console.error(`${logContext} exit error:`, { error, incomingRestockSkuRequest })
       throw error
     }
   }
@@ -78,7 +76,6 @@ export class RestockSkuApiService implements IRestockSkuApiService {
       await this.ddbSkuRestockedEventClient.raiseSkuRestockedEvent(skuRestockedEvent)
       console.info(`${logContext} exit success:`, { skuRestockedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingRestockSkuRequest })
       throw error
     }

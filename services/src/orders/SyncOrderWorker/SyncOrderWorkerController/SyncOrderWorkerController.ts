@@ -66,7 +66,6 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
       await this.syncOrderWorkerService.syncOrder(incomingOrderEvent)
       console.info(`${logContext} exit success:`, { incomingOrderEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, sqsRecord })
       throw error
     }
@@ -81,7 +80,6 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
     try {
       return JSON.parse(sqsRecord.body) as IncomingOrderEventInput
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, sqsRecord })
       throw invalidArgumentsError

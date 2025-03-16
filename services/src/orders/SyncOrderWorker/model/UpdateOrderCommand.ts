@@ -53,7 +53,6 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
       console.info(`${logContext} exit success:`, { updateOrderCommand, updateOrderCommandInput })
       return updateOrderCommand
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, updateOrderCommandInput })
       throw error
     }
@@ -129,7 +128,6 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     try {
       schema.parse(updateOrderCommandInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, updateOrderCommandInput })
       throw invalidArgumentsError

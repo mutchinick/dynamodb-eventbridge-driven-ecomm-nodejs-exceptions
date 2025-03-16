@@ -35,7 +35,6 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, orderStockAllocatedEvent })
       throw error
     }
@@ -60,7 +59,6 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
       })
       return ddbCommand
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderStockAllocatedEvent })
       throw invalidArgumentsError
@@ -79,8 +77,6 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
       await this.ddbDocClient.send(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       // If the condition fails, the event has already been raised, so we throw a non-transient
       // DuplicateEventRaisedError
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {

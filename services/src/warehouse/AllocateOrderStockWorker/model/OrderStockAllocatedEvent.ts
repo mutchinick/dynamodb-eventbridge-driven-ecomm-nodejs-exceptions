@@ -43,7 +43,6 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
       console.info(`${logContext} exit success:`, { orderStockAllocatedEvent })
       return orderStockAllocatedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, orderStockAllocatedEventInput })
       throw error
     }
@@ -89,7 +88,6 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
     try {
       schema.parse(orderStockAllocatedEventInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderStockAllocatedEventInput })
       throw invalidArgumentsError

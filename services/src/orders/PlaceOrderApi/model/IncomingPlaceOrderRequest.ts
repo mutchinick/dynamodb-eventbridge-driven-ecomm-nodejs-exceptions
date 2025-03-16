@@ -37,7 +37,6 @@ export class IncomingPlaceOrderRequest implements IncomingPlaceOrderRequestProps
       console.info(`${logContext} exit success:`, { incomingPlaceOrderRequest, incomingPlaceOrderRequestInput })
       return incomingPlaceOrderRequest
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingPlaceOrderRequestInput })
       throw error
     }
@@ -78,7 +77,6 @@ export class IncomingPlaceOrderRequest implements IncomingPlaceOrderRequestProps
     try {
       schema.parse(incomingPlaceOrderRequestInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingPlaceOrderRequestInput })
       throw invalidArgumentsError

@@ -35,7 +35,6 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, rawSimulatedEvent })
       throw error
     }
@@ -55,7 +54,6 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, rawSimulatedEvent })
       throw invalidArgumentsError
@@ -74,8 +72,6 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
       await this.ddbDocClient.send(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (error instanceof ConditionalCheckFailedException) {
         const duplicationError = DuplicateEventRaisedError.from(error)
         console.error(`${logContext} exit error:`, { duplicationError, ddbCommand })

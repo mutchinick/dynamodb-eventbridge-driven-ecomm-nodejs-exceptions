@@ -35,7 +35,6 @@ export class GetOrderCommand implements GetOrderCommandProps {
       console.info(`${logContext} exit success:`, { getOrderCommand, getOrderCommandInput })
       return getOrderCommand
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, getOrderCommandInput })
       throw error
     }
@@ -68,7 +67,6 @@ export class GetOrderCommand implements GetOrderCommandProps {
     try {
       schema.parse(getOrderCommandInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, getOrderCommandInput })
       throw invalidArgumentsError

@@ -43,7 +43,6 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
       console.info(`${logContext} exit success:`, { orderStockDepletedEvent })
       return orderStockDepletedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, orderStockDepletedEventInput })
       throw error
     }
@@ -89,7 +88,6 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
     try {
       schema.parse(orderStockDepletedEventInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderStockDepletedEventInput })
       throw invalidArgumentsError

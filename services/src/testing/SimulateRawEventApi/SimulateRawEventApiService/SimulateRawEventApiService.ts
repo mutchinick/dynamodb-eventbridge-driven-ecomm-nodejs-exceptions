@@ -36,8 +36,6 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
       console.info(`${logContext} exit success:`, { serviceOutput })
       return serviceOutput
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: SimulateRawEventApiServiceOutput = { ...incomingSimulateRawEventRequest }
         console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
@@ -65,7 +63,6 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
       await this.ddbRawSimulatedEventClient.raiseRawSimulatedEvent(rawSimulatedEvent)
       console.info(`${logContext} exit success:`, { rawSimulatedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingSimulateRawEventRequest })
       throw error
     }

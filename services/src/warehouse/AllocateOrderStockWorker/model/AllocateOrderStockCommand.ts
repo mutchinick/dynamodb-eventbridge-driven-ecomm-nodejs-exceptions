@@ -42,7 +42,6 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
       console.info(`${logContext} exit success:`, { allocateOrderStockCommand })
       return allocateOrderStockCommand
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, allocateOrderStockCommandInput })
       throw error
     }
@@ -96,7 +95,6 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     try {
       schema.parse(allocateOrderStockCommandInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, allocateOrderStockCommandInput })
       throw invalidArgumentsError

@@ -40,7 +40,6 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
       console.info(`${logContext} exit success:`, { skuRestockedEvent })
       return skuRestockedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, skuRestockedEventInput })
       throw error
     }
@@ -80,7 +79,6 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
     try {
       schema.parse(skuRestockedEventInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, skuRestockedEventInput })
       throw invalidArgumentsError

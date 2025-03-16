@@ -41,7 +41,6 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
       console.info(`${logContext} exit success:`, { createOrderCommand, createOrderCommandInput })
       return createOrderCommand
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, createOrderCommandInput })
       throw error
     }
@@ -101,7 +100,6 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     try {
       schema.parse(createOrderCommandInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, createOrderCommandInput })
       throw invalidArgumentsError
@@ -119,7 +117,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     }
 
     const forbiddenError = ForbiddenOrderStatusTransitionError.from()
-    console.error(`${logContext} exit error:`, { incomingEventName })
+    console.error(`${logContext} exit error:`, { forbiddenError, incomingEventName })
     throw forbiddenError
   }
 }

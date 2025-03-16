@@ -34,7 +34,6 @@ export class DbGetOrderClient implements IDbGetOrderClient {
       console.info(`${logContext} exit success:`, { orderData })
       return orderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, getOrderCommand })
       throw error
     }
@@ -55,7 +54,6 @@ export class DbGetOrderClient implements IDbGetOrderClient {
         },
       })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, getOrderCommand })
       throw invalidArgumentsError
@@ -79,7 +77,6 @@ export class DbGetOrderClient implements IDbGetOrderClient {
       console.info(`${logContext} exit success:`, { orderData })
       return orderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const unrecognizedError = UnrecognizedError.from(error)
       console.error(`${logContext} exit error:`, { unrecognizedError, ddbCommand })
       throw unrecognizedError

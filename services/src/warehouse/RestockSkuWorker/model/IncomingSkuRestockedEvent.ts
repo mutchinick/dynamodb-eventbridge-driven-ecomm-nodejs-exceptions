@@ -57,7 +57,6 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
       console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent })
       return incomingSkuRestockedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingSkuRestockedEventInput })
       throw error
     }
@@ -98,7 +97,6 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
       const incomingSkuRestockedEvent = schema.parse(unverifiedEvent) as IncomingSkuRestockedEventProps
       return incomingSkuRestockedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingSkuRestockedEventInput })
       throw invalidArgumentsError

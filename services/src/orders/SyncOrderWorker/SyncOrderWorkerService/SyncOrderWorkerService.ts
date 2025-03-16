@@ -85,13 +85,12 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
         return
       }
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderEvent })
       throw error
     }
 
     const invalidOperationError = InvalidOperationError.from('non-transient')
-    console.error(`${logContext} exit error:`)
+    console.error(`${logContext} exit error:`, { invalidOperationError, incomingOrderEvent })
     throw invalidOperationError
   }
 
@@ -126,7 +125,6 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       console.info(`${logContext} exit success:`, { existingOrderData })
       return existingOrderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, orderId })
       throw error
     }
@@ -147,7 +145,6 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       console.info(`${logContext} exit success:`, { orderData })
       return orderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderEvent })
       throw error
     }
@@ -169,7 +166,6 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       const updatedOrderData = await this.dbUpdateOrderClient.updateOrder(updateOrderCommand)
       console.info(`${logContext} exit success:`, { updatedOrderData })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingOrderEvent, existingOrderData })
       throw error
     }
@@ -189,7 +185,6 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       await this.esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(orderCreatedEvent)
       console.info(`${logContext} exit success:`, { incomingEventName, orderData })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingEventName, orderData })
       throw error
     }

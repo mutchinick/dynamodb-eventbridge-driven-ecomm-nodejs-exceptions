@@ -71,7 +71,6 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
       await this.restockSkuWorkerService.restockSku(incomingSkuRestockedEvent)
       console.info(`${logContext} exit success:`, { incomingSkuRestockedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, sqsRecord })
       throw error
     }
@@ -86,7 +85,6 @@ export class RestockSkuWorkerController implements IRestockSkuWorkerController {
     try {
       return JSON.parse(sqsRecord.body) as IncomingSkuRestockedEventInput
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, sqsRecord })
       throw invalidArgumentsError

@@ -35,7 +35,6 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, restockSkuCommand })
       throw error
     }
@@ -103,7 +102,6 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
       })
       return ddbCommand
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, restockSkuCommand })
       throw invalidArgumentsError
@@ -122,8 +120,6 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
       await this.ddbDocClient.send(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       // When possible multiple transaction errors can occur:
       // Prioritize tagging the "Duplicate Errors", because if we get one, this means that the operation
       // has already executed successfully, thus we don't care about other possible transaction errors

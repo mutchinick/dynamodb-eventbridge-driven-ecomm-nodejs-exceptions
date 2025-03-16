@@ -48,7 +48,6 @@ export class IncomingSimulateRawEventRequest implements IncomingSimulateRawEvent
       console.info(`${logContext} exit success:`, { incomingSimulateRawEventRequest })
       return incomingSimulateRawEventRequest
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingSimulateRawEventRequestInput })
       throw error
     }
@@ -83,7 +82,6 @@ export class IncomingSimulateRawEventRequest implements IncomingSimulateRawEvent
     try {
       schema.strict().parse(incomingSimulateRawEventRequestInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingSimulateRawEventRequestInput })
       throw invalidArgumentsError

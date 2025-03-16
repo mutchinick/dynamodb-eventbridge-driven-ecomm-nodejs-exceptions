@@ -35,7 +35,6 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { orderCreatedEvent })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, orderCreatedEvent })
       throw error
     }
@@ -59,7 +58,6 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderCreatedEvent })
       throw invalidArgumentsError
@@ -77,11 +75,9 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
       await this.ddbDocClient.send(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const duplicationError = DuplicateEventRaisedError.from(error)
-        console.error(`${logContext} exit error:`, { duplicationError })
+        console.error(`${logContext} exit error:`, { duplicationError, ddbCommand })
         throw duplicationError
       }
 

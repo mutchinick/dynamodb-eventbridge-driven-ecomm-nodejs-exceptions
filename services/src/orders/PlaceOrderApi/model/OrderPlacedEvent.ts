@@ -38,7 +38,6 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
       console.info(`${logContext} exit success:`, { orderPlacedEvent, orderPlacedEventInput })
       return orderPlacedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, orderPlacedEventInput })
       throw error
     }
@@ -86,7 +85,6 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
     try {
       schema.parse(orderPlacedEventInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderPlacedEventInput })
       throw invalidArgumentsError

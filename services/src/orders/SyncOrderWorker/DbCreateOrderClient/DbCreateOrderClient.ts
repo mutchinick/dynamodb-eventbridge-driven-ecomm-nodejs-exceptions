@@ -36,7 +36,6 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
       console.info(`${logContext} exit success:`, { orderData })
       return orderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, createOrderCommand })
       throw error
     }
@@ -93,7 +92,6 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
         ReturnValues: 'ALL_NEW',
       })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, createOrderCommand })
       throw invalidArgumentsError
@@ -113,8 +111,6 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
       console.info(`${logContext} exit success:`, { orderData })
       return orderData
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
-
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const attributes = unmarshall(error.Item)
         const orderData = this.buildOrderData(attributes)

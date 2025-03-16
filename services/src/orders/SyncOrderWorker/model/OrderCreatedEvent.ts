@@ -41,7 +41,6 @@ export class OrderCreatedEvent implements OrderCreatedEventProps {
       console.info(`${logContext} exit success:`, { orderCreatedEvent, orderCreatedEventInput })
       return orderCreatedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, orderCreatedEventInput })
       throw error
     }
@@ -98,7 +97,6 @@ export class OrderCreatedEvent implements OrderCreatedEventProps {
     try {
       schema.parse(orderCreatedEventInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderCreatedEventInput })
       throw invalidArgumentsError

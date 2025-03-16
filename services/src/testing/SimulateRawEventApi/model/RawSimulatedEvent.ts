@@ -36,7 +36,6 @@ export class RawSimulatedEvent implements RawSimulatedEventProps {
       console.info(`${logContext} exit success:`, { rawSimulatedEvent })
       return rawSimulatedEvent
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, rawSimulatedEventInput })
       throw error
     }
@@ -80,7 +79,6 @@ export class RawSimulatedEvent implements RawSimulatedEventProps {
     try {
       schema.strict().parse(rawSimulatedEventInput)
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, rawSimulatedEventInput })
       throw invalidArgumentsError

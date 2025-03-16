@@ -34,7 +34,6 @@ export class RestockSkuWorkerService implements IRestockSkuWorkerService {
       await this.dbRestockSkuClient.restockSku(restockSkuCommand)
       console.info(`${logContext} exit success:`, { restockSkuCommand })
     } catch (error) {
-      console.error(`${logContext} error caught:`, { error })
       console.error(`${logContext} exit error:`, { error, incomingSkuRestockedEvent })
       throw error
     }
