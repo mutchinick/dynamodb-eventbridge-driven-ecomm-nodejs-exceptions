@@ -114,7 +114,7 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
       if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
         const attributes = unmarshall(error.Item)
         const orderData = this.buildOrderData(attributes)
-        console.info(`${logContext} exit success: from-error:`, { orderData, error })
+        console.info(`${logContext} exit success: from-error:`, { orderData, error, ddbCommand })
         return orderData
       }
 

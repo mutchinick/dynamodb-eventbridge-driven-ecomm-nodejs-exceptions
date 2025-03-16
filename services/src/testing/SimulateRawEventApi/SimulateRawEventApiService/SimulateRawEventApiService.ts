@@ -38,7 +38,11 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
     } catch (error) {
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: SimulateRawEventApiServiceOutput = { ...incomingSimulateRawEventRequest }
-        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
+        console.info(`${logContext} exit success: from-error:`, {
+          serviceOutput,
+          error,
+          incomingSimulateRawEventRequest,
+        })
         return serviceOutput
       }
 

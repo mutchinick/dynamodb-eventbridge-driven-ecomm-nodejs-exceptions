@@ -40,7 +40,7 @@ export class RestockSkuApiService implements IRestockSkuApiService {
     } catch (error) {
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
-        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
+        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error, incomingRestockSkuRequest })
         return serviceOutput
       }
 

@@ -39,7 +39,7 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
     } catch (error) {
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }
-        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error })
+        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error, incomingPlaceOrderRequest })
         return serviceOutput
       }
 
