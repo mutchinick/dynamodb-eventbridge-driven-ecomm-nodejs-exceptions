@@ -1,3 +1,5 @@
+import { marshall } from '@aws-sdk/util-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import {
   AppError,
   DepletedStockAllocationError,
@@ -9,7 +11,7 @@ import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { IDbAllocateOrderStockClient } from '../DbAllocateOrderStockClient/DbAllocateOrderStockClient'
 import { IEsRaiseOrderStockAllocatedEventClient } from '../EsRaiseOrderStockAllocatedEventClient/EsRaiseOrderStockAllocatedEventClient'
 import { IEsRaiseOrderStockDepletedEventClient } from '../EsRaiseOrderStockDepletedEventClient/EsRaiseOrderStockDepletedEventClient'
-import { AllocateOrderStockCommand, AllocateOrderStockCommandInput } from '../model/AllocateOrderStockCommand'
+import { AllocateOrderStockCommand } from '../model/AllocateOrderStockCommand'
 import { IncomingOrderCreatedEvent } from '../model/IncomingOrderCreatedEvent'
 import { OrderStockAllocatedEvent } from '../model/OrderStockAllocatedEvent'
 import { OrderStockDepletedEvent } from '../model/OrderStockDepletedEvent'
@@ -19,25 +21,65 @@ jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-const mockIncomingOrderCreatedEvent: IncomingOrderCreatedEvent = {
-  eventName: WarehouseEventName.ORDER_CREATED_EVENT,
-  eventData: {
-    sku: 'mockSku',
-    units: 3,
-    orderId: 'mockOrderId',
-  },
-  createdAt: mockDate,
-  updatedAt: mockDate,
+// COMBAK: Figure a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
+function buildMockIncomingOrderCreatedEvent(): TypeUtilsMutable<IncomingOrderCreatedEvent> {
+  const incomingOrderEventProps: IncomingOrderCreatedEvent = {
+    eventName: WarehouseEventName.ORDER_CREATED_EVENT,
+    eventData: {
+      orderId: 'mockOrderId',
+      sku: 'mockSku',
+      units: 2,
+    },
+    createdAt: mockDate,
+    updatedAt: mockDate,
+  }
+
+  const mockClass = IncomingOrderCreatedEvent.validateAndBuild({
+    'detail-type': 'mockDetailType',
+    id: 'mockId',
+    account: 'mockAccount',
+    region: 'mockRegion',
+    resources: [],
+    source: 'mockSource',
+    time: 'mockTime',
+    version: 'mockVersion',
+    detail: {
+      awsRegion: 'mockAwsRegion',
+      eventID: 'mockEventId',
+      eventName: 'INSERT',
+      eventSource: 'aws:dynamodb',
+      eventVersion: 'mockEventVersion',
+      dynamodb: {
+        NewImage: marshall(incomingOrderEventProps),
+      },
+    },
+  })
+  return mockClass
 }
 
-const mockValidAllocateOrderStockCommandInput: AllocateOrderStockCommandInput = {
-  incomingOrderCreatedEvent: mockIncomingOrderCreatedEvent,
+const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
+
+function buildExpectedAllocateOrderStockCommand(): TypeUtilsMutable<AllocateOrderStockCommand> {
+  const mockClass = AllocateOrderStockCommand.validateAndBuild({
+    incomingOrderCreatedEvent: {
+      eventName: mockIncomingOrderCreatedEvent.eventName,
+      eventData: {
+        orderId: mockIncomingOrderCreatedEvent.eventData.orderId,
+        sku: mockIncomingOrderCreatedEvent.eventData.sku,
+        units: mockIncomingOrderCreatedEvent.eventData.units,
+      },
+      createdAt: mockIncomingOrderCreatedEvent.createdAt,
+      updatedAt: mockIncomingOrderCreatedEvent.updatedAt,
+    },
+  })
+  return mockClass
 }
 
-const expectedAllocateOrderStockCommand = AllocateOrderStockCommand.validateAndBuild(
-  mockValidAllocateOrderStockCommandInput,
-)
+const expectedAllocateOrderStockCommand = buildExpectedAllocateOrderStockCommand()
 
+//
+// Mock clients
+//
 function buildMockDbAllocateOrderStockClient_resolves(): IDbAllocateOrderStockClient {
   return { allocateOrderStock: jest.fn() }
 }

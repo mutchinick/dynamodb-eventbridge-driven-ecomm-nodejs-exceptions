@@ -1,30 +1,37 @@
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseRawSimulatedEventClient } from '../EsRaiseRawSimulatedEventClient/EsRaiseRawSimulatedEventClient'
-import { IncomingSimulateRawEventRequest as IncomingSimulateRawEventRequestInput } from '../model/IncomingSimulateRawEventRequest'
-import { RawSimulatedEvent } from '../model/RawSimulatedEvent'
+import { IncomingSimulateRawEventRequest } from '../model/IncomingSimulateRawEventRequest'
+import { RawSimulatedEvent, RawSimulatedEventInput } from '../model/RawSimulatedEvent'
 import { SimulateRawEventApiService } from './SimulateRawEventApiService'
 
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-const mockValidIncomingSimulateRawEventRequestInput: IncomingSimulateRawEventRequestInput = {
-  pk: 'mockPk',
-  sk: 'mockSk',
-  eventName: 'mockEventName',
-  eventData: {
-    orderId: 'mockOrderId',
-    sku: 'mockSku',
-    units: 2,
-    price: 3.98,
-    userId: 'mockUserId',
-  },
-  createdAt: mockDate,
-  updatedAt: mockDate,
+function buildMockIncomingSimulateRawEventRequest(): TypeUtilsMutable<IncomingSimulateRawEventRequest> {
+  const mockClass = IncomingSimulateRawEventRequest.validateAndBuild({
+    pk: 'mockPk',
+    sk: 'mockSk',
+    eventName: 'mockEventName',
+    eventData: {
+      orderId: 'mockOrderId',
+      sku: 'mockSku',
+      units: 2,
+      price: 3.98,
+      userId: 'mockUserId',
+    },
+    createdAt: mockDate,
+    updatedAt: mockDate,
+  })
+  return mockClass
 }
 
-const expectedRawSimulatedEvent = RawSimulatedEvent.validateAndBuild(mockValidIncomingSimulateRawEventRequestInput)
+const mockIncomingSimulateRawEventRequest = buildMockIncomingSimulateRawEventRequest()
 
+//
+// Mock clients
+//
 function buildMockEsRaiseRawSimulatedEventClient_resolves(): IEsRaiseRawSimulatedEventClient {
   return { raiseRawSimulatedEvent: jest.fn() }
 }
@@ -40,7 +47,7 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
   it(`does not throw if the input SimulateRawEventApiServiceInput is valid`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    const resultPromise = simulateRawEventApiService.simulateRawEvent(mockValidIncomingSimulateRawEventRequestInput)
+    const resultPromise = simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)
     await expect(resultPromise).resolves.not.toThrow()
   })
 
@@ -66,14 +73,16 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
   it(`calls EsRaiseRawSimulatedEventClient.simulateRawEvent a single time`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    await simulateRawEventApiService.simulateRawEvent(mockValidIncomingSimulateRawEventRequestInput)
+    await simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)
     expect(mockEsRaiseRawSimulatedEventClient.raiseRawSimulatedEvent).toHaveBeenCalledTimes(1)
   })
 
   it(`calls EsRaiseRawSimulatedEventClient.simulateRawEvent with the expected input`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    await simulateRawEventApiService.simulateRawEvent(mockValidIncomingSimulateRawEventRequestInput)
+    await simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)
+    const expectedRawSimulatedEventInput: RawSimulatedEventInput = { ...mockIncomingSimulateRawEventRequest }
+    const expectedRawSimulatedEvent = RawSimulatedEvent.validateAndBuild(expectedRawSimulatedEventInput)
     expect(mockEsRaiseRawSimulatedEventClient.raiseRawSimulatedEvent).toHaveBeenCalledWith(expectedRawSimulatedEvent)
   })
 
@@ -81,7 +90,7 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
     const mockError = new Error('mockError')
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_throws(mockError)
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    const resultPromise = simulateRawEventApiService.simulateRawEvent(mockValidIncomingSimulateRawEventRequestInput)
+    const resultPromise = simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)
     await expect(resultPromise).rejects.toThrow(mockError)
   })
 
@@ -90,9 +99,16 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
     const mockError = DuplicateEventRaisedError.from()
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_throws(mockError)
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    const result = await simulateRawEventApiService.simulateRawEvent(mockValidIncomingSimulateRawEventRequestInput)
-    const expectedResult = mockValidIncomingSimulateRawEventRequestInput
-    expect(result).toStrictEqual(expectedResult)
+    const result = await simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)
+    const expectedResult: IncomingSimulateRawEventRequest = {
+      pk: mockIncomingSimulateRawEventRequest.pk,
+      sk: mockIncomingSimulateRawEventRequest.sk,
+      eventName: mockIncomingSimulateRawEventRequest.eventName,
+      eventData: mockIncomingSimulateRawEventRequest.eventData,
+      createdAt: mockIncomingSimulateRawEventRequest.createdAt,
+      updatedAt: mockIncomingSimulateRawEventRequest.updatedAt,
+    }
+    expect(result).toMatchObject(expectedResult)
   })
 
   //
@@ -101,8 +117,15 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
   it(`returns a SimulateRawEventApiServiceOutput with the expected data`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    const result = await simulateRawEventApiService.simulateRawEvent(mockValidIncomingSimulateRawEventRequestInput)
-    const expectedResult = mockValidIncomingSimulateRawEventRequestInput
-    expect(result).toStrictEqual(expectedResult)
+    const result = await simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)
+    const expectedResult: IncomingSimulateRawEventRequest = {
+      pk: mockIncomingSimulateRawEventRequest.pk,
+      sk: mockIncomingSimulateRawEventRequest.sk,
+      eventName: mockIncomingSimulateRawEventRequest.eventName,
+      eventData: mockIncomingSimulateRawEventRequest.eventData,
+      createdAt: mockIncomingSimulateRawEventRequest.createdAt,
+      updatedAt: mockIncomingSimulateRawEventRequest.updatedAt,
+    }
+    expect(result).toMatchObject(expectedResult)
   })
 })

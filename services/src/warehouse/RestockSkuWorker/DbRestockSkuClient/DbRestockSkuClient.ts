@@ -31,12 +31,28 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
     console.info(`${logContext} init:`, { restockSkuCommand })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(restockSkuCommand)
       const ddbCommand = this.buildDdbCommand(restockSkuCommand)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, restockSkuCommand })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, restockSkuCommand })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(restockSkuCommand: RestockSkuCommand): void {
+    const logContext = 'DbRestockSkuClient.validateInput'
+
+    if (restockSkuCommand instanceof RestockSkuCommand === false) {
+      const errorMessage = `Expected RestockSkuCommand but got ${restockSkuCommand}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, restockSkuCommand })
+      throw invalidArgumentsError
     }
   }
 

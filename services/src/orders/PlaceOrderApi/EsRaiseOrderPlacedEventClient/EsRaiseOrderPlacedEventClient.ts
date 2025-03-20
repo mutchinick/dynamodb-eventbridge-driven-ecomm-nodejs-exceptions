@@ -31,12 +31,28 @@ export class EsRaiseOrderPlacedEventClient implements IEsRaiseOrderPlacedEventCl
     console.info(`${logContext} init:`, { orderPlacedEvent })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(orderPlacedEvent)
       const ddbCommand = this.buildDdbCommand(orderPlacedEvent)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, orderPlacedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderPlacedEvent })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(orderPlacedEvent: OrderPlacedEvent): void {
+    const logContext = 'EsRaiseOrderPlacedEventClient.validateInput'
+
+    if (orderPlacedEvent instanceof OrderPlacedEvent === false) {
+      const errorMessage = `Expected OrderPlacedEvent but got ${orderPlacedEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderPlacedEvent })
+      throw invalidArgumentsError
     }
   }
 

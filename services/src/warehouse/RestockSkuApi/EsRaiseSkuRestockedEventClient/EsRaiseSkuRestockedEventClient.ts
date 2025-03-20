@@ -31,12 +31,28 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
     console.info(`${logContext} init:`, { skuRestockedEvent })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(skuRestockedEvent)
       const ddbCommand = this.buildDdbCommand(skuRestockedEvent)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, skuRestockedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, skuRestockedEvent })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(skuRestockedEvent: SkuRestockedEvent): void {
+    const logContext = 'EsRaiseSkuRestockedEventClient.validateInput'
+
+    if (skuRestockedEvent instanceof SkuRestockedEvent === false) {
+      const errorMessage = `Expected SkuRestockedEvent but got ${skuRestockedEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, skuRestockedEvent })
+      throw invalidArgumentsError
     }
   }
 

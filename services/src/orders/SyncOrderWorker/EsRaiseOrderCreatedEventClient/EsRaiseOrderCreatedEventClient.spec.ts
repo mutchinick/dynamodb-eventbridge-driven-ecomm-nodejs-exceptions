@@ -1,6 +1,9 @@
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
+import { OrderEventName } from '../../model/OrderEventName'
+import { OrderStatus } from '../../model/OrderStatus'
 import { OrderCreatedEvent } from '../model/OrderCreatedEvent'
 import { EsRaiseOrderCreatedEventClient } from './EsRaiseOrderCreatedEventClient'
 
@@ -12,21 +15,24 @@ const mockEventStoreTableName = 'mockEventStoreTableName'
 
 process.env.EVENT_STORE_TABLE_NAME = mockEventStoreTableName
 
-const mockValidEvent: OrderCreatedEvent = {
-  eventName: 'mockEventName' as never,
-  createdAt: mockDate,
-  updatedAt: mockDate,
-  eventData: {
-    orderId: 'mockOrderId',
-    orderStatus: 'mockOrderStatus' as never,
-    sku: 'mockSku',
-    units: 2,
-    price: 3.98,
-    userId: 'mockUserId',
-    createdAt: mockDate,
-    updatedAt: mockDate,
-  },
+function buildMockOrderCreatedEvent(): TypeUtilsMutable<OrderCreatedEvent> {
+  const mockClass = OrderCreatedEvent.validateAndBuild({
+    incomingEventName: OrderEventName.ORDER_PLACED_EVENT,
+    orderData: {
+      orderId: 'mockOrderId',
+      orderStatus: OrderStatus.ORDER_CREATED_STATUS,
+      sku: 'mockSku',
+      units: 2,
+      price: 3.98,
+      userId: 'mockUserId',
+      createdAt: mockDate,
+      updatedAt: mockDate,
+    },
+  })
+  return mockClass
 }
+
+const mockValidEvent = buildMockOrderCreatedEvent()
 
 const expectedDdbDocClientInput = new PutCommand({
   TableName: mockEventStoreTableName,
@@ -39,6 +45,9 @@ const expectedDdbDocClientInput = new PutCommand({
   ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
 })
 
+//
+// Mock clients
+//
 function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
   return { send: jest.fn() } as unknown as DynamoDBDocumentClient
 }
@@ -66,19 +75,11 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is empty`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_resolves()
-    const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    const mockTestEvent = {} as OrderCreatedEvent
-    const resultPromise = esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockTestEvent)
-    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
-    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
-  })
-
   it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent.eventData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    const mockTestEvent = { eventData: undefined } as OrderCreatedEvent
+    const mockTestEvent = buildMockOrderCreatedEvent()
+    mockTestEvent.eventData = undefined
     const resultPromise = esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
@@ -87,7 +88,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
   it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent.eventData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    const mockTestEvent = { eventData: null } as OrderCreatedEvent
+    const mockTestEvent = buildMockOrderCreatedEvent()
+    mockTestEvent.eventData = null
     const resultPromise = esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

@@ -31,12 +31,28 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
     console.info(`${logContext} init:`, { rawSimulatedEvent })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(rawSimulatedEvent)
       const ddbCommand = this.buildDdbCommand(rawSimulatedEvent)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, rawSimulatedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, rawSimulatedEvent })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(rawSimulatedEvent: RawSimulatedEvent): void {
+    const logContext = 'EsRaiseRawSimulatedEventClient.validateInput'
+
+    if (rawSimulatedEvent instanceof RawSimulatedEvent === false) {
+      const errorMessage = `Expected RawSimulatedEvent but got ${rawSimulatedEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, rawSimulatedEvent })
+      throw invalidArgumentsError
     }
   }
 

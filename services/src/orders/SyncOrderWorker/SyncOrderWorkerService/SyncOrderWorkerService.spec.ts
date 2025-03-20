@@ -1,4 +1,5 @@
 import { marshall } from '@aws-sdk/util-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError, InvalidOperationError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { OrderEventName } from '../../model/OrderEventName'
@@ -9,7 +10,7 @@ import { IDbUpdateOrderClient } from '../DbUpdateOrderClient/DbUpdateOrderClient
 import { IEsRaiseOrderCreatedEventClient } from '../EsRaiseOrderCreatedEventClient/EsRaiseOrderCreatedEventClient'
 import { CreateOrderCommand, CreateOrderCommandInput } from '../model/CreateOrderCommand'
 import { GetOrderCommand, GetOrderCommandInput } from '../model/GetOrderCommand'
-import { IncomingOrderEvent, IncomingOrderEventInput } from '../model/IncomingOrderEvent'
+import { IncomingOrderEvent } from '../model/IncomingOrderEvent'
 import { OrderCreatedEvent, OrderCreatedEventInput } from '../model/OrderCreatedEvent'
 import { UpdateOrderCommand, UpdateOrderCommandInput } from '../model/UpdateOrderCommand'
 import { SyncOrderWorkerService } from './SyncOrderWorkerService'
@@ -17,10 +18,6 @@ import { SyncOrderWorkerService } from './SyncOrderWorkerService'
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
-
-type Mutable_IncomingOrderEvent = {
-  -readonly [K in keyof IncomingOrderEvent]: IncomingOrderEvent[K]
-}
 
 const mockValidExistingOrderData: OrderData = {
   orderId: 'mockOrderId',
@@ -33,8 +30,11 @@ const mockValidExistingOrderData: OrderData = {
   updatedAt: 'mockUpdatedAt',
 }
 
-function buildMockIncomingOrderEvent(incomingOrderEventProps: IncomingOrderEvent): Mutable_IncomingOrderEvent {
-  const incomingOrderEventInput: IncomingOrderEventInput = {
+// COMBAK: Figure a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
+function buildMockIncomingOrderEvent(
+  incomingOrderEventProps: IncomingOrderEvent,
+): TypeUtilsMutable<IncomingOrderEvent> {
+  const mockClass = IncomingOrderEvent.validateAndBuild({
     'detail-type': 'mockDetailType',
     id: 'mockId',
     account: 'mockAccount',
@@ -53,11 +53,8 @@ function buildMockIncomingOrderEvent(incomingOrderEventProps: IncomingOrderEvent
         NewImage: marshall(incomingOrderEventProps),
       },
     },
-  }
-
-  const incomingOrderEvent = IncomingOrderEvent.validateAndBuild(incomingOrderEventInput)
-  const mockIncomingOrderEvent = incomingOrderEvent as Mutable_IncomingOrderEvent
-  return mockIncomingOrderEvent
+  })
+  return mockClass
 }
 
 //
@@ -106,7 +103,7 @@ const mockValidGetOrderCommandInput: GetOrderCommandInput = {
 const expectedGetOrderCommand = GetOrderCommand.validateAndBuild(mockValidGetOrderCommandInput)
 
 describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
-  const mockSomeIncomingOrderEventProps: IncomingOrderEvent = {
+  const mockTestIncomingOrderEventProps: IncomingOrderEvent = {
     eventName: OrderEventName.ORDER_PLACED_EVENT,
     eventData: {
       orderId: 'mockOrderId',
@@ -149,7 +146,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       mockDbUpdateOrderClient,
       mockEsRaiseOrderCreatedEventClient,
     )
-    const mockTestEvent = buildMockIncomingOrderEvent(mockSomeIncomingOrderEventProps)
+    const mockTestEvent = buildMockIncomingOrderEvent(mockTestIncomingOrderEventProps)
     mockTestEvent.eventName = undefined
     const resultPromise = syncOrderWorkerService.syncOrder(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
@@ -167,7 +164,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       mockDbUpdateOrderClient,
       mockEsRaiseOrderCreatedEventClient,
     )
-    const mockTestEvent = buildMockIncomingOrderEvent(mockSomeIncomingOrderEventProps)
+    const mockTestEvent = buildMockIncomingOrderEvent(mockTestIncomingOrderEventProps)
     mockTestEvent.eventData = undefined
     const resultPromise = syncOrderWorkerService.syncOrder(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
@@ -185,7 +182,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       mockDbUpdateOrderClient,
       mockEsRaiseOrderCreatedEventClient,
     )
-    const mockTestEvent = buildMockIncomingOrderEvent(mockSomeIncomingOrderEventProps)
+    const mockTestEvent = buildMockIncomingOrderEvent(mockTestIncomingOrderEventProps)
     mockTestEvent.eventData.orderId = undefined
     const resultPromise = syncOrderWorkerService.syncOrder(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)

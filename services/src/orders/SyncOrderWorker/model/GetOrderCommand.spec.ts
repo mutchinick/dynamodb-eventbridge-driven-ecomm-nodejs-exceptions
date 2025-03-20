@@ -97,7 +97,9 @@ describe(`Orders Service SyncOrderWorker GetOrderCommand tests`, () => {
     const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
     const getOrderCommand = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
     const expected: GetOrderCommand = {
-      orderId: mockGetOrderCommandInput.orderId,
+      orderData: {
+        orderId: mockGetOrderCommandInput.orderId,
+      },
       options: {},
     }
     expect(getOrderCommand).toMatchObject(expected)

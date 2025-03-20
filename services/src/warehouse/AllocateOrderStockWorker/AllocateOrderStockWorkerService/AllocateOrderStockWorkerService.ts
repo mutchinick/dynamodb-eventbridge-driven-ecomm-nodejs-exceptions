@@ -1,4 +1,8 @@
-import { DepletedStockAllocationError, DuplicateStockAllocationError } from '../../errors/AppError'
+import {
+  DepletedStockAllocationError,
+  DuplicateStockAllocationError,
+  InvalidArgumentsError,
+} from '../../errors/AppError'
 import { IDbAllocateOrderStockClient } from '../DbAllocateOrderStockClient/DbAllocateOrderStockClient'
 import { IEsRaiseOrderStockAllocatedEventClient } from '../EsRaiseOrderStockAllocatedEventClient/EsRaiseOrderStockAllocatedEventClient'
 import { IEsRaiseOrderStockDepletedEventClient } from '../EsRaiseOrderStockDepletedEventClient/EsRaiseOrderStockDepletedEventClient'
@@ -39,6 +43,8 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
     console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(incomingOrderCreatedEvent)
       await this.allocateOrder(incomingOrderCreatedEvent)
       await this.raiseAllocatedEvent(incomingOrderCreatedEvent)
       console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent })
@@ -58,6 +64,20 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
 
       console.error(`${logContext} exit error:`, { error, incomingOrderCreatedEvent })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): void {
+    const logContext = 'AllocateOrderStockWorkerService.validateInput'
+
+    if (incomingOrderCreatedEvent instanceof IncomingOrderCreatedEvent === false) {
+      const errorMessage = `Expected IncomingOrderCreatedEvent but got ${incomingOrderCreatedEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingOrderCreatedEvent })
+      throw invalidArgumentsError
     }
   }
 

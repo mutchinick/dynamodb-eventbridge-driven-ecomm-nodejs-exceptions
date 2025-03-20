@@ -31,6 +31,8 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
     console.info(`${logContext} init:`, { createOrderCommand })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(createOrderCommand)
       const ddbCommand = this.buildDdbCommand(createOrderCommand)
       const orderData = await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, orderData, createOrderCommand })
@@ -38,6 +40,20 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, createOrderCommand })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(createOrderCommand: CreateOrderCommand): void {
+    const logContext = 'DbCreateOrderClient.validateInput'
+
+    if (createOrderCommand instanceof CreateOrderCommand === false) {
+      const errorMessage = `Expected CreateOrderCommand but got ${createOrderCommand}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, createOrderCommand })
+      throw invalidArgumentsError
     }
   }
 

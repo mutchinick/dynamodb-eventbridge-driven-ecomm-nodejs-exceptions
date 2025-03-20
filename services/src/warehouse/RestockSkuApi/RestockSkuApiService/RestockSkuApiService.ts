@@ -32,7 +32,8 @@ export class RestockSkuApiService implements IRestockSkuApiService {
     console.info(`${logContext} init:`, { incomingRestockSkuRequest })
 
     try {
-      this.validateIncomingRestockSkuRequest(incomingRestockSkuRequest)
+      // TODO: this.validateInput(...)
+      this.validateInput(incomingRestockSkuRequest)
       await this.raiseSkuRestockedEvent(incomingRestockSkuRequest)
       const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
       console.info(`${logContext} exit success:`, { serviceOutput, incomingRestockSkuRequest })
@@ -52,11 +53,12 @@ export class RestockSkuApiService implements IRestockSkuApiService {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private validateIncomingRestockSkuRequest(incomingRestockSkuRequest: IncomingRestockSkuRequest): void {
-    const logContext = 'RestockSkuApiService.validateIncomingRestockSkuRequest'
+  private validateInput(incomingRestockSkuRequest: IncomingRestockSkuRequest): void {
+    const logContext = 'RestockSkuApiService.validateInput'
 
     if (incomingRestockSkuRequest instanceof IncomingRestockSkuRequest === false) {
-      const invalidArgumentsError = InvalidArgumentsError.from()
+      const errorMessage = `Expected IncomingRestockSkuRequest but got ${incomingRestockSkuRequest}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingRestockSkuRequest })
       throw invalidArgumentsError
     }

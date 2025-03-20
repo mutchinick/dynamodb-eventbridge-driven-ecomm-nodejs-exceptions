@@ -5,8 +5,10 @@ import { ValueValidators } from '../../model/ValueValidators'
 
 export type GetOrderCommandInput = Pick<OrderData, 'orderId'>
 
+type GetOrderCommandData = Pick<OrderData, 'orderId'>
+
 type GetOrderCommandProps = {
-  readonly orderId: string
+  readonly orderData: GetOrderCommandData
   readonly options?: Record<string, unknown>
 }
 
@@ -18,7 +20,7 @@ export class GetOrderCommand implements GetOrderCommandProps {
    *
    */
   private constructor(
-    public readonly orderId: string,
+    public readonly orderData: GetOrderCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
@@ -30,8 +32,8 @@ export class GetOrderCommand implements GetOrderCommandProps {
     console.info(`${logContext} init:`, { getOrderCommandInput })
 
     try {
-      const { orderId, options } = this.buildProps(getOrderCommandInput)
-      const getOrderCommand = new GetOrderCommand(orderId, options)
+      const { orderData, options } = this.buildProps(getOrderCommandInput)
+      const getOrderCommand = new GetOrderCommand(orderData, options)
       console.info(`${logContext} exit success:`, { getOrderCommand, getOrderCommandInput })
       return getOrderCommand
     } catch (error) {
@@ -48,7 +50,7 @@ export class GetOrderCommand implements GetOrderCommandProps {
 
     const { orderId } = getOrderCommandInput
     return {
-      orderId,
+      orderData: { orderId },
       options: {},
     }
   }

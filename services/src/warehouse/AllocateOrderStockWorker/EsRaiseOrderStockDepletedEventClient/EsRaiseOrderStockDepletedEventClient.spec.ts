@@ -1,28 +1,26 @@
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import { InvalidArgumentsError, DuplicateEventRaisedError, UnrecognizedError } from '../../errors/AppError'
-import { WarehouseEventName } from '../../model/WarehouseEventName'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
+import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { OrderStockDepletedEvent } from '../model/OrderStockDepletedEvent'
 import { EsRaiseOrderStockDepletedEventClient } from './EsRaiseOrderStockDepletedEventClient'
 
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
-const mockDate = new Date().toUTCString()
-
 const mockEventStoreTableName = 'mockEventStoreTableName'
 
 process.env.EVENT_STORE_TABLE_NAME = mockEventStoreTableName
 
-const mockValidEvent: OrderStockDepletedEvent = {
-  eventName: WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT,
-  createdAt: mockDate,
-  updatedAt: mockDate,
-  eventData: {
+function buildMockOrderStockDepletedEvent(): TypeUtilsMutable<OrderStockDepletedEvent> {
+  const mockClass = OrderStockDepletedEvent.validateAndBuild({
     orderId: 'mockOrderId',
     sku: 'mockSku',
     units: 2,
-  },
+  })
+  return mockClass
 }
+
+const mockValidEvent = buildMockOrderStockDepletedEvent()
 
 const expectedDdbDocClientInput = new PutCommand({
   TableName: mockEventStoreTableName,
@@ -76,10 +74,21 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEvent
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient an InvalidArgumentsError if the input OrderStockDepletedEvent is empty`, async () => {
+  it(`throws a non-transient an InvalidArgumentsError if the input OrderStockDepletedEvent.eventData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
-    const mockTestEvent = {} as OrderStockDepletedEvent
+    const mockTestEvent = buildMockOrderStockDepletedEvent()
+    mockTestEvent.eventData = undefined
+    const resultPromise = esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockTestEvent)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient an InvalidArgumentsError if the input OrderStockDepletedEvent.eventData is null`, async () => {
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
+    const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
+    const mockTestEvent = buildMockOrderStockDepletedEvent()
+    mockTestEvent.eventData = null
     const resultPromise = esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

@@ -1,6 +1,8 @@
 import { TransactionCanceledException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, TransactWriteCommand } from '@aws-sdk/lib-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { DuplicateRestockOperationError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
+import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { RestockSkuCommand } from '../model/RestockSkuCommand'
 import { DbRestockSkuClient } from './DbRestockSkuClient'
 
@@ -12,15 +14,23 @@ jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-const mockRestockSkuCommand: RestockSkuCommand = {
-  restockSkuData: {
-    sku: 'mockSku',
-    units: 3,
-    lotId: 'mockLotId',
-    createdAt: mockDate,
-    updatedAt: mockDate,
-  },
+function buildMockRestockSkuCommand(): TypeUtilsMutable<RestockSkuCommand> {
+  const mockClass = RestockSkuCommand.validateAndBuild({
+    incomingSkuRestockedEvent: {
+      eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,
+      eventData: {
+        sku: 'mockSku',
+        units: 3,
+        lotId: 'mockLotId',
+      },
+      createdAt: mockDate,
+      updatedAt: mockDate,
+    },
+  })
+  return mockClass
 }
+
+const mockRestockSkuCommand = buildMockRestockSkuCommand()
 
 const expectedTransactWriteCommand = new TransactWriteCommand({
   TransactItems: [
@@ -125,7 +135,8 @@ describe(`Warehouse Service RestockSkuWorker DbRestockSkuClient tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommand.restockSkuData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbRestockSkuClient = new DbRestockSkuClient(mockDdbDocClient)
-    const mockRestockSkuCommand = { restockSkuData: undefined } as RestockSkuCommand
+    const mockRestockSkuCommand = buildMockRestockSkuCommand()
+    mockRestockSkuCommand.restockSkuData = undefined
     const resultPromise = dbRestockSkuClient.restockSku(mockRestockSkuCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
@@ -134,7 +145,8 @@ describe(`Warehouse Service RestockSkuWorker DbRestockSkuClient tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommand.restockSkuData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbRestockSkuClient = new DbRestockSkuClient(mockDdbDocClient)
-    const mockRestockSkuCommand = { restockSkuData: null } as RestockSkuCommand
+    const mockRestockSkuCommand = buildMockRestockSkuCommand()
+    mockRestockSkuCommand.restockSkuData = null
     const resultPromise = dbRestockSkuClient.restockSku(mockRestockSkuCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

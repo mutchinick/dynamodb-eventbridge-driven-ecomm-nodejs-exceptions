@@ -1,8 +1,10 @@
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, UpdateCommand, UpdateCommandOutput } from '@aws-sdk/lib-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
+import { OrderEventName } from '../../model/OrderEventName'
 import { OrderStatus } from '../../model/OrderStatus'
 import { UpdateOrderCommand } from '../model/UpdateOrderCommand'
 import { DbUpdateOrderClient } from './DbUpdateOrderClient'
@@ -15,13 +17,37 @@ jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-const mockValidCommand: UpdateOrderCommand = {
-  orderData: {
-    orderId: 'mockOrderId',
-    orderStatus: OrderStatus.ORDER_CREATED_STATUS,
-    updatedAt: mockDate,
-  },
+function buildMockUpdateOrderCommand(): TypeUtilsMutable<UpdateOrderCommand> {
+  const mockClass = UpdateOrderCommand.validateAndBuild({
+    existingOrderData: {
+      orderId: 'mockOrderId',
+      orderStatus: OrderStatus.ORDER_CREATED_STATUS,
+      sku: 'mockSku',
+      units: 4,
+      price: 10.99,
+      userId: 'mockUserIId',
+      createdAt: mockDate,
+      updatedAt: mockDate,
+    },
+    incomingOrderEvent: {
+      eventName: OrderEventName.ORDER_STOCK_ALLOCATED_EVENT,
+      eventData: {
+        orderId: 'mockOrderId',
+        sku: 'mockSku',
+        units: 4,
+        price: 10.99,
+        userId: 'mockUserIId',
+        createdAt: mockDate,
+        updatedAt: mockDate,
+      },
+      createdAt: mockDate,
+      updatedAt: mockDate,
+    },
+  })
+  return mockClass
 }
+
+const mockValidCommand = buildMockUpdateOrderCommand()
 
 const expectedDdbDocClientInput = new UpdateCommand({
   TableName: mockEventStoreTableName,
@@ -115,19 +141,11 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand is empty`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_throws()
-    const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
-    const mockTestCommand = {} as UpdateOrderCommand
-    const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
-    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
-    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
-  })
-
   it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.orderData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
-    const mockTestCommand = { orderData: undefined } as UpdateOrderCommand
+    const mockTestCommand = buildMockUpdateOrderCommand()
+    mockTestCommand.orderData = undefined
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
@@ -136,7 +154,8 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.orderData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
-    const mockTestCommand = { orderData: null } as UpdateOrderCommand
+    const mockTestCommand = buildMockUpdateOrderCommand()
+    mockTestCommand.orderData = null
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

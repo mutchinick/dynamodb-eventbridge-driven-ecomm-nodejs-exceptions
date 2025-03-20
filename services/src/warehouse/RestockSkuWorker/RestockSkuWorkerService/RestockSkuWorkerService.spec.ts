@@ -1,30 +1,71 @@
+import { marshall } from '@aws-sdk/util-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { IDbRestockSkuClient } from '../DbRestockSkuClient/DbRestockSkuClient'
 import { IncomingSkuRestockedEvent } from '../model/IncomingSkuRestockedEvent'
-import { RestockSkuCommand, RestockSkuCommandInput } from '../model/RestockSkuCommand'
+import { RestockSkuCommand } from '../model/RestockSkuCommand'
 import { RestockSkuWorkerService } from './RestockSkuWorkerService'
 
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-const mockIncomingSkuRestockedEvent: IncomingSkuRestockedEvent = {
-  eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,
-  eventData: {
-    sku: 'mockSku',
-    units: 3,
-    lotId: 'mockLotId',
-  },
-  createdAt: mockDate,
-  updatedAt: mockDate,
+// COMBAK: Figure a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
+function buildMockIncomingSkuRestockedEvent(): TypeUtilsMutable<IncomingSkuRestockedEvent> {
+  const incomingOrderEventProps: IncomingSkuRestockedEvent = {
+    eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,
+    eventData: {
+      sku: 'mockSku',
+      units: 2,
+      lotId: 'mockLotId',
+    },
+    createdAt: mockDate,
+    updatedAt: mockDate,
+  }
+
+  const mockClass = IncomingSkuRestockedEvent.validateAndBuild({
+    'detail-type': 'mockDetailType',
+    id: 'mockId',
+    account: 'mockAccount',
+    region: 'mockRegion',
+    resources: [],
+    source: 'mockSource',
+    time: 'mockTime',
+    version: 'mockVersion',
+    detail: {
+      awsRegion: 'mockAwsRegion',
+      eventID: 'mockEventId',
+      eventName: 'INSERT',
+      eventSource: 'aws:dynamodb',
+      eventVersion: 'mockEventVersion',
+      dynamodb: {
+        NewImage: marshall(incomingOrderEventProps),
+      },
+    },
+  })
+  return mockClass
 }
 
-const mockValidRestockSkuCommandInput: RestockSkuCommandInput = {
-  incomingSkuRestockedEvent: mockIncomingSkuRestockedEvent,
+const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent()
+
+function buildExpectedRestockSkuCommand(): TypeUtilsMutable<RestockSkuCommand> {
+  const mockClass = RestockSkuCommand.validateAndBuild({
+    incomingSkuRestockedEvent: {
+      eventName: mockIncomingSkuRestockedEvent.eventName,
+      eventData: {
+        sku: mockIncomingSkuRestockedEvent.eventData.sku,
+        units: mockIncomingSkuRestockedEvent.eventData.units,
+        lotId: mockIncomingSkuRestockedEvent.eventData.lotId,
+      },
+      createdAt: mockIncomingSkuRestockedEvent.createdAt,
+      updatedAt: mockIncomingSkuRestockedEvent.updatedAt,
+    },
+  })
+  return mockClass
 }
 
-const expectedRestockSkuCommand = RestockSkuCommand.validateAndBuild(mockValidRestockSkuCommandInput)
+const expectedRestockSkuCommand = buildExpectedRestockSkuCommand()
 
 //
 // Mock Clients

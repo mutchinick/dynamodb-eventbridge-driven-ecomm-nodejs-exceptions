@@ -31,7 +31,8 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
     console.info(`${logContext} init:`, { incomingPlaceOrderRequest })
 
     try {
-      this.validateIncomingPlaceOrderRequest(incomingPlaceOrderRequest)
+      // TODO: this.validateInput(...)
+      this.validateInput(incomingPlaceOrderRequest)
       await this.raiseOrderPlacedEvent(incomingPlaceOrderRequest)
       const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }
       console.info(`${logContext} exit success:`, { serviceOutput, incomingPlaceOrderRequest })
@@ -51,11 +52,12 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private validateIncomingPlaceOrderRequest(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): void {
-    const logContext = 'PlaceOrderApiService.validateIncomingPlaceOrderRequest'
+  private validateInput(incomingPlaceOrderRequest: IncomingPlaceOrderRequest): void {
+    const logContext = 'PlaceOrderApiService.validateInput'
 
     if (incomingPlaceOrderRequest instanceof IncomingPlaceOrderRequest === false) {
-      const invalidArgumentsError = InvalidArgumentsError.from()
+      const errorMessage = `Expected IncomingPlaceOrderRequest but got ${incomingPlaceOrderRequest}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingPlaceOrderRequest })
       throw invalidArgumentsError
     }

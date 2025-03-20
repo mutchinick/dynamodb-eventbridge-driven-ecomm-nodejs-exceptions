@@ -1,4 +1,4 @@
-import { DuplicateEventRaisedError } from '../../errors/AppError'
+import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseRawSimulatedEventClient } from '../EsRaiseRawSimulatedEventClient/EsRaiseRawSimulatedEventClient'
 import { IncomingSimulateRawEventRequest } from '../model/IncomingSimulateRawEventRequest'
 import { RawSimulatedEvent } from '../model/RawSimulatedEvent'
@@ -31,6 +31,8 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
     console.info(`${logContext} init:`, { incomingSimulateRawEventRequest })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(incomingSimulateRawEventRequest)
       await this.raiseRawSimulatedEvent(incomingSimulateRawEventRequest)
       const serviceOutput: SimulateRawEventApiServiceOutput = { ...incomingSimulateRawEventRequest }
       console.info(`${logContext} exit success:`, { serviceOutput, incomingSimulateRawEventRequest })
@@ -48,6 +50,20 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
 
       console.error(`${logContext} exit error:`, { error, incomingSimulateRawEventRequest })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(incomingSimulateRawEventRequest: IncomingSimulateRawEventRequest): void {
+    const logContext = 'SimulateRawEventApiService.validateInput'
+
+    if (incomingSimulateRawEventRequest instanceof IncomingSimulateRawEventRequest === false) {
+      const errorMessage = `Expected IncomingPlaceOrderRequest but got ${incomingSimulateRawEventRequest}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingSimulateRawEventRequest })
+      throw invalidArgumentsError
     }
   }
 

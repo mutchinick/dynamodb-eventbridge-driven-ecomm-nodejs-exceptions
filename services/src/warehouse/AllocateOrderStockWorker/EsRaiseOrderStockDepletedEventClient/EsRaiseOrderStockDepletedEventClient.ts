@@ -31,12 +31,28 @@ export class EsRaiseOrderStockDepletedEventClient implements IEsRaiseOrderStockD
     console.info(`${logContext} init:`, { orderStockDepletedEvent })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(orderStockDepletedEvent)
       const ddbCommand = this.buildDdbCommand(orderStockDepletedEvent)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, orderStockDepletedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderStockDepletedEvent })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(orderStockDepletedEvent: OrderStockDepletedEvent): void {
+    const logContext = 'EsRaiseOrderStockDepletedEventClient.validateInput'
+
+    if (orderStockDepletedEvent instanceof OrderStockDepletedEvent === false) {
+      const errorMessage = `Expected OrderStockDepletedEvent but got ${orderStockDepletedEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderStockDepletedEvent })
+      throw invalidArgumentsError
     }
   }
 

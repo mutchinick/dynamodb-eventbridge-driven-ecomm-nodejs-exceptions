@@ -31,12 +31,28 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
     console.info(`${logContext} init:`, { orderCreatedEvent })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(orderCreatedEvent)
       const ddbCommand = this.buildDdbCommand(orderCreatedEvent)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, orderCreatedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderCreatedEvent })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(orderCreatedEvent: OrderCreatedEvent): void {
+    const logContext = 'EsRaiseOrderCreatedEventClient.validateInput'
+
+    if (orderCreatedEvent instanceof OrderCreatedEvent === false) {
+      const errorMessage = `Expected OrderCreatedEvent but got ${orderCreatedEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderCreatedEvent })
+      throw invalidArgumentsError
     }
   }
 

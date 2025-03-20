@@ -1,28 +1,26 @@
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
-import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { SkuRestockedEvent } from '../model/SkuRestockedEvent'
 import { EsRaiseSkuRestockedEventClient } from './EsRaiseSkuRestockedEventClient'
 
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
-const mockDate = new Date().toUTCString()
-
 const mockEventStoreTableName = 'mockEventStoreTableName'
 
 process.env.EVENT_STORE_TABLE_NAME = mockEventStoreTableName
 
-const mockValidEvent: SkuRestockedEvent = {
-  eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,
-  createdAt: mockDate,
-  updatedAt: mockDate,
-  eventData: {
+function buildMockSkuRestockedEvent(): TypeUtilsMutable<SkuRestockedEvent> {
+  const mockClass = SkuRestockedEvent.validateAndBuild({
     sku: 'mockSku',
     units: 2,
     lotId: 'mockLotId',
-  },
+  })
+  return mockClass
 }
+
+const mockValidEvent = buildMockSkuRestockedEvent()
 
 const expectedDdbDocClientInput = new PutCommand({
   TableName: mockEventStoreTableName,
@@ -35,6 +33,9 @@ const expectedDdbDocClientInput = new PutCommand({
   ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
 })
 
+//
+// Mock clients
+//
 function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
   return { send: jest.fn() } as unknown as DynamoDBDocumentClient
 }
@@ -71,10 +72,21 @@ describe(`Warehouse Service RestockSkuApi EsRaiseSkuRestockedEventClient tests`,
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEvent is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEvent.eventData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseSkuRestockedEventClient = new EsRaiseSkuRestockedEventClient(mockDdbDocClient)
-    const mockTestEvent = {} as SkuRestockedEvent
+    const mockTestEvent = buildMockSkuRestockedEvent()
+    mockTestEvent.eventData = undefined
+    const resultPromise = esRaiseSkuRestockedEventClient.raiseSkuRestockedEvent(mockTestEvent)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input SkuRestockedEvent.eventData is null`, async () => {
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
+    const esRaiseSkuRestockedEventClient = new EsRaiseSkuRestockedEventClient(mockDdbDocClient)
+    const mockTestEvent = buildMockSkuRestockedEvent()
+    mockTestEvent.eventData = null
     const resultPromise = esRaiseSkuRestockedEventClient.raiseSkuRestockedEvent(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

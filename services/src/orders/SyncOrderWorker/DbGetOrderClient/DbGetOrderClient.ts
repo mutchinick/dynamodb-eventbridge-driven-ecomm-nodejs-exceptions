@@ -29,6 +29,8 @@ export class DbGetOrderClient implements IDbGetOrderClient {
     console.info(`${logContext} init:`, { getOrderCommand })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(getOrderCommand)
       const ddbCommand = this.buildDdbCommand(getOrderCommand)
       const orderData = await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { orderData, ddbCommand, getOrderCommand })
@@ -42,6 +44,20 @@ export class DbGetOrderClient implements IDbGetOrderClient {
   /**
    * @throws {InvalidArgumentsError}
    */
+  private validateInput(getOrderCommand: GetOrderCommand): void {
+    const logContext = 'DbCreateOrderClient.validateInput'
+
+    if (getOrderCommand instanceof GetOrderCommand === false) {
+      const errorMessage = `Expected GetOrderCommand but got ${getOrderCommand}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, getOrderCommand })
+      throw invalidArgumentsError
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
   private buildDdbCommand(getOrderCommand: GetOrderCommand): GetCommand {
     const logContext = 'DbGetOrderClient.buildDdbCommand'
 
@@ -49,8 +65,8 @@ export class DbGetOrderClient implements IDbGetOrderClient {
       return new GetCommand({
         TableName: process.env.EVENT_STORE_TABLE_NAME,
         Key: {
-          pk: `ORDER_ID#${getOrderCommand.orderId}`,
-          sk: `ORDER_ID#${getOrderCommand.orderId}`,
+          pk: `ORDER_ID#${getOrderCommand.orderData.orderId}`,
+          sk: `ORDER_ID#${getOrderCommand.orderData.orderId}`,
         },
       })
     } catch (error) {

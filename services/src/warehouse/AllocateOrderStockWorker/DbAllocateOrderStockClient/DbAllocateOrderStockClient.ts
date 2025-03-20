@@ -38,12 +38,28 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
     console.info(`${logContext} init:`, { allocateOrderStockCommand })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(allocateOrderStockCommand)
       const ddbCommand = this.buildDdbCommand(allocateOrderStockCommand)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, allocateOrderStockCommand })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, allocateOrderStockCommand })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(allocateOrderStockCommand: AllocateOrderStockCommand): void {
+    const logContext = 'DbAllocateOrderStockClient.validateInput'
+
+    if (allocateOrderStockCommand instanceof AllocateOrderStockCommand === false) {
+      const errorMessage = `Expected AllocateOrderStockCommand but got ${allocateOrderStockCommand}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, allocateOrderStockCommand })
+      throw invalidArgumentsError
     }
   }
 

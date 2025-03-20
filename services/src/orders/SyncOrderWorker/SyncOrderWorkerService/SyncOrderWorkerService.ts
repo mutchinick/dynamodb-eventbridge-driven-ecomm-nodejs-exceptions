@@ -55,7 +55,9 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       // The input IncomingOrderEvent should already be valid because it can only be built through the same
       // IncomingOrderEvent class which enforces strict validation. Still we perform just enough validation to
       // prevent unlikely but possible uncaught exceptions for some properties that are accessed directly.
-      this.validateIncomingOrderEvent(incomingOrderEvent)
+
+      // TODO: this.validateInput(...)
+      this.validateInput(incomingOrderEvent)
 
       const isOrderPlacedEvent = IncomingOrderEvent.isOrderPlacedEvent(incomingOrderEvent)
       const existingOrderData = await this.getOrder(incomingOrderEvent.eventData.orderId)
@@ -109,15 +111,16 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private validateIncomingOrderEvent(incomingOrderEvent: IncomingOrderEvent): void {
-    const logContext = 'SyncOrderWorkerService.validateIncomingOrderEvent'
+  private validateInput(incomingOrderEvent: IncomingOrderEvent): void {
+    const logContext = 'SyncOrderWorkerService.validateInput'
 
     if (
       incomingOrderEvent instanceof IncomingOrderEvent === false ||
       incomingOrderEvent.eventData == null ||
       incomingOrderEvent.eventData.orderId == null
     ) {
-      const invalidArgumentsError = InvalidArgumentsError.from()
+      const errorMessage = `Expected IncomingOrderEvent but got ${incomingOrderEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingOrderEvent })
       throw invalidArgumentsError
     }

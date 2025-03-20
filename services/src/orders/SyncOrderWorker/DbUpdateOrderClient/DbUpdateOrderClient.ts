@@ -30,6 +30,8 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
     const logContext = 'DbUpdateOrderClient.updateOrder'
     console.info(`${logContext} init:`, { updateOrderCommand })
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(updateOrderCommand)
       const ddbCommand = this.buildDdbCommand(updateOrderCommand)
       const orderData = await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { orderData, ddbCommand, updateOrderCommand })
@@ -37,6 +39,20 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, updateOrderCommand })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(updateOrderCommand: UpdateOrderCommand): void {
+    const logContext = 'DbUpdateOrderClient.validateInput'
+
+    if (updateOrderCommand instanceof UpdateOrderCommand === false) {
+      const errorMessage = `Expected UpdateOrderCommand but got ${updateOrderCommand}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, updateOrderCommand })
+      throw invalidArgumentsError
     }
   }
 

@@ -31,12 +31,28 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
     console.info(`${logContext} init:`, { orderStockAllocatedEvent })
 
     try {
+      // TODO: this.validateInput(...)
+      this.validateInput(orderStockAllocatedEvent)
       const ddbCommand = this.buildDdbCommand(orderStockAllocatedEvent)
       await this.sendDdbCommand(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand, orderStockAllocatedEvent })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, orderStockAllocatedEvent })
       throw error
+    }
+  }
+
+  /**
+   * @throws {InvalidArgumentsError}
+   */
+  private validateInput(orderStockAllocatedEvent: OrderStockAllocatedEvent): void {
+    const logContext = 'EsRaiseOrderStockAllocatedEventClient.validateInput'
+
+    if (orderStockAllocatedEvent instanceof OrderStockAllocatedEvent === false) {
+      const errorMessage = `Expected OrderStockAllocatedEvent but got ${orderStockAllocatedEvent}`
+      const invalidArgumentsError = InvalidArgumentsError.from(undefined, errorMessage)
+      console.error(`${logContext} exit error:`, { invalidArgumentsError, orderStockAllocatedEvent })
+      throw invalidArgumentsError
     }
   }
 

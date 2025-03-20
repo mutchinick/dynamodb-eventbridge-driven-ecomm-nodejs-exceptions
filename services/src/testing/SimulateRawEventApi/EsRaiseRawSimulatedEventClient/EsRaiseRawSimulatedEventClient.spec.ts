@@ -1,5 +1,6 @@
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { RawSimulatedEvent } from '../model/RawSimulatedEvent'
 import { EsRaiseRawSimulatedEventClient } from './EsRaiseRawSimulatedEventClient'
@@ -12,15 +13,19 @@ const mockEventStoreTableName = 'mockEventStoreTableName'
 
 process.env.EVENT_STORE_TABLE_NAME = mockEventStoreTableName
 
-const mockValidEvent: RawSimulatedEvent = {
-  pk: 'mockPk',
-  sk: 'mockSk',
-  eventName: 'mockEventName',
-  eventData: {},
-  createdAt: mockDate,
-  updatedAt: mockDate,
-  _tn: '#EVENT',
+function buildMockRawSimulatedEvent(): TypeUtilsMutable<RawSimulatedEvent> {
+  const mockClass = RawSimulatedEvent.validateAndBuild({
+    pk: 'mockPk',
+    sk: 'mockSk',
+    eventName: 'mockEventName',
+    eventData: {},
+    createdAt: mockDate,
+    updatedAt: mockDate,
+  })
+  return mockClass
 }
+
+const mockValidEvent = buildMockRawSimulatedEvent()
 
 const expectedDdbDocClientInput = new PutCommand({
   TableName: mockEventStoreTableName,
@@ -28,6 +33,9 @@ const expectedDdbDocClientInput = new PutCommand({
   ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
 })
 
+//
+// Mock clients
+//
 function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
   return { send: jest.fn() } as unknown as DynamoDBDocumentClient
 }

@@ -1,30 +1,28 @@
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
-import { OrderEventName } from '../../model/OrderEventName'
 import { OrderPlacedEvent } from '../model/OrderPlacedEvent'
 import { EsRaiseOrderPlacedEventClient } from './EsRaiseOrderPlacedEventClient'
 
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
-const mockDate = new Date().toUTCString()
-
 const mockEventStoreTableName = 'mockEventStoreTableName'
 
 process.env.EVENT_STORE_TABLE_NAME = mockEventStoreTableName
 
-const mockValidEvent: OrderPlacedEvent = {
-  eventName: OrderEventName.ORDER_PLACED_EVENT,
-  createdAt: mockDate,
-  updatedAt: mockDate,
-  eventData: {
+function buildMockOrderPlacedEvent(): TypeUtilsMutable<OrderPlacedEvent> {
+  const mockClass = OrderPlacedEvent.validateAndBuild({
     orderId: 'mockOrderId',
     sku: 'mockSku',
     units: 2,
     price: 3.98,
     userId: 'mockUserId',
-  },
+  })
+  return mockClass
 }
+
+const mockValidEvent = buildMockOrderPlacedEvent()
 
 const expectedDdbDocClientInput = new PutCommand({
   TableName: mockEventStoreTableName,
@@ -37,6 +35,9 @@ const expectedDdbDocClientInput = new PutCommand({
   ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
 })
 
+//
+// Mock clients
+//
 function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
   return { send: jest.fn() } as unknown as DynamoDBDocumentClient
 }
@@ -73,10 +74,21 @@ describe(`Orders Service PlaceOrderApi EsRaiseOrderPlacedEventClient tests`, () 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderPlacedEvent is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderPlacedEvent.eventData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
-    const mockTestEvent = {} as OrderPlacedEvent
+    const mockTestEvent = buildMockOrderPlacedEvent()
+    mockTestEvent.eventData = undefined
+    const resultPromise = esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input OrderPlacedEvent.eventData is null`, async () => {
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
+    const esRaiseOrderPlacedEventClient = new EsRaiseOrderPlacedEventClient(mockDdbDocClient)
+    const mockTestEvent = buildMockOrderPlacedEvent()
+    mockTestEvent.eventData = null
     const resultPromise = esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(mockTestEvent)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
