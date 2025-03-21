@@ -35,13 +35,13 @@ function buildMockCreateOrderCommand(): TypeUtilsMutable<CreateOrderCommand> {
   return mockClass
 }
 
-const mockValidCommand = buildMockCreateOrderCommand()
+const mockCreateOrderCommand = buildMockCreateOrderCommand()
 
 const expectedDdbDocClientInput = new UpdateCommand({
   TableName: mockEventStoreTableName,
   Key: {
-    pk: `ORDER_ID#${mockValidCommand.orderData.orderId}`,
-    sk: `ORDER_ID#${mockValidCommand.orderData.orderId}`,
+    pk: `ORDER_ID#${mockCreateOrderCommand.orderData.orderId}`,
+    sk: `ORDER_ID#${mockCreateOrderCommand.orderData.orderId}`,
   },
   UpdateExpression:
     'SET ' +
@@ -67,14 +67,14 @@ const expectedDdbDocClientInput = new UpdateCommand({
   },
   ExpressionAttributeValues: {
     ':_tn': 'ORDERS#ORDER',
-    ':orderId': mockValidCommand.orderData.orderId,
-    ':orderStatus': mockValidCommand.orderData.orderStatus,
-    ':sku': mockValidCommand.orderData.sku,
-    ':units': mockValidCommand.orderData.units,
-    ':price': mockValidCommand.orderData.price,
-    ':userId': mockValidCommand.orderData.userId,
-    ':createdAt': mockValidCommand.orderData.createdAt,
-    ':updatedAt': mockValidCommand.orderData.updatedAt,
+    ':orderId': mockCreateOrderCommand.orderData.orderId,
+    ':orderStatus': mockCreateOrderCommand.orderData.orderStatus,
+    ':sku': mockCreateOrderCommand.orderData.sku,
+    ':units': mockCreateOrderCommand.orderData.units,
+    ':price': mockCreateOrderCommand.orderData.price,
+    ':userId': mockCreateOrderCommand.orderData.userId,
+    ':createdAt': mockCreateOrderCommand.orderData.createdAt,
+    ':updatedAt': mockCreateOrderCommand.orderData.updatedAt,
   },
   ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
   ReturnValuesOnConditionCheckFailure: 'ALL_OLD',
@@ -85,14 +85,14 @@ const expectedDdbDocClientInput = new UpdateCommand({
 // Mock clients
 //
 const expectedCreatedOrderData: OrderData = {
-  orderId: mockValidCommand.orderData.orderId,
-  orderStatus: mockValidCommand.orderData.orderStatus,
-  sku: mockValidCommand.orderData.sku,
-  units: mockValidCommand.orderData.units,
-  price: mockValidCommand.orderData.price,
-  userId: mockValidCommand.orderData.userId,
-  createdAt: mockValidCommand.orderData.createdAt,
-  updatedAt: mockValidCommand.orderData.updatedAt,
+  orderId: mockCreateOrderCommand.orderData.orderId,
+  orderStatus: mockCreateOrderCommand.orderData.orderStatus,
+  sku: mockCreateOrderCommand.orderData.sku,
+  units: mockCreateOrderCommand.orderData.units,
+  price: mockCreateOrderCommand.orderData.price,
+  userId: mockCreateOrderCommand.orderData.userId,
+  createdAt: mockCreateOrderCommand.orderData.createdAt,
+  updatedAt: mockCreateOrderCommand.orderData.updatedAt,
 }
 
 function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
@@ -133,7 +133,7 @@ describe(`Orders Service SyncOrderWorker DbCreateOrderClient tests`, () => {
   it(`does not throw if the input CreateOrderCommand is valid`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
-    await expect(dbCreateOrderClient.createOrder(mockValidCommand)).resolves.not.toThrow()
+    await expect(dbCreateOrderClient.createOrder(mockCreateOrderCommand)).resolves.not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input CreateOrderCommand is undefined`, async () => {
@@ -180,14 +180,14 @@ describe(`Orders Service SyncOrderWorker DbCreateOrderClient tests`, () => {
   it(`calls DynamoDBDocumentClient.send a single time`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
-    await dbCreateOrderClient.createOrder(mockValidCommand)
+    await dbCreateOrderClient.createOrder(mockCreateOrderCommand)
     expect(mockDdbDocClient.send).toHaveBeenCalledTimes(1)
   })
 
   it(`calls DynamoDBDocumentClient.send with the expected input`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
-    await dbCreateOrderClient.createOrder(mockValidCommand)
+    await dbCreateOrderClient.createOrder(mockCreateOrderCommand)
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(
       expect.objectContaining({ input: expectedDdbDocClientInput.input }),
     )
@@ -197,7 +197,7 @@ describe(`Orders Service SyncOrderWorker DbCreateOrderClient tests`, () => {
     const mockError = new Error('mockError')
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
-    const resultPromise = dbCreateOrderClient.createOrder(mockValidCommand)
+    const resultPromise = dbCreateOrderClient.createOrder(mockCreateOrderCommand)
     await expect(resultPromise).rejects.toThrow(UnrecognizedError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
@@ -209,14 +209,14 @@ describe(`Orders Service SyncOrderWorker DbCreateOrderClient tests`, () => {
       throws a ConditionalCheckFailedException error`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws_ConditionalCheckFailedException()
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
-    const existingOrderData = await dbCreateOrderClient.createOrder(mockValidCommand)
+    const existingOrderData = await dbCreateOrderClient.createOrder(mockCreateOrderCommand)
     expect(existingOrderData).toStrictEqual(expectedExistingOrderData)
   })
 
   it(`returns the expected OrderData created in the database`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
-    const orderData = await dbCreateOrderClient.createOrder(mockValidCommand)
+    const orderData = await dbCreateOrderClient.createOrder(mockCreateOrderCommand)
     expect(orderData).toStrictEqual(expectedCreatedOrderData)
   })
 })

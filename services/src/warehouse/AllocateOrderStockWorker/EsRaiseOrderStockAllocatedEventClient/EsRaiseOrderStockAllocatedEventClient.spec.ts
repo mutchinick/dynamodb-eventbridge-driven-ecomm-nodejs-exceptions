@@ -20,15 +20,15 @@ function buildMockOrderStockAllocatedEvent(): TypeUtilsMutable<OrderStockAllocat
   return mockClass
 }
 
-const mockValidEvent = buildMockOrderStockAllocatedEvent()
+const mockOrderStockAllocatedEvent = buildMockOrderStockAllocatedEvent()
 
 const expectedDdbDocClientInput = new PutCommand({
   TableName: mockEventStoreTableName,
   Item: {
-    pk: `ORDER_ID#${mockValidEvent.eventData.orderId}`,
-    sk: `EVENT#${mockValidEvent.eventName}`,
+    pk: `ORDER_ID#${mockOrderStockAllocatedEvent.eventData.orderId}`,
+    sk: `EVENT#${mockOrderStockAllocatedEvent.eventName}`,
     _tn: '#EVENT',
-    ...mockValidEvent,
+    ...mockOrderStockAllocatedEvent,
   },
   ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
 })
@@ -51,7 +51,8 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockAllocatedEven
   it(`does not throw if the input OrderStockAllocatedEvent is valid`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockAllocatedEventClient = new EsRaiseOrderStockAllocatedEventClient(mockDdbDocClient)
-    const resultPromise = esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockValidEvent)
+    const resultPromise =
+      esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockOrderStockAllocatedEvent)
     await expect(resultPromise).resolves.not.toThrow()
   })
 
@@ -99,14 +100,14 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockAllocatedEven
   it(`calls DynamoDBDocumentClient.send a single time`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockAllocatedEventClient = new EsRaiseOrderStockAllocatedEventClient(mockDdbDocClient)
-    await esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockValidEvent)
+    await esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockOrderStockAllocatedEvent)
     expect(mockDdbDocClient.send).toHaveBeenCalledTimes(1)
   })
 
   it(`calls DynamoDBDocumentClient.send with the expected input`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockAllocatedEventClient = new EsRaiseOrderStockAllocatedEventClient(mockDdbDocClient)
-    await esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockValidEvent)
+    await esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockOrderStockAllocatedEvent)
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(
       expect.objectContaining({ input: expectedDdbDocClientInput.input }),
     )
@@ -115,7 +116,8 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockAllocatedEven
   it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws a native Error`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const esRaiseOrderStockAllocatedEventClient = new EsRaiseOrderStockAllocatedEventClient(mockDdbDocClient)
-    const resultPromise = esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockValidEvent)
+    const resultPromise =
+      esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockOrderStockAllocatedEvent)
     await expect(resultPromise).rejects.toThrow(UnrecognizedError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
@@ -125,7 +127,8 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockAllocatedEven
     const mockError = new ConditionalCheckFailedException({ $metadata: {}, message: 'ConditionalCheckFailed' })
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const esRaiseOrderStockAllocatedEventClient = new EsRaiseOrderStockAllocatedEventClient(mockDdbDocClient)
-    const resultPromise = esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockValidEvent)
+    const resultPromise =
+      esRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent(mockOrderStockAllocatedEvent)
     await expect(resultPromise).rejects.toThrow(DuplicateEventRaisedError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })

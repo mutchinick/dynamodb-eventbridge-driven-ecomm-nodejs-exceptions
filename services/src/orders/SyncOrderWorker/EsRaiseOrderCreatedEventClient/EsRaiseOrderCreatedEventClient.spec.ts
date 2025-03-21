@@ -32,15 +32,15 @@ function buildMockOrderCreatedEvent(): TypeUtilsMutable<OrderCreatedEvent> {
   return mockClass
 }
 
-const mockValidEvent = buildMockOrderCreatedEvent()
+const mockOrderCreatedEvent = buildMockOrderCreatedEvent()
 
 const expectedDdbDocClientInput = new PutCommand({
   TableName: mockEventStoreTableName,
   Item: {
-    pk: `ORDER_ID#${mockValidEvent.eventData.orderId}`,
-    sk: `EVENT#${mockValidEvent.eventName}`,
+    pk: `ORDER_ID#${mockOrderCreatedEvent.eventData.orderId}`,
+    sk: `EVENT#${mockOrderCreatedEvent.eventName}`,
     _tn: '#EVENT',
-    ...mockValidEvent,
+    ...mockOrderCreatedEvent,
   },
   ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
 })
@@ -63,7 +63,7 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
   it(`does not throw if the input OrderCreatedEvent is valid`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    await expect(esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockValidEvent)).resolves.not.toThrow()
+    await expect(esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockOrderCreatedEvent)).resolves.not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is undefined`, async () => {
@@ -101,14 +101,14 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
   it(`calls DynamoDBDocumentClient.send a single time`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    await esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockValidEvent)
+    await esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockOrderCreatedEvent)
     expect(mockDdbDocClient.send).toHaveBeenCalledTimes(1)
   })
 
   it(`calls DynamoDBDocumentClient.send with the expected input`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    await esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockValidEvent)
+    await esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockOrderCreatedEvent)
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(
       expect.objectContaining({ input: expectedDdbDocClientInput.input }),
     )
@@ -118,7 +118,7 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     const mockError = new Error('mockError')
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    const resultPromise = esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockValidEvent)
+    const resultPromise = esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockOrderCreatedEvent)
     await expect(resultPromise).rejects.toThrow(UnrecognizedError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
@@ -128,7 +128,7 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     const mockError = new ConditionalCheckFailedException({ $metadata: {}, message: '' })
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
-    const resultPromise = esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockValidEvent)
+    const resultPromise = esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockOrderCreatedEvent)
     await expect(resultPromise).rejects.toThrow(DuplicateEventRaisedError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
