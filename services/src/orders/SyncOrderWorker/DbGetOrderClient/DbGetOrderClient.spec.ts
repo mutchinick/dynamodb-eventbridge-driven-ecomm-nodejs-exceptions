@@ -133,16 +133,25 @@ describe(`Orders Service SyncOrderWorker DbGetOrderClient tests`, () => {
   it(`returns the expected null if DynamoDBDocumentClient.send returns a null Item`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_nullItem()
     const dbGetOrderClient = new DbGetOrderClient(mockDdbDocClient)
-    const expectedOrderData: OrderData = null
-    const orderData = await dbGetOrderClient.getOrder(mockGetOrderCommand)
-    expect(orderData).toBe(expectedOrderData)
+    const result = await dbGetOrderClient.getOrder(mockGetOrderCommand)
+    const expectedResult: OrderData = null
+    expect(result).toBe(expectedResult)
   })
 
   it(`returns the expected OrderData if DynamoDBDocumentClient.send returns an Item with data`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderClient = new DbGetOrderClient(mockDdbDocClient)
-    const expectedOrderData = mockValidOrderData
-    const orderData = await dbGetOrderClient.getOrder(mockGetOrderCommand)
-    expect(orderData).toStrictEqual(expectedOrderData)
+    const result = await dbGetOrderClient.getOrder(mockGetOrderCommand)
+    const expectedResult: OrderData = {
+      orderId: mockValidOrderData.orderId,
+      orderStatus: mockValidOrderData.orderStatus,
+      sku: mockValidOrderData.sku,
+      units: mockValidOrderData.units,
+      price: mockValidOrderData.price,
+      userId: mockValidOrderData.userId,
+      createdAt: mockValidOrderData.createdAt,
+      updatedAt: mockValidOrderData.updatedAt,
+    }
+    expect(result).toStrictEqual(expectedResult)
   })
 })

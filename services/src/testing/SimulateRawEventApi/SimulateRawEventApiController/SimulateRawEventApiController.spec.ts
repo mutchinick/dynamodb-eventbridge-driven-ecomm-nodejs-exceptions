@@ -33,6 +33,9 @@ function buildMockApiEvent(incomingSimulateRawEventRequest: IncomingSimulateRawE
   return mockApiEvent
 }
 
+//
+// Mock services
+//
 function buildMockSimulateRawEventApiService_resolves(): ISimulateRawEventApiService {
   const mockServiceOutput = buildMockApiEventBody()
   return { simulateRawEvent: jest.fn().mockResolvedValue(mockServiceOutput) }
@@ -49,46 +52,46 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2 is undefined`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = undefined as unknown as APIGatewayProxyEventV2
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2 is invalid`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = 'mockInvalidValue' as unknown as APIGatewayProxyEventV2
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body is missing`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = {} as unknown as APIGatewayProxyEventV2
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body is empty`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: '' } as unknown as APIGatewayProxyEventV2
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body is not a valid JSON`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: 'mockInvalidValue' } as unknown as APIGatewayProxyEventV2
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   //
@@ -97,45 +100,45 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.pk is missing`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     delete mockApiEventBody.pk
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.pk is undefined`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.pk = undefined as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.pk is null`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.pk = null as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.pk is not a string`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.pk = 123456 as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   //
@@ -144,45 +147,45 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sk is missing`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     delete mockApiEventBody.sk
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sk is undefined`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.sk = undefined as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sk is null`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.sk = null as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sk is not a string`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.sk = 123456 as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   //
@@ -191,45 +194,45 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.eventName is missing`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     delete mockApiEventBody.eventName
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.eventName is undefined`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.eventName = undefined as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.eventName is null`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.eventName = null as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.eventName is not a string`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.eventName = 123456 as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   //
@@ -238,23 +241,23 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.createdAt is null`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.createdAt = null as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.createdAt is not a string`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.createdAt = 123456 as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   //
@@ -263,23 +266,23 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.updatedAt is null`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.updatedAt = null as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.updatedAt is not a string`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
     mockApiEventBody.updatedAt = 123456 as never
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   //
@@ -310,9 +313,9 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    const expectedErrorResponse = HttpResponse.InternalServerError()
+    const expectedResponse = HttpResponse.InternalServerError()
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if SimulateRawEventApiService.simulateRawEvent
@@ -323,9 +326,9 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    const expectedErrorResponse = HttpResponse.BadRequestError()
+    const expectedResponse = HttpResponse.BadRequestError()
     const actualResponse = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    expect(actualResponse).toStrictEqual(expectedErrorResponse)
+    expect(actualResponse).toStrictEqual(expectedResponse)
   })
 
   //

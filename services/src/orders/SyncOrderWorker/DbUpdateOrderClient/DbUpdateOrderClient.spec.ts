@@ -69,6 +69,9 @@ const expectedDdbDocClientInput = new UpdateCommand({
   ReturnValues: 'ALL_NEW',
 })
 
+//
+// Mock clients
+//
 const expectedUpdatedOrderData: OrderData = {
   orderId: mockUpdateOrderCommand.orderData.orderId,
   orderStatus: mockUpdateOrderCommand.orderData.orderStatus,
@@ -196,14 +199,14 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
       throws a ConditionalCheckFailedException error`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws_ConditionalCheckFailedException()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
-    const existingOrderData = await dbUpdateOrderClient.updateOrder(mockUpdateOrderCommand)
-    expect(existingOrderData).toStrictEqual(expectedExistingOrderData)
+    const result = await dbUpdateOrderClient.updateOrder(mockUpdateOrderCommand)
+    expect(result).toStrictEqual(expectedExistingOrderData)
   })
 
   it(`returns the expected OrderData updated in the database`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
-    const orderData = await dbUpdateOrderClient.updateOrder(mockUpdateOrderCommand)
-    expect(orderData).toStrictEqual(expectedUpdatedOrderData)
+    const result = await dbUpdateOrderClient.updateOrder(mockUpdateOrderCommand)
+    expect(result).toStrictEqual(expectedUpdatedOrderData)
   })
 })
