@@ -122,16 +122,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test SQSEvent edge cases
   //
-  it(`does not throw if the input SQSEvent is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockSqsEvent = undefined as never
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input SQSEvent is undefined`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
@@ -142,16 +133,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input SQSEvent records are missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockSqsEvent = {} as never
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input SQSEvent records are missing`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent records are missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
@@ -162,16 +144,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input SQSEvent records are empty`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockSqsEvent = buildMockSqsEvent([])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input SQSEvent records are empty`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent records are empty`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
@@ -185,17 +158,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test SQSRecord edge cases
   //
-  it(`does not throw if the input SQSRecord.body is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockSqsRecord = {} as unknown as SQSRecord
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       SQSRecord.body is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -208,17 +171,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input SQSRecord.body is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockSqsRecord = { body: undefined } as unknown as SQSRecord
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       SQSRecord.body is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -231,18 +184,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input SQSRecord.body is not a valid JSON`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockSqsRecord = {} as unknown as SQSRecord
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    mockSqsEvent.Records[0].body = ''
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       SQSRecord.body is not a valid JSON`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -259,18 +201,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test EventBridgeEvent edge cases
   //
-  it(`does not throw if the input EventBridgeEvent is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockEventBridgeEvent = undefined as unknown as EventBridgeEvent<string, MockEventDetail>
-    const mockSqsRecord = buildMockSqsRecord('AA', mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -284,18 +215,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockEventBridgeEvent = undefined as unknown as EventBridgeEvent<string, MockEventDetail>
-    const mockSqsRecord = buildMockSqsRecord('AA', mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -309,18 +229,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent is invalid`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockEventBridgeEvent = 'mockInvalidValue' as unknown as EventBridgeEvent<string, MockEventDetail>
-    const mockSqsRecord = buildMockSqsRecord('AA', mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent is invalid`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -337,21 +246,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test EventBridgeEvent.detail edge cases
   //
-  it(`does not throw if the input EventBridgeEvent.detail is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    delete mockEventBridgeEvent.detail
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -368,21 +264,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent.detail is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    mockEventBridgeEvent.detail = undefined
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -399,21 +281,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent.detail is invalid`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    mockEventBridgeEvent.detail = 'mockInvalidValue' as never
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail is invalid`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -433,21 +301,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test EventBridgeEvent.detail.dynamodb edge cases
   //
-  it(`does not throw if the input EventBridgeEvent.detail.dynamodb is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    delete mockEventBridgeEvent.detail.dynamodb
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail.dynamodb is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -464,21 +318,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent.detail.dynamodb is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    mockEventBridgeEvent.detail.dynamodb = undefined as never
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail.dynamodb is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -495,21 +335,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent.detail.dynamodb is invalid`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    mockEventBridgeEvent.detail.dynamodb = 'mockInvalidValue' as never
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail.dynamodb is invalid`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -529,21 +355,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test EventBridgeEvent.detail.dynamodb.newImage edge cases
   //
-  it(`does not throw if the input EventBridgeEvent.detail.dynamodb.newImage is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    delete mockEventBridgeEvent.detail.dynamodb.NewImage
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail.dynamodb.newImage is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -560,21 +372,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent.detail.dynamodb.newImage is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    mockEventBridgeEvent.detail.dynamodb.NewImage = undefined as never
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail.dynamodb.newImage is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -591,21 +389,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input EventBridgeEvent.detail.dynamodb.newImage is invalid`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = {} as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    mockEventBridgeEvent.detail.dynamodb.NewImage = 'mockInvalidValue' as never
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       EventBridgeEvent.detail.dynamodb.newImage is invalid`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -625,22 +409,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent is invalid`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = 'mockInvalidValue' as unknown as IncomingOrderCreatedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)
-    const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
-  })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent is invalid`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -659,21 +429,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.eventName edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventName is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.eventName
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventName is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -690,21 +447,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventName is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventName = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventName is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -721,21 +464,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventName is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventName = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventName is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -755,21 +484,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.eventData edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.eventData
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -786,21 +501,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -817,21 +518,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -851,21 +538,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.eventData.orderId edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.orderId is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.eventData.orderId
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.orderId is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -882,21 +556,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.orderId is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.orderId = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.orderId is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -913,21 +573,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.orderId is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.orderId = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.orderId is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -947,21 +593,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.eventData.sku edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.sku is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.eventData.sku
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.sku is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -978,21 +611,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.sku is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.sku = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.sku is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1009,21 +628,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.sku is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.sku = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.sku is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1043,21 +648,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.eventData.units edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.units is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.eventData.units
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.units is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1074,21 +665,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.units is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.units = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.units is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1105,21 +682,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.units is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.units = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.units is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1139,21 +702,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.eventData.price edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.price is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.eventData.price
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.price is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1170,21 +719,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.price is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.price = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.price is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1201,21 +736,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.price is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.price = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.price is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1235,21 +756,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.eventData.userId edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.userId is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.eventData.userId
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.userId is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1266,21 +774,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.userId is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.userId = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.userId is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1297,21 +791,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.eventData.userId is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.eventData.userId = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.eventData.userId is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1331,21 +811,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.createdAt edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.createdAt is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.createdAt
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.createdAt is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1362,21 +828,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.createdAt is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.createdAt = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.createdAt is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1393,21 +845,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.createdAt is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.createdAt = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.createdAt is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1427,21 +865,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   //
   // Test IncomingOrderCreatedEvent.updatedAt edge cases
   //
-  it(`does not throw if the input IncomingOrderCreatedEvent.updatedAt is missing`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    delete mockIncomingOrderCreatedEvent.updatedAt
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.updatedAt is missing`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1458,21 +883,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.updatedAt is undefined`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.updatedAt = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.updatedAt is undefined`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1489,21 +900,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`does not throw if the input IncomingOrderCreatedEvent.updatedAt is null`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockId = 'AA'
-    const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent(mockId)
-    mockIncomingOrderCreatedEvent.updatedAt = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingOrderCreatedEvent)
-    const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
-    const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the input
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input
       IncomingOrderCreatedEvent.updatedAt is null`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
@@ -1568,19 +965,9 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
   })
 
   //
-  // Test DoNotRetryError edge cases
+  // Test transient/non-transient edge cases
   //
-  it(`does not throw if the AllocateOrderStockWorkerService does not throw`, async () => {
-    const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
-    const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
-      mockAllocateOrderStockWorkerService,
-    )
-    const mockIds = ['AA', 'BB', 'CC']
-    const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    await expect(allocateOrderStockWorkerController.allocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
-  })
-
-  it(`returns no SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService does not throw`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService does not throw`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
@@ -1592,7 +979,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService 
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService 
       throws a non-transient Error (test 1)`, async () => {
     const nonTransientError = InvalidOperationError.from('non-transient')
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_throws(nonTransientError)
@@ -1606,7 +993,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService 
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService 
       throws a non-transient Error (test 2)`, async () => {
     const nonTransientError = InvalidOperationError.from('non-transient')
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_throws(nonTransientError)
@@ -1620,7 +1007,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService 
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the AllocateOrderStockWorkerService 
       throws a non-transient Error (test 3)`, async () => {
     const nonTransientError = InvalidOperationError.from('non-transient')
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_throws(nonTransientError)
