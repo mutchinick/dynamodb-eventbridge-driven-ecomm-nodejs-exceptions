@@ -11,6 +11,8 @@ function buildMockOrderStockAllocatedEventInput() {
     orderId: 'mockOrderId',
     sku: 'mockSku',
     units: 2,
+    price: 10.99,
+    userId: 'mockUserId',
   }
   return mockValidInput
 }
@@ -210,6 +212,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockAllocatedEvent tests
         orderId: mockOrderStockAllocatedEventInput.orderId,
         sku: mockOrderStockAllocatedEventInput.sku,
         units: mockOrderStockAllocatedEventInput.units,
+        price: mockOrderStockAllocatedEventInput.price,
+        userId: mockOrderStockAllocatedEventInput.userId,
       },
       createdAt: mockDate,
       updatedAt: mockDate,

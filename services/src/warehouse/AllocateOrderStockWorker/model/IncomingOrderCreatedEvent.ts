@@ -21,7 +21,10 @@ type EventDetail = {
 
 export type IncomingOrderCreatedEventInput = EventBridgeEvent<string, EventDetail>
 
-type IncomingOrderCreatedEventData = Pick<AllocateOrderStockData, 'sku' | 'units' | 'orderId'>
+// TODO: Not all events provide the full Order data
+// https://github.com/mutchinick/dynamodb-eventbridge-driven-ecomm-nodejs-exceptions/issues/1
+type IncomingOrderCreatedEventData = Pick<AllocateOrderStockData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+// type IncomingOrderCreatedEventData = Pick<AllocateOrderStockData, 'sku' | 'units' | 'orderId'>
 
 type IncomingOrderCreatedEventProps = WarehouseEvent<
   WarehouseEventName.ORDER_CREATED_EVENT,
@@ -68,7 +71,20 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
   private static buildProps(
     incomingOrderCreatedEventInput: IncomingOrderCreatedEventInput,
   ): IncomingOrderCreatedEventProps {
-    return this.parseValidateInput(incomingOrderCreatedEventInput)
+    const validInput = this.parseValidateInput(incomingOrderCreatedEventInput)
+    const incomingOrderCreatedEventProps: IncomingOrderCreatedEventProps = {
+      eventName: validInput.eventName,
+      eventData: {
+        orderId: validInput.eventData.orderId,
+        sku: validInput.eventData.sku,
+        units: validInput.eventData.units,
+        price: validInput.eventData.price,
+        userId: validInput.eventData.userId,
+      },
+      createdAt: validInput.createdAt,
+      updatedAt: validInput.updatedAt,
+    }
+    return incomingOrderCreatedEventProps
   }
 
   /**
@@ -83,9 +99,11 @@ export class IncomingOrderCreatedEvent implements IncomingOrderCreatedEventProps
     const schema = z.object({
       eventName: ValueValidators.validOrderCreatedEventName(),
       eventData: z.object({
+        orderId: ValueValidators.validOrderId(),
         sku: ValueValidators.validSku(),
         units: ValueValidators.validUnits(),
-        orderId: ValueValidators.validOrderId(),
+        price: ValueValidators.validPrice(),
+        userId: ValueValidators.validUserId(),
       }),
       createdAt: ValueValidators.validCreatedAt(),
       updatedAt: ValueValidators.validUpdatedAt(),

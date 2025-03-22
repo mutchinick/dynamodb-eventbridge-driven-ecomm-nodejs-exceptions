@@ -8,6 +8,8 @@ export type AllocateOrderStockCommandInput = {
   incomingOrderCreatedEvent: IncomingOrderCreatedEvent
 }
 
+// TODO: Not all events provide the full Order data
+// https://github.com/mutchinick/dynamodb-eventbridge-driven-ecomm-nodejs-exceptions/issues/1
 type AllocateOrderStockCommandData = AllocateOrderStockData
 
 type AllocateOrderStockCommandProps = {
@@ -56,13 +58,15 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     this.validateInput(allocateOrderStockCommandInput)
 
     const { incomingOrderCreatedEvent } = allocateOrderStockCommandInput
-    const { sku, orderId, units } = incomingOrderCreatedEvent.eventData
+    const { orderId, sku, units, price, userId } = incomingOrderCreatedEvent.eventData
     const date = new Date().toISOString()
     return {
       allocateOrderStockData: {
+        orderId,
         sku,
         units,
-        orderId,
+        price,
+        userId,
         createdAt: date,
         updatedAt: date,
       },

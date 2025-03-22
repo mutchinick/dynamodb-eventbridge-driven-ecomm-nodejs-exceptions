@@ -19,9 +19,11 @@ function buildMockIncomingOrderCreatedEvent(): Mutable_IncomingOrderCreatedEvent
   const mockValidWarehouseEvent: Mutable_IncomingOrderCreatedEvent = {
     eventName: WarehouseEventName.ORDER_CREATED_EVENT,
     eventData: {
+      orderId: 'mockOrderId',
       sku: 'mockSku',
       units: 12,
-      orderId: 'mockOrderId',
+      price: 12.34,
+      userId: 'mockUserId',
     },
     createdAt: mockDate,
     updatedAt: mockDate,
@@ -418,9 +420,11 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
     const allocateOrderStockCommand = AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     const expected: AllocateOrderStockCommand = {
       allocateOrderStockData: {
+        orderId: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId,
         sku: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku,
         units: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.units,
-        orderId: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId,
+        price: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price,
+        userId: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId,
         createdAt: mockDate,
         updatedAt: mockDate,
       },

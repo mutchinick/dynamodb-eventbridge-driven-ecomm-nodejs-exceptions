@@ -16,6 +16,8 @@ function buildMockOrderStockDepletedEvent(): TypeUtilsMutable<OrderStockDepleted
     orderId: 'mockOrderId',
     sku: 'mockSku',
     units: 2,
+    price: 10.32,
+    userId: 'mockUserId',
   })
   return mockClass
 }

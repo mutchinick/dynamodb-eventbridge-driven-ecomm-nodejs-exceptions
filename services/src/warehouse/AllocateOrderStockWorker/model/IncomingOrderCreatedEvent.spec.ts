@@ -56,6 +56,8 @@ function buildMockIncomingOrderCreatedEvent(): Mutable_IncomingOrderCreatedEvent
       sku: 'mockSku',
       orderId: 'mockOrderId',
       units: 4,
+      price: 10.99,
+      userId: 'mockUserId',
     },
     createdAt: mockDate,
     updatedAt: mockDate,
@@ -588,7 +590,18 @@ describe(`Warehouse Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
     const result = IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected = mockIncomingOrderCreatedEvent
-    expect(result).toMatchObject(expected)
+    const expectedResult: IncomingOrderCreatedEvent = {
+      eventName: mockIncomingOrderCreatedEvent.eventName,
+      eventData: {
+        orderId: mockIncomingOrderCreatedEvent.eventData.orderId,
+        sku: mockIncomingOrderCreatedEvent.eventData.sku,
+        units: mockIncomingOrderCreatedEvent.eventData.units,
+        price: mockIncomingOrderCreatedEvent.eventData.price,
+        userId: mockIncomingOrderCreatedEvent.eventData.userId,
+      },
+      createdAt: mockIncomingOrderCreatedEvent.createdAt,
+      updatedAt: mockIncomingOrderCreatedEvent.updatedAt,
+    }
+    expect(result).toMatchObject(expectedResult)
   })
 })
