@@ -244,7 +244,6 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
       eventData: mockRawSimulatedEventInput.eventData,
       createdAt: mockRawSimulatedEventInput.createdAt,
       updatedAt: mockRawSimulatedEventInput.updatedAt,
-      _tn: '#EVENT',
     }
     expect(rawSimulatedEvent).toMatchObject(expectedResult)
   })

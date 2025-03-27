@@ -63,13 +63,37 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
     const logContext = 'EsRaiseOrderStockAllocatedEventClient.buildDdbCommand'
 
     try {
+      const tableName = process.env.EVENT_STORE_TABLE_NAME
+
+      const { eventName, eventData, createdAt, updatedAt } = orderStockAllocatedEvent
+      const { orderId, sku, units, price, userId } = eventData
+
+      const eventPk = `EVENTS#ORDER_ID#${orderId}`
+      const eventSk = `EVENT#${eventName}`
+      const eventTn = `EVENTS#EVENT`
+      const eventSn = `EVENTS`
+      const eventGsi1pk = `EVENTS#EVENT`
+      const eventGsi1sk = `CREATED_AT#${createdAt}`
+
       const ddbCommand = new PutCommand({
-        TableName: process.env.EVENT_STORE_TABLE_NAME,
+        TableName: tableName,
         Item: {
-          pk: `ORDER_ID#${orderStockAllocatedEvent.eventData.orderId}`,
-          sk: `EVENT#${orderStockAllocatedEvent.eventName}`,
-          _tn: '#EVENT',
-          ...orderStockAllocatedEvent,
+          pk: eventPk,
+          sk: eventSk,
+          eventName,
+          eventData: {
+            orderId,
+            sku,
+            units,
+            price,
+            userId,
+          },
+          createdAt,
+          updatedAt,
+          _tn: eventTn,
+          _sn: eventSn,
+          gsi1pk: eventGsi1pk,
+          gsi1sk: eventGsi1sk,
         },
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })

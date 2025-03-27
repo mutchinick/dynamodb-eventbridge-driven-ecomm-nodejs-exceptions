@@ -62,13 +62,19 @@ export class DbGetOrderClient implements IDbGetOrderClient {
     const logContext = 'DbGetOrderClient.buildDdbCommand'
 
     try {
-      return new GetCommand({
-        TableName: process.env.EVENT_STORE_TABLE_NAME,
+      const tableName = process.env.ORDERS_TABLE_NAME
+
+      const orderItemPk = `ORDERS#ORDER_ID#${getOrderCommand.orderData.orderId}`
+      const orderItemSk = `ORDER_ID#${getOrderCommand.orderData.orderId}`
+
+      const ddbCommand = new GetCommand({
+        TableName: tableName,
         Key: {
-          pk: `ORDER_ID#${getOrderCommand.orderData.orderId}`,
-          sk: `ORDER_ID#${getOrderCommand.orderData.orderId}`,
+          pk: orderItemPk,
+          sk: orderItemSk,
         },
       })
+      return ddbCommand
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, getOrderCommand })
@@ -86,7 +92,7 @@ export class DbGetOrderClient implements IDbGetOrderClient {
     try {
       const ddbResult = await this.ddbDocClient.send(ddbCommand)
       if (!ddbResult.Item) {
-        console.info(`${logContext} exit success: null-item:`, { orderData: null, ddbResult, ddbCommand })
+        console.info(`${logContext} exit success: null-orderItem:`, { orderData: null, ddbResult, ddbCommand })
         return null
       }
       const orderData = this.buildOrderData(ddbResult.Item)

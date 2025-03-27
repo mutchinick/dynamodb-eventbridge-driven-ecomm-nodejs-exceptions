@@ -2,38 +2,64 @@ import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
+import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { OrderStockDepletedEvent } from '../model/OrderStockDepletedEvent'
 import { EsRaiseOrderStockDepletedEventClient } from './EsRaiseOrderStockDepletedEventClient'
-
-jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockEventStoreTableName = 'mockEventStoreTableName'
 
 process.env.EVENT_STORE_TABLE_NAME = mockEventStoreTableName
 
+jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
+
+const mockDate = new Date().toISOString()
+const mockEventName = WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT
+const mockOrderId = 'mockOrderId'
+const mockSku = 'mockSku'
+const mockUnits = 2
+const mockPrice = 10.32
+const mockUserId = 'mockUserId'
+
 function buildMockOrderStockDepletedEvent(): TypeUtilsMutable<OrderStockDepletedEvent> {
   const mockClass = OrderStockDepletedEvent.validateAndBuild({
-    orderId: 'mockOrderId',
-    sku: 'mockSku',
-    units: 2,
-    price: 10.32,
-    userId: 'mockUserId',
+    orderId: mockOrderId,
+    sku: mockSku,
+    units: mockUnits,
+    price: mockPrice,
+    userId: mockUserId,
   })
   return mockClass
 }
 
 const mockOrderStockDepletedEvent = buildMockOrderStockDepletedEvent()
 
-const expectedDdbDocClientInput = new PutCommand({
-  TableName: mockEventStoreTableName,
-  Item: {
-    pk: `ORDER_ID#${mockOrderStockDepletedEvent.eventData.orderId}`,
-    sk: `EVENT#${mockOrderStockDepletedEvent.eventName}`,
-    _tn: '#EVENT',
-    ...mockOrderStockDepletedEvent,
-  },
-  ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
-})
+function buildMockDdbCommand(): PutCommand {
+  const ddbCommand = new PutCommand({
+    TableName: mockEventStoreTableName,
+    Item: {
+      pk: `EVENTS#ORDER_ID#${mockOrderId}`,
+      sk: `EVENT#${mockEventName}`,
+      _tn: `EVENTS#EVENT`,
+      _sn: `EVENTS`,
+      eventName: WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT,
+      eventData: {
+        orderId: mockOrderId,
+        sku: mockSku,
+        units: mockUnits,
+        price: mockPrice,
+        userId: mockUserId,
+      },
+      createdAt: mockDate,
+      updatedAt: mockDate,
+      gsi1pk: `EVENTS#EVENT`,
+      gsi1sk: `CREATED_AT#${mockDate}`,
+    },
+    ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
+  })
+  return ddbCommand
+}
+
+const expectedDdbCommand = buildMockDdbCommand()
 
 //
 // Mock clients
@@ -110,9 +136,7 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEvent
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
     await esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockOrderStockDepletedEvent)
-    expect(mockDdbDocClient.send).toHaveBeenCalledWith(
-      expect.objectContaining({ input: expectedDdbDocClientInput.input }),
-    )
+    expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
   it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws a native Error`, async () => {

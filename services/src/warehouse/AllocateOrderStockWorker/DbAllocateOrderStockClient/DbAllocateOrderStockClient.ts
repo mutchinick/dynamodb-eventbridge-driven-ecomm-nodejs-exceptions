@@ -71,17 +71,29 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
 
     try {
       const tableName = process.env.WAREHOUSE_TABLE_NAME
+
       const { allocateOrderStockData } = allocateOrderStockCommand
       const { orderId, sku, units, price, userId, createdAt, updatedAt } = allocateOrderStockData
-      const allocationStatus = 'ALLOCATED'
+
+      const allocationPk = `WAREHOUSE#SKU#${sku}`
+      const allocationSk = `SKU#${sku}#ORDER_ID#${orderId}#ALLOCATION`
+      const allocationTn = `WAREHOUSE#ALLOCATION`
+      const allocationSn = `WAREHOUSE`
+      const allocationGsi1Pk = `WAREHOUSE#ALLOCATION`
+      const allocationGsi1Sk = `CREATED_AT#${createdAt}`
+      const allocationStatus = `ALLOCATED`
+
+      const skuItemPk = `WAREHOUSE#SKU#${sku}`
+      const skuItemSk = `SKU#${sku}`
+
       const ddbCommand = new TransactWriteCommand({
         TransactItems: [
           {
             Put: {
               TableName: tableName,
               Item: {
-                pk: `SKU_ID#${sku}#ORDER_ID#${orderId}#STOCK_ALLOCATION`,
-                sk: `SKU_ID#${sku}#ORDER_ID#${orderId}#STOCK_ALLOCATION`,
+                pk: allocationPk,
+                sk: allocationSk,
                 sku,
                 orderId,
                 units,
@@ -90,7 +102,10 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
                 allocationStatus,
                 createdAt,
                 updatedAt,
-                _tn: 'WAREHOUSE#STOCK_ALLOCATION',
+                _tn: allocationTn,
+                _sn: allocationSn,
+                gsi1pk: allocationGsi1Pk,
+                gsi1sk: allocationGsi1Sk,
               },
               ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
             },
@@ -99,29 +114,17 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
             Update: {
               TableName: tableName,
               Key: {
-                pk: `SKU#${sku}`,
-                sk: `SKU#${sku}`,
+                pk: skuItemPk,
+                sk: skuItemSk,
               },
-              UpdateExpression:
-                `SET ` +
-                `#sku = :sku, ` +
-                `#units = #units - :units, ` +
-                `#createdAt = if_not_exists(#createdAt, :createdAt), ` +
-                `#updatedAt = :updatedAt, ` +
-                `#_tn = :_tn`,
+              UpdateExpression: `SET #units = #units - :units, #updatedAt = :updatedAt`,
               ExpressionAttributeNames: {
-                '#sku': 'sku',
                 '#units': 'units',
-                '#createdAt': 'createdAt',
                 '#updatedAt': 'updatedAt',
-                '#_tn': '_tn',
               },
               ExpressionAttributeValues: {
-                ':sku': sku,
                 ':units': units,
-                ':createdAt': createdAt,
                 ':updatedAt': updatedAt,
-                ':_tn': 'WAREHOUSE#SKU',
               },
               ConditionExpression: 'attribute_exists(pk) AND attribute_exists(sk) and #units >= :units',
             },

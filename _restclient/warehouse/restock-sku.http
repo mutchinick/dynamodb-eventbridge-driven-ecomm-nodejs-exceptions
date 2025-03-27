@@ -1,5 +1,6 @@
 @restockSkuBaseUrl = {{$dotenv RESTOCK_SKU_BASE_URL}}
 
+### SKU_RESTOCKED_EVENT
 ### POST ###
 POST {{restockSkuBaseUrl}}/api/v1/warehouse/restockSku
 Origin: https://localhost
@@ -11,6 +12,7 @@ Content-Type: application/json
   "lotId": "A00002"
 }
 
+### SKU_RESTOCKED_EVENT
 ### POST ###
 POST {{restockSkuBaseUrl}}/api/v1/warehouse/restockSku
 Origin: https://localhost
@@ -22,6 +24,7 @@ Content-Type: application/json
   "lotId": "B00001"
 }
 
+### SKU_RESTOCKED_EVENT
 ### POST ###
 POST {{restockSkuBaseUrl}}/api/v1/warehouse/restockSku
 Origin: https://localhost
@@ -33,3 +36,8 @@ Content-Type: application/json
   "lotId": "C00001"
 }
 
+### CORS QUERY
+### OPTIONS ###
+OPTIONS {{restockSkuBaseUrl}}/api/v1/warehouse/restockSku
+Origin: https://localhost
+Access-Control-Request-Method: POST

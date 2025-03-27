@@ -63,16 +63,44 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
     const logContext = 'EsRaiseOrderCreatedEventClient.buildDdbCommand'
 
     try {
-      return new PutCommand({
-        TableName: process.env.EVENT_STORE_TABLE_NAME,
+      const tableName = process.env.EVENT_STORE_TABLE_NAME
+
+      const { eventData } = orderCreatedEvent
+      const { orderId, orderStatus, sku, units, price, userId, createdAt, updatedAt } = eventData
+
+      const eventPk = `EVENTS#ORDER_ID#${orderId}`
+      const eventSk = `EVENT#${orderCreatedEvent.eventName}`
+      const eventTn = `EVENTS#EVENT`
+      const eventSn = `EVENTS`
+      const eventGsi1pk = `EVENTS#EVENT`
+      const eventGsi1sk = `CREATED_AT#${orderCreatedEvent.createdAt}`
+
+      const ddbCommand = new PutCommand({
+        TableName: tableName,
         Item: {
-          pk: `ORDER_ID#${orderCreatedEvent.eventData.orderId}`,
-          sk: `EVENT#${orderCreatedEvent.eventName}`,
-          _tn: '#EVENT',
-          ...orderCreatedEvent,
+          pk: eventPk,
+          sk: eventSk,
+          eventName: orderCreatedEvent.eventName,
+          eventData: {
+            orderId,
+            orderStatus,
+            sku,
+            units,
+            price,
+            userId,
+            createdAt,
+            updatedAt,
+          },
+          createdAt: orderCreatedEvent.createdAt,
+          updatedAt: orderCreatedEvent.updatedAt,
+          _tn: eventTn,
+          _sn: eventSn,
+          gsi1pk: eventGsi1pk,
+          gsi1sk: eventGsi1sk,
         },
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })
+      return ddbCommand
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, orderCreatedEvent })

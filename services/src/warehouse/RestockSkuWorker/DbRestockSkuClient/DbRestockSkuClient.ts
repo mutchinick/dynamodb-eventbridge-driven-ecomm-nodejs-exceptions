@@ -64,21 +64,40 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
 
     try {
       const tableName = process.env.WAREHOUSE_TABLE_NAME
+
       const { sku, units, lotId, createdAt, updatedAt } = restockSkuCommand.restockSkuData
+
+      const restockPk = `WAREHOUSE#SKU#${sku}`
+      const restockSk = `LOT_ID#${lotId}`
+      const restockTn = `WAREHOUSE#RESTOCK`
+      const restockSn = `WAREHOUSE`
+      const restockGsi1Pk = `WAREHOUSE#RESTOCK`
+      const restockGsi1Sk = `CREATED_AT#${createdAt}`
+
+      const skuItemPk = `WAREHOUSE#SKU#${sku}`
+      const skuItemSk = `SKU#${sku}`
+      const skuItemTn = `WAREHOUSE#SKU`
+      const skuItemSn = `WAREHOUSE`
+      const skuItemGsi1Pk = `WAREHOUSE#SKU`
+      const skuItemGsi1Sk = `CREATED_AT#${createdAt}`
+
       const ddbCommand = new TransactWriteCommand({
         TransactItems: [
           {
             Put: {
               TableName: tableName,
               Item: {
-                pk: `LOT_ID#${lotId}`,
-                sk: `LOT_ID#${lotId}`,
+                pk: restockPk,
+                sk: restockSk,
                 sku,
                 units,
                 lotId,
                 createdAt,
                 updatedAt,
-                _tn: 'WAREHOUSE#LOT',
+                _tn: restockTn,
+                _sn: restockSn,
+                gsi1pk: restockGsi1Pk,
+                gsi1sk: restockGsi1Sk,
               },
               ConditionExpression: 'attribute_not_exists(pk)',
             },
@@ -87,8 +106,8 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
             Update: {
               TableName: tableName,
               Key: {
-                pk: `SKU#${sku}`,
-                sk: `SKU#${sku}`,
+                pk: skuItemPk,
+                sk: skuItemSk,
               },
               UpdateExpression:
                 `SET ` +
@@ -96,13 +115,19 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
                 `#units = if_not_exists(#units, :zero) + :units, ` +
                 `#createdAt = if_not_exists(#createdAt, :createdAt), ` +
                 `#updatedAt = :updatedAt, ` +
-                `#_tn = :_tn`,
+                `#_tn = :_tn, ` +
+                `#_sn = :_sn, ` +
+                `#gsi1pk = :gsi1pk, ` +
+                `#gsi1sk = :gsi1sk`,
               ExpressionAttributeNames: {
                 '#sku': 'sku',
                 '#units': 'units',
                 '#createdAt': 'createdAt',
                 '#updatedAt': 'updatedAt',
                 '#_tn': '_tn',
+                '#_sn': '_sn',
+                '#gsi1pk': 'gsi1pk',
+                '#gsi1sk': 'gsi1sk',
               },
               ExpressionAttributeValues: {
                 ':sku': sku,
@@ -110,7 +135,10 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
                 ':createdAt': createdAt,
                 ':updatedAt': updatedAt,
                 ':zero': 0,
-                ':_tn': 'WAREHOUSE#SKU',
+                ':_tn': skuItemTn,
+                ':_sn': skuItemSn,
+                ':gsi1pk': skuItemGsi1Pk,
+                ':gsi1sk': skuItemGsi1Sk,
               },
             },
           },

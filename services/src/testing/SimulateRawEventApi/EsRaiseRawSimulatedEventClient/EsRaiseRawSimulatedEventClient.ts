@@ -63,12 +63,29 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
     const logContext = 'EsRaiseRawSimulatedEventClient.sendDdbCommand'
 
     try {
-      const { pk, sk, eventName, eventData, createdAt, updatedAt, _tn } = rawSimulatedEvent
-      return new PutCommand({
-        TableName: process.env.EVENT_STORE_TABLE_NAME,
-        Item: { pk, sk, eventName, eventData, createdAt, updatedAt, _tn },
+      const tableName = process.env.EVENT_STORE_TABLE_NAME
+
+      const eventPk = rawSimulatedEvent.pk
+      const eventSk = rawSimulatedEvent.sk
+      const eventTn = `EVENTS#EVENT`
+      const eventSn = `EVENTS`
+      const eventGsi1pk = `EVENTS#EVENT`
+      const eventGsi1sk = `CREATED_AT#${rawSimulatedEvent.createdAt}`
+
+      const ddbCommand = new PutCommand({
+        TableName: tableName,
+        Item: {
+          pk: eventPk,
+          sk: eventSk,
+          ...rawSimulatedEvent,
+          _tn: eventTn,
+          _sn: eventSn,
+          gsi1pk: eventGsi1pk,
+          gsi1sk: eventGsi1sk,
+        },
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })
+      return ddbCommand
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, rawSimulatedEvent })

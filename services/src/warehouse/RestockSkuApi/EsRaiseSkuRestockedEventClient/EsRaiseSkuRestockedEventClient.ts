@@ -63,13 +63,35 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
     const logContext = 'EsRaiseSkuRestockedEventClient.buildDdbCommand'
 
     try {
+      const tableName = process.env.EVENT_STORE_TABLE_NAME
+
+      const { eventName, eventData, createdAt, updatedAt } = skuRestockedEvent
+      const { sku, units, lotId } = eventData
+
+      const eventPk = `EVENTS#SKU#${sku}`
+      const eventSk = `EVENT#${eventName}#LOT_ID#${lotId}`
+      const eventTn = `EVENTS#EVENT`
+      const eventSn = `EVENTS`
+      const eventGsi1pk = `EVENTS#EVENT`
+      const eventGsi1sk = `CREATED_AT#${createdAt}`
+
       const ddbCommand = new PutCommand({
-        TableName: process.env.EVENT_STORE_TABLE_NAME,
+        TableName: tableName,
         Item: {
-          pk: `SKU#${skuRestockedEvent.eventData.sku}`,
-          sk: `EVENT#${skuRestockedEvent.eventName}#LOT_ID#${skuRestockedEvent.eventData.lotId}`,
-          _tn: '#EVENT',
-          ...skuRestockedEvent,
+          pk: eventPk,
+          sk: eventSk,
+          eventName,
+          eventData: {
+            sku,
+            units,
+            lotId,
+          },
+          createdAt,
+          updatedAt,
+          _tn: eventTn,
+          _sn: eventSn,
+          gsi1pk: eventGsi1pk,
+          gsi1sk: eventGsi1sk,
         },
         ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
       })
