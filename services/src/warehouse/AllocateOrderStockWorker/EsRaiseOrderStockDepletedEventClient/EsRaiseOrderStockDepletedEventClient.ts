@@ -31,7 +31,6 @@ export class EsRaiseOrderStockDepletedEventClient implements IEsRaiseOrderStockD
     console.info(`${logContext} init:`, { orderStockDepletedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(orderStockDepletedEvent)
       const ddbCommand = this.buildDdbCommand(orderStockDepletedEvent)
       await this.sendDdbCommand(ddbCommand)

@@ -30,7 +30,6 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
     const logContext = 'DbUpdateOrderClient.updateOrder'
     console.info(`${logContext} init:`, { updateOrderCommand })
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(updateOrderCommand)
       const ddbCommand = this.buildDdbCommand(updateOrderCommand)
       const orderData = await this.sendDdbCommand(ddbCommand)

@@ -38,7 +38,6 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
     console.info(`${logContext} init:`, { allocateOrderStockCommand })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(allocateOrderStockCommand)
       const ddbCommand = this.buildDdbCommand(allocateOrderStockCommand)
       await this.sendDdbCommand(ddbCommand)

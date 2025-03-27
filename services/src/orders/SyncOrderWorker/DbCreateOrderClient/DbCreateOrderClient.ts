@@ -31,7 +31,6 @@ export class DbCreateOrderClient implements IDbCreateOrderClient {
     console.info(`${logContext} init:`, { createOrderCommand })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(createOrderCommand)
       const ddbCommand = this.buildDdbCommand(createOrderCommand)
       const orderData = await this.sendDdbCommand(ddbCommand)

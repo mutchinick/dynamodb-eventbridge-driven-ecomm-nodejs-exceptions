@@ -56,7 +56,6 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       // IncomingOrderEvent class which enforces strict validation. Still we perform just enough validation to
       // prevent unlikely but possible uncaught exceptions for some properties that are accessed directly.
 
-      // TODO: this.validateInput(...)
       this.validateInput(incomingOrderEvent)
 
       const isOrderPlacedEvent = IncomingOrderEvent.isOrderPlacedEvent(incomingOrderEvent)

@@ -31,7 +31,6 @@ export class RestockSkuWorkerService implements IRestockSkuWorkerService {
     console.info(`${logContext} init:`, { incomingSkuRestockedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(incomingSkuRestockedEvent)
       const restockSkuCommand = RestockSkuCommand.validateAndBuild({ incomingSkuRestockedEvent })
       await this.dbRestockSkuClient.restockSku(restockSkuCommand)

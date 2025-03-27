@@ -31,7 +31,6 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
     console.info(`${logContext} init:`, { incomingPlaceOrderRequest })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(incomingPlaceOrderRequest)
       await this.raiseOrderPlacedEvent(incomingPlaceOrderRequest)
       const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }

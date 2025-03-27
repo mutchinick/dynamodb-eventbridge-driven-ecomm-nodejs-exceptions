@@ -31,7 +31,6 @@ export class EsRaiseOrderPlacedEventClient implements IEsRaiseOrderPlacedEventCl
     console.info(`${logContext} init:`, { orderPlacedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(orderPlacedEvent)
       const ddbCommand = this.buildDdbCommand(orderPlacedEvent)
       await this.sendDdbCommand(ddbCommand)

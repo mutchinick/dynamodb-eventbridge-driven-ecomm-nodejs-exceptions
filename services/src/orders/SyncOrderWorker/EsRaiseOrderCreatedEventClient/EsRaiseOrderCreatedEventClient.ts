@@ -31,7 +31,6 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
     console.info(`${logContext} init:`, { orderCreatedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(orderCreatedEvent)
       const ddbCommand = this.buildDdbCommand(orderCreatedEvent)
       await this.sendDdbCommand(ddbCommand)

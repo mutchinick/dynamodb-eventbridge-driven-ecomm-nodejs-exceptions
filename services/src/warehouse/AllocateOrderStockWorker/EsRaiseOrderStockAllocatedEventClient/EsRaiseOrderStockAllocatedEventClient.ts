@@ -31,7 +31,6 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
     console.info(`${logContext} init:`, { orderStockAllocatedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(orderStockAllocatedEvent)
       const ddbCommand = this.buildDdbCommand(orderStockAllocatedEvent)
       await this.sendDdbCommand(ddbCommand)

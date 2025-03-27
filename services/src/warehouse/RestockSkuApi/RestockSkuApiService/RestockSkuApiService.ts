@@ -32,7 +32,6 @@ export class RestockSkuApiService implements IRestockSkuApiService {
     console.info(`${logContext} init:`, { incomingRestockSkuRequest })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(incomingRestockSkuRequest)
       await this.raiseSkuRestockedEvent(incomingRestockSkuRequest)
       const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }

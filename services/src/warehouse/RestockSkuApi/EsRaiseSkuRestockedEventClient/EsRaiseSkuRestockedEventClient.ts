@@ -31,7 +31,6 @@ export class EsRaiseSkuRestockedEventClient implements IEsRaiseSkuRestockedEvent
     console.info(`${logContext} init:`, { skuRestockedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(skuRestockedEvent)
       const ddbCommand = this.buildDdbCommand(skuRestockedEvent)
       await this.sendDdbCommand(ddbCommand)

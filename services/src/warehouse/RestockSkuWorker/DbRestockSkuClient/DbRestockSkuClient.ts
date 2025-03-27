@@ -31,7 +31,6 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
     console.info(`${logContext} init:`, { restockSkuCommand })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(restockSkuCommand)
       const ddbCommand = this.buildDdbCommand(restockSkuCommand)
       await this.sendDdbCommand(ddbCommand)

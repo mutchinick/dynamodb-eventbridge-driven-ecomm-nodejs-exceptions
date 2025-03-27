@@ -43,7 +43,6 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
     console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(incomingOrderCreatedEvent)
       await this.allocateOrder(incomingOrderCreatedEvent)
       await this.raiseAllocatedEvent(incomingOrderCreatedEvent)

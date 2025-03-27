@@ -31,7 +31,6 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
     console.info(`${logContext} init:`, { incomingSimulateRawEventRequest })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(incomingSimulateRawEventRequest)
       await this.raiseRawSimulatedEvent(incomingSimulateRawEventRequest)
       const serviceOutput: SimulateRawEventApiServiceOutput = { ...incomingSimulateRawEventRequest }

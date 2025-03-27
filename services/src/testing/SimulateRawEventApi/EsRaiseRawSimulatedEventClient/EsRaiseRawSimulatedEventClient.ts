@@ -31,7 +31,6 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
     console.info(`${logContext} init:`, { rawSimulatedEvent })
 
     try {
-      // TODO: this.validateInput(...)
       this.validateInput(rawSimulatedEvent)
       const ddbCommand = this.buildDdbCommand(rawSimulatedEvent)
       await this.sendDdbCommand(ddbCommand)
