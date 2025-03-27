@@ -23,7 +23,7 @@ export class IncomingPlaceOrderRequest implements IncomingPlaceOrderRequestProps
   ) {}
 
   /**
-   * @throws {InvalidArgumentsError
+   * @throws {InvalidArgumentsError}
    */
   public static validateAndBuild(
     incomingPlaceOrderRequestInput: IncomingPlaceOrderRequestInput,
