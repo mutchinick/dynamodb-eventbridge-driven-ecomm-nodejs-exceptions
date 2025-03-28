@@ -84,6 +84,15 @@ describe(`Orders Service SyncOrderWorker DbGetOrderClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
+  it(`throws a non-transient InvalidArgumentsError if the input GetOrderCommand is null`, async () => {
+    const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
+    const dbGetOrderClient = new DbGetOrderClient(mockDdbDocClient)
+    const mockTestCommand = null as never
+    const resultPromise = dbGetOrderClient.getOrder(mockTestCommand)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
   it(`throws a non-transient InvalidArgumentsError if the input GetOrderCommand.orderData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderClient = new DbGetOrderClient(mockDdbDocClient)
@@ -97,7 +106,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderClient tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input GetOrderCommand.orderData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderClient = new DbGetOrderClient(mockDdbDocClient)
-    const mockTestCommand = null as never
+    const mockTestCommand = buildMockGetOrderCommand()
+    mockTestCommand.orderData = null
     const resultPromise = dbGetOrderClient.getOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
