@@ -31,17 +31,6 @@ function buildMockRawSimulatedEvent(): TypeUtilsMutable<RawSimulatedEvent> {
 
 const mockRawSimulatedEvent = buildMockRawSimulatedEvent()
 
-const tableName = process.env.EVENT_STORE_TABLE_NAME
-
-const EVENTS = `EVENTS`
-
-const itemPk = mockRawSimulatedEvent.pk
-const itemSk = mockRawSimulatedEvent.sk
-const itemTn = `${EVENTS}#EVENT`
-const itemSn = EVENTS
-const itemGsi1pk = EVENTS
-const itemGsi1sk = `CREATED_AT${mockRawSimulatedEvent.createdAt}#${itemPk}#${itemSk}`
-
 function buildMockDdbCommand(): PutCommand {
   const ddbCommand = new PutCommand({
     TableName: mockEventStoreTableName,
