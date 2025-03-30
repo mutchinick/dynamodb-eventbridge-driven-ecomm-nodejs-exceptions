@@ -192,4 +192,60 @@ describe(`Orders Service ValueValidators tests`, () => {
       expect(() => ValueValidators.validUpdatedAt().parse(testValue)).not.toThrow()
     })
   })
+
+  describe(`validSortOrder tests`, () => {
+    it(`throws if sortOrder is undefined`, () => {
+      const testValue = undefined as string
+      expect(() => ValueValidators.validSortOrder().parse(testValue)).toThrow()
+    })
+
+    it(`throws if sortOrder a random string`, () => {
+      const testValue = 'xyz'
+      expect(() => ValueValidators.validSortOrder().parse(testValue)).toThrow()
+    })
+
+    it(`is valid if sortOrder === 'asc`, () => {
+      const testValue = 'asc'
+      expect(() => ValueValidators.validSortOrder().parse(testValue)).not.toThrow()
+    })
+
+    it(`is valid if sortOrder === 'desc`, () => {
+      const testValue = 'desc'
+      expect(() => ValueValidators.validSortOrder().parse(testValue)).not.toThrow()
+    })
+  })
+
+  describe(`validLimit tests`, () => {
+    it(`throws if limit is undefined`, () => {
+      const testValue = undefined as string
+      expect(() => ValueValidators.validLimit().parse(testValue)).toThrow()
+    })
+
+    it(`throws if limit = 0`, () => {
+      const testValue = 0
+      expect(() => ValueValidators.validLimit().parse(testValue)).toThrow()
+    })
+
+    it(`throws if limit < 0`, () => {
+      const testValue = -1
+      expect(() => ValueValidators.validLimit().parse(testValue)).toThrow()
+    })
+
+    it(`throws if limit > 1000`, () => {
+      const testValue = 1001
+      expect(() => ValueValidators.validLimit().parse(testValue)).toThrow()
+    })
+
+    it(`throws if limit is not an integer`, () => {
+      const testValue = 3.45
+      expect(() => ValueValidators.validLimit().parse(testValue)).toThrow()
+    })
+
+    it(`is valid if limit >= 1 <= 1000`, () => {
+      const testValueFor1 = 1
+      const testValueFor1000 = 1000
+      expect(() => ValueValidators.validLimit().parse(testValueFor1)).not.toThrow()
+      expect(() => ValueValidators.validLimit().parse(testValueFor1000)).not.toThrow()
+    })
+  })
 })
