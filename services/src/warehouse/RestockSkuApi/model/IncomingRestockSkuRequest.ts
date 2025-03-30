@@ -48,11 +48,12 @@ export class IncomingRestockSkuRequest implements IncomingRestockSkuRequestProps
   ): IncomingRestockSkuRequestProps {
     this.validateInput(incomingRestockSkuRequestInput)
     const { sku, units, lotId } = incomingRestockSkuRequestInput
-    return {
+    const incomingRestockSkuRequestProps: IncomingRestockSkuRequestProps = {
       sku,
       units,
       lotId,
     }
+    return incomingRestockSkuRequestProps
   }
 
   /**

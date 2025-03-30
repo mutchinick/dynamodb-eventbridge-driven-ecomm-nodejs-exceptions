@@ -50,13 +50,14 @@ export class IncomingPlaceOrderRequest implements IncomingPlaceOrderRequestProps
   ): IncomingPlaceOrderRequestProps {
     this.validateInput(incomingPlaceOrderRequestInput)
     const { orderId, sku, units, price, userId } = incomingPlaceOrderRequestInput
-    return {
+    const incomingPlaceOrderRequestProps: IncomingPlaceOrderRequestProps = {
       orderId,
       sku,
       units,
       price,
       userId,
     }
+    return incomingPlaceOrderRequestProps
   }
 
   /**

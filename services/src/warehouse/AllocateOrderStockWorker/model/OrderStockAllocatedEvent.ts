@@ -69,12 +69,13 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
       userId,
     }
 
-    return {
+    const orderStockAllocatedEventProps: OrderStockAllocatedEventProps = {
       eventName: WarehouseEventName.ORDER_STOCK_ALLOCATED_EVENT,
       eventData: orderStockAllocatedEventData,
       createdAt: date,
       updatedAt: date,
     }
+    return orderStockAllocatedEventProps
   }
 
   /**

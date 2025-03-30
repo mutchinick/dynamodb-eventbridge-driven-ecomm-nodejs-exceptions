@@ -48,7 +48,7 @@ export class RawSimulatedEvent implements RawSimulatedEventProps {
 
     const date = new Date().toISOString()
     const { pk, sk, eventName, eventData, createdAt, updatedAt } = rawSimulatedEventInput
-    return {
+    const rawSimulatedEventProps: RawSimulatedEventProps = {
       pk,
       sk,
       eventName,
@@ -56,6 +56,7 @@ export class RawSimulatedEvent implements RawSimulatedEventProps {
       createdAt: createdAt?.trim() || date,
       updatedAt: updatedAt?.trim() || date,
     }
+    return rawSimulatedEventProps
   }
 
   /**

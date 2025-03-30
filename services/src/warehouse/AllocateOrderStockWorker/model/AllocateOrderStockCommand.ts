@@ -58,7 +58,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     const { incomingOrderCreatedEvent } = allocateOrderStockCommandInput
     const { orderId, sku, units, price, userId } = incomingOrderCreatedEvent.eventData
     const date = new Date().toISOString()
-    return {
+    const allocateOrderStockCommandProps: AllocateOrderStockCommandProps = {
       allocateOrderStockData: {
         orderId,
         sku,
@@ -70,6 +70,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
       },
       options: {},
     }
+    return allocateOrderStockCommandProps
   }
 
   /**

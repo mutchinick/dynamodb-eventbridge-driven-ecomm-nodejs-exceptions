@@ -54,7 +54,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
     const { incomingSkuRestockedEvent } = restockSkuCommandInput
     const { sku, units, lotId } = incomingSkuRestockedEvent.eventData
     const date = new Date().toISOString()
-    return {
+    const restockSkuCommandProps: RestockSkuCommandProps = {
       restockSkuData: {
         sku,
         units,
@@ -64,6 +64,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
       },
       options: {},
     }
+    return restockSkuCommandProps
   }
 
   /**

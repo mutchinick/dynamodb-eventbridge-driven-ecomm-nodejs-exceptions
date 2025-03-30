@@ -59,12 +59,13 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
       userId,
     }
 
-    return {
+    const orderPlacedEventProps: OrderPlacedEventProps = {
       eventName: OrderEventName.ORDER_PLACED_EVENT,
       eventData: orderPlacedEventData,
       createdAt: date,
       updatedAt: date,
     }
+    return orderPlacedEventProps
   }
 
   /**

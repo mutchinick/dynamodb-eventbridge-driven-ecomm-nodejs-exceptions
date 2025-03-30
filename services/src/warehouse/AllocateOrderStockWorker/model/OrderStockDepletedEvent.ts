@@ -62,12 +62,13 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
       userId,
     }
 
-    return {
+    const orderStockDepletedEventProps: OrderStockDepletedEventProps = {
       eventName: WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT,
       eventData: orderStockDepletedEventData,
       createdAt: date,
       updatedAt: date,
     }
+    return orderStockDepletedEventProps
   }
 
   /**

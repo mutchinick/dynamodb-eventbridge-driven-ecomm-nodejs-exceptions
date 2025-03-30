@@ -60,7 +60,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     const newOrderStatus = this.getNewOrderStatus(eventName)
     const currentDate = new Date().toISOString()
 
-    return {
+    const createOrderCommandProps: CreateOrderCommandProps = {
       orderData: {
         orderId,
         orderStatus: newOrderStatus,
@@ -73,6 +73,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
       },
       options: {},
     }
+    return createOrderCommandProps
   }
 
   /**

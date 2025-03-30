@@ -75,7 +75,7 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     const orderId = existingOrderData.orderId
     const newOrderStatus = this.getNewOrderStatus({ existingOrderStatus, incomingEventName })
     const updatedAt = new Date().toISOString()
-    return {
+    const updateOrderCommandProps: UpdateOrderCommandProps = {
       orderData: {
         orderId,
         orderStatus: newOrderStatus,
@@ -83,6 +83,7 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
       },
       options: {},
     }
+    return updateOrderCommandProps
   }
 
   /**

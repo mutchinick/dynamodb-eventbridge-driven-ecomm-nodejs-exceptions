@@ -49,10 +49,11 @@ export class GetOrderCommand implements GetOrderCommandProps {
     this.validateInput(getOrderCommandInput)
 
     const { orderId } = getOrderCommandInput
-    return {
+    const getOrderCommandProps: GetOrderCommandProps = {
       orderData: { orderId },
       options: {},
     }
+    return getOrderCommandProps
   }
 
   /**

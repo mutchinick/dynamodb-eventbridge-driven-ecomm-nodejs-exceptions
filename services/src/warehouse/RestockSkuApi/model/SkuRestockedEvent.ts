@@ -51,12 +51,13 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
 
     const { sku, units, lotId } = skuRestockedEventInput
     const date = new Date().toISOString()
-    return {
+    const skuRestockedEventProps: SkuRestockedEventProps = {
       eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,
       eventData: { sku, units, lotId },
       createdAt: date,
       updatedAt: date,
     }
+    return skuRestockedEventProps
   }
 
   /**
