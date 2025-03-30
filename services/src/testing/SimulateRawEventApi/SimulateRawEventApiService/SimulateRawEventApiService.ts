@@ -20,7 +20,7 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
   /**
    *
    */
-  constructor(private readonly ddbRawSimulatedEventClient: IEsRaiseRawSimulatedEventClient) {}
+  constructor(private readonly esRaiseRawSimulatedEventClient: IEsRaiseRawSimulatedEventClient) {}
 
   /**
    * @throws {InvalidArgumentsError}
@@ -79,7 +79,7 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
 
     try {
       const rawSimulatedEvent = RawSimulatedEvent.validateAndBuild(incomingSimulateRawEventRequest)
-      await this.ddbRawSimulatedEventClient.raiseRawSimulatedEvent(rawSimulatedEvent)
+      await this.esRaiseRawSimulatedEventClient.raiseRawSimulatedEvent(rawSimulatedEvent)
       console.info(`${logContext} exit success:`, { rawSimulatedEvent, incomingSimulateRawEventRequest })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingSimulateRawEventRequest })
