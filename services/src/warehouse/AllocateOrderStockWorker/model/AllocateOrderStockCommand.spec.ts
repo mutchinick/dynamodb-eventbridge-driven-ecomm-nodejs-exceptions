@@ -417,8 +417,8 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
   //
   it(`returns the expected AllocateOrderStockCommand`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
-    const allocateOrderStockCommand = AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
-    const expected: AllocateOrderStockCommand = {
+    const result = AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    const expectedCommand: AllocateOrderStockCommand = {
       allocateOrderStockData: {
         orderId: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId,
         sku: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.sku,
@@ -430,6 +430,6 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
       },
       options: {},
     }
-    expect(allocateOrderStockCommand).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 })

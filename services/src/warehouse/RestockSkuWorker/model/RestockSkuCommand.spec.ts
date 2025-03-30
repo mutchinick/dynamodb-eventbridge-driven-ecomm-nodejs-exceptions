@@ -415,8 +415,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
   //
   it(`returns the expected RestockSkuCommand`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
-    const restockSkuCommand = RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
-    const expected: RestockSkuCommand = {
+    const result = RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
+    const expectedCommand: RestockSkuCommand = {
       restockSkuData: {
         sku: mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku,
         units: mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units,
@@ -426,6 +426,6 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
       },
       options: {},
     }
-    expect(restockSkuCommand).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 })

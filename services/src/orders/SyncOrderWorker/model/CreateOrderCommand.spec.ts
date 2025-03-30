@@ -542,8 +542,8 @@ describe(`Orders Service SyncOrderWorker CreateOrderCommand tests`, () => {
   //
   it(`returns the expected CreateOrderCommand with the expected data and orderStatus === ORDER_PLACED_STATUS`, () => {
     const mockCreateOrderCommandInput = buildMockCreateOrderCommandInput()
-    const createOrderCommand = CreateOrderCommand.validateAndBuild(mockCreateOrderCommandInput)
-    const expected: CreateOrderCommand = {
+    const result = CreateOrderCommand.validateAndBuild(mockCreateOrderCommandInput)
+    const expectedCommand: CreateOrderCommand = {
       orderData: {
         orderId: mockCreateOrderCommandInput.incomingOrderEvent.eventData.orderId,
         orderStatus: OrderStatus.ORDER_CREATED_STATUS,
@@ -556,6 +556,6 @@ describe(`Orders Service SyncOrderWorker CreateOrderCommand tests`, () => {
       },
       options: {},
     }
-    expect(createOrderCommand).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 })

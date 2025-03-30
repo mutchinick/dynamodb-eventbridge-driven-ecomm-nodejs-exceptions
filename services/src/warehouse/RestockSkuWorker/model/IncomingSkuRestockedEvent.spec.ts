@@ -589,7 +589,16 @@ describe(`Warehouse Service RestockSkuWorker IncomingSkuRestockedEvent tests`, (
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent()
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingSkuRestockedEvent)
     const result = IncomingSkuRestockedEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected = mockIncomingSkuRestockedEvent
-    expect(result).toMatchObject(expected)
+    const expectedEvent: IncomingSkuRestockedEvent = {
+      eventName: mockIncomingSkuRestockedEvent.eventName,
+      eventData: {
+        sku: mockIncomingSkuRestockedEvent.eventData.sku,
+        units: mockIncomingSkuRestockedEvent.eventData.units,
+        lotId: mockIncomingSkuRestockedEvent.eventData.lotId,
+      },
+      createdAt: mockIncomingSkuRestockedEvent.createdAt,
+      updatedAt: mockIncomingSkuRestockedEvent.updatedAt,
+    }
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

@@ -911,13 +911,13 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
   })
 
   //
-  // Test expected results
+  // Test expectedEvent results
   //
-  it(`returns the expected IncomingOrderEvent if the input is valid`, () => {
+  it(`returns the expectedEvent IncomingOrderEvent if the input is valid`, () => {
     const mockIncomingOrderEvent = buildMockIncomingOrderEvent()
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderEvent)
     const result = IncomingOrderEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected: IncomingOrderEvent = {
+    const expectedEvent: IncomingOrderEvent = {
       eventName: mockIncomingOrderEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderEvent.eventData.orderId,
@@ -932,15 +932,15 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
       createdAt: mockIncomingOrderEvent.createdAt,
       updatedAt: mockIncomingOrderEvent.updatedAt,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 
-  it(`returns the expected IncomingOrderEvent if the input is valid and sku is missing`, () => {
+  it(`returns the expectedEvent IncomingOrderEvent if the input is valid and sku is missing`, () => {
     const mockIncomingOrderEvent = buildMockIncomingOrderEvent()
     delete mockIncomingOrderEvent.eventData.sku
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderEvent)
     const result = IncomingOrderEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected: IncomingOrderEvent = {
+    const expectedEvent: IncomingOrderEvent = {
       eventName: mockIncomingOrderEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderEvent.eventData.orderId,
@@ -954,15 +954,15 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
       createdAt: mockIncomingOrderEvent.createdAt,
       updatedAt: mockIncomingOrderEvent.updatedAt,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 
-  it(`returns the expected IncomingOrderEvent if the input is valid and units is missing`, () => {
+  it(`returns the expectedEvent IncomingOrderEvent if the input is valid and units is missing`, () => {
     const mockIncomingOrderEvent = buildMockIncomingOrderEvent()
     delete mockIncomingOrderEvent.eventData.units
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderEvent)
     const result = IncomingOrderEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected: IncomingOrderEvent = {
+    const expectedEvent: IncomingOrderEvent = {
       eventName: mockIncomingOrderEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderEvent.eventData.orderId,
@@ -976,15 +976,15 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
       createdAt: mockIncomingOrderEvent.createdAt,
       updatedAt: mockIncomingOrderEvent.updatedAt,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 
-  it(`returns the expected IncomingOrderEvent if the input is valid and price is missing`, () => {
+  it(`returns the expectedEvent IncomingOrderEvent if the input is valid and price is missing`, () => {
     const mockIncomingOrderEvent = buildMockIncomingOrderEvent()
     delete mockIncomingOrderEvent.eventData.price
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderEvent)
     const result = IncomingOrderEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected: IncomingOrderEvent = {
+    const expectedEvent: IncomingOrderEvent = {
       eventName: mockIncomingOrderEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderEvent.eventData.orderId,
@@ -998,15 +998,15 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
       createdAt: mockIncomingOrderEvent.createdAt,
       updatedAt: mockIncomingOrderEvent.updatedAt,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 
-  it(`returns the expected IncomingOrderEvent if the input is valid and userId is missing`, () => {
+  it(`returns the expectedEvent IncomingOrderEvent if the input is valid and userId is missing`, () => {
     const mockIncomingOrderEvent = buildMockIncomingOrderEvent()
     delete mockIncomingOrderEvent.eventData.userId
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderEvent)
     const result = IncomingOrderEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected: IncomingOrderEvent = {
+    const expectedEvent: IncomingOrderEvent = {
       eventName: mockIncomingOrderEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderEvent.eventData.orderId,
@@ -1020,15 +1020,15 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
       createdAt: mockIncomingOrderEvent.createdAt,
       updatedAt: mockIncomingOrderEvent.updatedAt,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 
-  it(`returns the expected IncomingOrderEvent if the input is valid and createdAt is missing`, () => {
+  it(`returns the expectedEvent IncomingOrderEvent if the input is valid and createdAt is missing`, () => {
     const mockIncomingOrderEvent = buildMockIncomingOrderEvent()
     delete mockIncomingOrderEvent.eventData.createdAt
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderEvent)
     const result = IncomingOrderEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected: IncomingOrderEvent = {
+    const expectedEvent: IncomingOrderEvent = {
       eventName: mockIncomingOrderEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderEvent.eventData.orderId,
@@ -1042,15 +1042,15 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
       createdAt: mockIncomingOrderEvent.createdAt,
       updatedAt: mockIncomingOrderEvent.updatedAt,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 
-  it(`returns the expected IncomingOrderEvent if the input is valid and updatedAt is missing`, () => {
+  it(`returns the expectedEvent IncomingOrderEvent if the input is valid and updatedAt is missing`, () => {
     const mockIncomingOrderEvent = buildMockIncomingOrderEvent()
     delete mockIncomingOrderEvent.eventData.updatedAt
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderEvent)
     const result = IncomingOrderEvent.validateAndBuild(mockEventBridgeEvent)
-    const expected: IncomingOrderEvent = {
+    const expectedEvent: IncomingOrderEvent = {
       eventName: mockIncomingOrderEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderEvent.eventData.orderId,
@@ -1064,6 +1064,6 @@ describe(`Orders Service SyncOrderWorker IncomingOrderEvent tests`, () => {
       createdAt: mockIncomingOrderEvent.createdAt,
       updatedAt: mockIncomingOrderEvent.updatedAt,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

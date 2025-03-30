@@ -590,7 +590,7 @@ describe(`Warehouse Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
     const result = IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
-    const expectedResult: IncomingOrderCreatedEvent = {
+    const expectedEvent: IncomingOrderCreatedEvent = {
       eventName: mockIncomingOrderCreatedEvent.eventName,
       eventData: {
         orderId: mockIncomingOrderCreatedEvent.eventData.orderId,
@@ -602,6 +602,6 @@ describe(`Warehouse Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       createdAt: mockIncomingOrderCreatedEvent.createdAt,
       updatedAt: mockIncomingOrderCreatedEvent.updatedAt,
     }
-    expect(result).toMatchObject(expectedResult)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

@@ -209,7 +209,7 @@ describe(`Orders Service SyncOrderWorker ListOrdersCommand tests`, () => {
   it(`returns the expected ListOrdersCommand with the expected data`, () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
     const result = ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
-    const expectedResult: ListOrdersCommand = {
+    const expectedCommand: ListOrdersCommand = {
       queryData: {
         orderId: mockListOrdersCommandInput.orderId,
         limit: mockListOrdersCommandInput.limit,
@@ -217,6 +217,6 @@ describe(`Orders Service SyncOrderWorker ListOrdersCommand tests`, () => {
       },
       options: {},
     }
-    expect(result).toStrictEqual(expect.objectContaining(expectedResult))
+    expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 })

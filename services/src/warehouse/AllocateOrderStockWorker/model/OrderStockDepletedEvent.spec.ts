@@ -206,7 +206,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
   //
   it(`returns the expected OrderStockDepletedEvent with eventName and eventData`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
-    const expected: OrderStockDepletedEvent = {
+    const result = OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
+    const expectedEvent: OrderStockDepletedEvent = {
       eventName: WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT,
       eventData: {
         orderId: mockOrderStockDepletedEventInput.orderId,
@@ -218,7 +219,6 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
       createdAt: mockDate,
       updatedAt: mockDate,
     }
-    const orderStockDepletedEvent = OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
-    expect(orderStockDepletedEvent).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

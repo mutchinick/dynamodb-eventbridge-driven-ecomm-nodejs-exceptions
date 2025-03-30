@@ -263,7 +263,7 @@ describe(`Testing Service SimulateRawEventApi IncomingSimulateRawEventRequest te
   it(`returns the expected IncomingSimulateRawEventRequest with the expected data`, () => {
     const mockIncomingSimulateRawEventRequestInput = buildMockIncomingSimulateRawEventRequestInput()
     const result = IncomingSimulateRawEventRequest.validateAndBuild(mockIncomingSimulateRawEventRequestInput)
-    const expectedResult: IncomingSimulateRawEventRequest = {
+    const expectedRequest: IncomingSimulateRawEventRequest = {
       pk: mockIncomingSimulateRawEventRequestInput.pk,
       sk: mockIncomingSimulateRawEventRequestInput.sk,
       eventName: mockIncomingSimulateRawEventRequestInput.eventName,
@@ -271,6 +271,6 @@ describe(`Testing Service SimulateRawEventApi IncomingSimulateRawEventRequest te
       createdAt: mockIncomingSimulateRawEventRequestInput.createdAt,
       updatedAt: mockIncomingSimulateRawEventRequestInput.updatedAt,
     }
-    expect(result).toMatchObject(expectedResult)
+    expect(result).toMatchObject(expectedRequest)
   })
 })

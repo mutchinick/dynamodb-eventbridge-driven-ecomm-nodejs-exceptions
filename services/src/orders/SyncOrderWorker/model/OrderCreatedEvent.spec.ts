@@ -621,14 +621,13 @@ describe(`Orders Service SyncOrderWorker OrderCreatedEvent tests`, () => {
   //
   it(`returns a valid OrderCreatedEvent with the expected data`, () => {
     const mockOrderCreatedEventInput = buildMockOrderCreatedEventInput()
-    const mockSyncedEventName = OrderEventName.ORDER_CREATED_EVENT
-    const expected: OrderCreatedEvent = {
-      eventName: mockSyncedEventName,
+    const result = OrderCreatedEvent.validateAndBuild(mockOrderCreatedEventInput)
+    const expectedEvent: OrderCreatedEvent = {
+      eventName: OrderEventName.ORDER_CREATED_EVENT,
       eventData: mockOrderCreatedEventInput.orderData,
       createdAt: mockDate,
       updatedAt: mockDate,
     }
-    const orderCreatedEvent = OrderCreatedEvent.validateAndBuild(mockOrderCreatedEventInput)
-    expect(orderCreatedEvent).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

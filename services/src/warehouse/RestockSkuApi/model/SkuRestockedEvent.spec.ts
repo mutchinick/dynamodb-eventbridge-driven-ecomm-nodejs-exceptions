@@ -205,7 +205,7 @@ describe(`Warehouse Service RestockSkuApi SkuRestockedEvent tests`, () => {
   it(`returns the expected SkuRestockedEvent with eventName and eventData`, () => {
     const mockSkuRestockedEventInput = buildMockSkuRestockedEventInput()
     const result = SkuRestockedEvent.validateAndBuild(mockSkuRestockedEventInput)
-    const expectedResult: SkuRestockedEvent = {
+    const expectedEvent: SkuRestockedEvent = {
       eventName: WarehouseEventName.SKU_RESTOCKED_EVENT,
       eventData: {
         sku: mockSkuRestockedEventInput.sku,
@@ -215,6 +215,6 @@ describe(`Warehouse Service RestockSkuApi SkuRestockedEvent tests`, () => {
       createdAt: mockDate,
       updatedAt: mockDate,
     }
-    expect(result).toMatchObject(expectedResult)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

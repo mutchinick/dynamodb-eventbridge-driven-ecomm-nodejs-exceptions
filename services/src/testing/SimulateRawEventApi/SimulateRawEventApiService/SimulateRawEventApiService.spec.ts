@@ -108,7 +108,7 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
       createdAt: mockIncomingSimulateRawEventRequest.createdAt,
       updatedAt: mockIncomingSimulateRawEventRequest.updatedAt,
     }
-    expect(result).toMatchObject(expectedResult)
+    expect(result).toStrictEqual(expect.objectContaining(expectedResult))
   })
 
   //
@@ -126,6 +126,6 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
       createdAt: mockIncomingSimulateRawEventRequest.createdAt,
       updatedAt: mockIncomingSimulateRawEventRequest.updatedAt,
     }
-    expect(result).toMatchObject(expectedResult)
+    expect(result).toStrictEqual(expect.objectContaining(expectedResult))
   })
 })

@@ -354,13 +354,13 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
   it(`returns the expected IncomingPlaceOrderRequest if the input is valid`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     const result = IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
-    const expected: IncomingPlaceOrderRequest = {
+    const expectedRequest: IncomingPlaceOrderRequest = {
       orderId: mockIncomingPlaceOrderRequestInput.orderId,
       sku: mockIncomingPlaceOrderRequestInput.sku,
       units: mockIncomingPlaceOrderRequestInput.units,
       price: mockIncomingPlaceOrderRequestInput.price,
       userId: mockIncomingPlaceOrderRequestInput.userId,
-    }
-    expect(result).toMatchObject(expected)
+    } as never
+    expect(result).toStrictEqual(expect.objectContaining(expectedRequest))
   })
 })

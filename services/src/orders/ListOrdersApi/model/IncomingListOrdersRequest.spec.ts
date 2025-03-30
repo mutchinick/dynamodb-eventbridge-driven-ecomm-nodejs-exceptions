@@ -288,11 +288,11 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
   it(`returns the expected IncomingListOrdersRequest if the input is valid`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     const result = IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
-    const expected: IncomingListOrdersRequest = {
+    const expectedRequest: IncomingListOrdersRequest = {
       orderId: mockIncomingListOrdersRequestInput.orderId,
       sortOrder: mockIncomingListOrdersRequestInput.sortOrder,
       limit: mockIncomingListOrdersRequestInput.limit,
     }
-    expect(result).toStrictEqual(expect.objectContaining(expected))
+    expect(result).toStrictEqual(expect.objectContaining(expectedRequest))
   })
 })

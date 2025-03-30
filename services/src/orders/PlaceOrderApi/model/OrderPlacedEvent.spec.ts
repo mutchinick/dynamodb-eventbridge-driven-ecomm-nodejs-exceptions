@@ -333,7 +333,7 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
   it(`returns the expected OrderPlacedEvent with eventName and eventData`, () => {
     const mockOrderPlacedEventInput = buildMockOrderPlacedEventInput()
     const result = OrderPlacedEvent.validateAndBuild(mockOrderPlacedEventInput)
-    const expected: OrderPlacedEvent = {
+    const expectedEvent: OrderPlacedEvent = {
       eventName: OrderEventName.ORDER_PLACED_EVENT,
       eventData: {
         orderId: mockOrderPlacedEventInput.orderId,
@@ -345,6 +345,6 @@ describe(`Orders Service PlaceOrderApi OrderPlacedEvent tests`, () => {
       createdAt: mockDate,
       updatedAt: mockDate,
     }
-    expect(result).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

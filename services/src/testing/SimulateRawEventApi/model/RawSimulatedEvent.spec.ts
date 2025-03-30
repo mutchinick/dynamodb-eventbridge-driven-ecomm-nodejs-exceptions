@@ -236,8 +236,8 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
   //
   it(`returns the expected RawSimulatedEvent with the expected data`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
-    const rawSimulatedEvent = RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
-    const expectedResult: RawSimulatedEvent = {
+    const result = RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
+    const expectedEvent: RawSimulatedEvent = {
       pk: mockRawSimulatedEventInput.pk,
       sk: mockRawSimulatedEventInput.sk,
       eventName: mockRawSimulatedEventInput.eventName,
@@ -245,6 +245,6 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
       createdAt: mockRawSimulatedEventInput.createdAt,
       updatedAt: mockRawSimulatedEventInput.updatedAt,
     }
-    expect(rawSimulatedEvent).toMatchObject(expectedResult)
+    expect(result).toStrictEqual(expect.objectContaining(expectedEvent))
   })
 })

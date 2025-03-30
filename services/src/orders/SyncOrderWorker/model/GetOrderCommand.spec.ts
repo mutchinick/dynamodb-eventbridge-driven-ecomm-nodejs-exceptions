@@ -95,13 +95,13 @@ describe(`Orders Service SyncOrderWorker GetOrderCommand tests`, () => {
   //
   it(`returns the expected GetOrderCommand with the expected data`, () => {
     const mockGetOrderCommandInput = buildMockGetOrderCommandInput()
-    const getOrderCommand = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
-    const expected: GetOrderCommand = {
+    const result = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
+    const expectedCommand: GetOrderCommand = {
       orderData: {
         orderId: mockGetOrderCommandInput.orderId,
       },
       options: {},
     }
-    expect(getOrderCommand).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 })

@@ -1181,8 +1181,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_CREATED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_STOCK_ALLOCATED_EVENT
-    const updateOrderCommand = UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
-    const expected: UpdateOrderCommand = {
+    const result = UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
+    const expectedCommand: UpdateOrderCommand = {
       orderData: {
         orderId: mockUpdateOrderCommandInput.existingOrderData.orderId,
         orderStatus: OrderStatus.ORDER_STOCK_ALLOCATED_STATUS,
@@ -1190,15 +1190,15 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
       },
       options: {},
     }
-    expect(updateOrderCommand).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 
   it(`returns the expected UpdateOrderCommand with the expected OrderData (ORDER_FULFILLED_STATUS)`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_PAYMENT_ACCEPTED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_FULFILLED_EVENT
-    const updateOrderCommand = UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
-    const expected: UpdateOrderCommand = {
+    const result = UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
+    const expectedCommand: UpdateOrderCommand = {
       orderData: {
         orderId: mockUpdateOrderCommandInput.existingOrderData.orderId,
         orderStatus: OrderStatus.ORDER_FULFILLED_STATUS,
@@ -1206,6 +1206,6 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
       },
       options: {},
     }
-    expect(updateOrderCommand).toMatchObject(expected)
+    expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 })

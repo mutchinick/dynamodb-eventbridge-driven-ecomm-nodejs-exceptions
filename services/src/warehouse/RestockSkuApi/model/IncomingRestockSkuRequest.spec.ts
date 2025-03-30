@@ -215,7 +215,11 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
   it(`returns the expected IncomingRestockSkuRequest if the input is valid`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     const result = IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
-    const expected = mockIncomingRestockSkuRequestInput
-    expect(result).toMatchObject(expected)
+    const expectedRequest: IncomingRestockSkuRequestInput = {
+      sku: mockIncomingRestockSkuRequestInput.sku,
+      units: mockIncomingRestockSkuRequestInput.units,
+      lotId: mockIncomingRestockSkuRequestInput.lotId,
+    }
+    expect(result).toStrictEqual(expect.objectContaining(expectedRequest))
   })
 })
