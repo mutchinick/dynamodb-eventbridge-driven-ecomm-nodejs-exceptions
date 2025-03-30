@@ -1,6 +1,6 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { HttpResponse } from '../../../shared/HttpResponse'
-import { InvalidArgumentsError } from '../../errors/AppError'
+import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { IncomingSimulateRawEventRequest } from '../model/IncomingSimulateRawEventRequest'
 import { ISimulateRawEventApiService } from '../SimulateRawEventApiService/SimulateRawEventApiService'
 import { SimulateRawEventApiController } from './SimulateRawEventApiController'
@@ -307,8 +307,21 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
     expect(mockSimulateRawEventApiService.simulateRawEvent).toHaveBeenCalledWith(expectedServiceInput)
   })
 
-  it(`responds with 500 Internal Server Error if SimulateRawEventApiService.simulateRawEvent throws`, async () => {
-    const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_throws()
+  it(`responds with 500 Internal Server Error if SimulateRawEventApiService.simulateRawEvent throws an unwrapped Error`, async () => {
+    const mockError = new Error('mockError')
+    const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_throws(mockError)
+    const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
+    const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    expect(response).toStrictEqual(expectedResponse)
+  })
+
+  it(`responds with 500 Internal Server Error if SimulateRawEventApiService.simulateRawEvent throws an UnrecognizedError`, async () => {
+    const unrecognizedError = UnrecognizedError.from()
+    const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_throws(unrecognizedError)
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
@@ -319,7 +332,7 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   })
 
   it(`responds with 400 Bad Request if SimulateRawEventApiService.simulateRawEvent
-      throws and InvalidArgumentsError`, async () => {
+      throws an InvalidArgumentsError`, async () => {
     const mockError = InvalidArgumentsError.from()
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_throws(mockError)
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)

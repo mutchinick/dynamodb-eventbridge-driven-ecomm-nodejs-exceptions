@@ -291,6 +291,18 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).toHaveBeenCalledWith(expectedServiceInput)
   })
 
+  it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders throws an unwrapped Error`, async () => {
+    const mockError = new Error('mockError')
+    const mockListOrdersApiService = buildMockListOrdersApiService_throws(mockError)
+    const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await listOrdersApiController.listOrders(mockApiEvent)
+    const response = await listOrdersApiController.listOrders(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
+    expect(response).toStrictEqual(expectedResponse)
+  })
+
   it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders throws an UnrecognizedError`, async () => {
     const unrecognizedError = UnrecognizedError.from()
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(unrecognizedError)
@@ -303,7 +315,7 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if ListOrdersApiService.listOrders throws and InvalidArgumentsError`, async () => {
+  it(`responds with 400 Bad Request if ListOrdersApiService.listOrders throws an InvalidArgumentsError`, async () => {
     const mockError = InvalidArgumentsError.from()
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(mockError)
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)

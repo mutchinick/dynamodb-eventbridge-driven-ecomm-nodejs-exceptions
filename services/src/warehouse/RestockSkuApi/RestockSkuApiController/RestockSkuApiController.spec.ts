@@ -1,6 +1,6 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { HttpResponse } from '../../../shared/HttpResponse'
-import { InvalidArgumentsError } from '../../errors/AppError'
+import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { IncomingRestockSkuRequest } from '../model/IncomingRestockSkuRequest'
 import { IRestockSkuApiService, RestockSkuApiServiceOutput } from '../RestockSkuApiService/RestockSkuApiService'
 import { RestockSkuApiController } from './RestockSkuApiController'
@@ -265,8 +265,9 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
     expect(mockRestockSkuApiService.restockSku).toHaveBeenCalledWith(expectedServiceInput)
   })
 
-  it(`responds with 500 Internal Server Error if RestockSkuApiService.restockSku throws`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_throws()
+  it(`responds with 500 Internal Server Error if RestockSkuApiService.restockSku throws an unwrapped Error`, async () => {
+    const mockError = new Error('mockError')
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_throws(mockError)
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
@@ -276,7 +277,19 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if RestockSkuApiService.restockSku throws and InvalidArgumentsError`, async () => {
+  it(`responds with 500 Internal Server Error if RestockSkuApiService.restockSku throws an UnrecognizedError`, async () => {
+    const unrecognizedError = UnrecognizedError.from()
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_throws(unrecognizedError)
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
+    const response = await restockSkuApiController.restockSku(mockApiEvent)
+    expect(response).toStrictEqual(expectedResponse)
+  })
+
+  it(`responds with 400 Bad Request if RestockSkuApiService.restockSku throws an InvalidArgumentsError`, async () => {
     const mockError = InvalidArgumentsError.from()
     const mockRestockSkuApiService = buildMockRestockSkuApiService_throws(mockError)
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)

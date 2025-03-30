@@ -11,7 +11,7 @@ import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { AllocateOrderStockCommand } from '../model/AllocateOrderStockCommand'
 import { DbAllocateOrderStockClient } from './DbAllocateOrderStockClient'
 
-const mockWarehouseName = 'mockDynamoDbTableName'
+const mockWarehouseName = 'mockWarehouseTableName'
 
 process.env.WAREHOUSE_TABLE_NAME = mockWarehouseName
 
@@ -172,7 +172,7 @@ describe(`Warehouse Service AllocateOrderStockWorker DbAllocateOrderStockClient 
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
-  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws a native Error`, async () => {
+  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an unwrapped Error`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbAllocateOrderStockClient = new DbAllocateOrderStockClient(mockDdbDocClient)
     const resultPromise = dbAllocateOrderStockClient.allocateOrderStock(mockAllocateOrderStockCommand)

@@ -73,7 +73,7 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
     expect(mockEsRaiseSkuRestockedEventClient.raiseSkuRestockedEvent).toHaveBeenCalledWith(expectedSkuRestockedEvent)
   })
 
-  it(`throws a the same Error if EsRaiseSkuRestockedEventClient.restockSku throws a native Error`, async () => {
+  it(`throws a the same Error if EsRaiseSkuRestockedEventClient.restockSku throws an unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockEsRaiseSkuRestockedEventClient = buildMockEsRaiseSkuRestockedEventClient_throws(mockError)
     const restockSkuApiService = new RestockSkuApiService(mockEsRaiseSkuRestockedEventClient)

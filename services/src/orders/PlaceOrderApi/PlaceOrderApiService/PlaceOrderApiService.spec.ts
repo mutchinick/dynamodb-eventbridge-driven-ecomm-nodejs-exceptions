@@ -78,7 +78,7 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
     expect(mockEsRaiseOrderPlacedEventClient.raiseOrderPlacedEvent).toHaveBeenCalledWith(expectedOrderPlacedEvent)
   })
 
-  it(`throws the same Error if EsRaiseOrderPlacedEventClient.placeOrder throws a native Error`, async () => {
+  it(`throws the same Error if EsRaiseOrderPlacedEventClient.placeOrder throws an unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockEsRaiseOrderPlacedEventClient = buildMockEsRaiseOrderPlacedEventClient_throws(mockError)
     const placeOrderApiService = new PlaceOrderApiService(mockEsRaiseOrderPlacedEventClient)

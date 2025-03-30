@@ -100,7 +100,7 @@ describe(`Orders Service ListOrdersApi ListOrdersApiService tests`, () => {
     expect(mockDdListOrdersClient.listOrders).toHaveBeenCalledWith(expectedListOrdersCommand)
   })
 
-  it(`throws the same Error if DdListOrdersClient.listOrders throws a native Error`, async () => {
+  it(`throws the same Error if DdListOrdersClient.listOrders throws an unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockDdListOrdersClient = buildMockDdListOrdersClient_throws(mockError)
     const listOrdersApiService = new ListOrdersApiService(mockDdListOrdersClient)

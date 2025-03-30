@@ -107,7 +107,7 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerService tests`, () 
     expect(mockDbRestockSkuClient.restockSku).toHaveBeenCalledWith(expectedRestockSkuCommand)
   })
 
-  it(`throws the same Error if DbRestockSkuClient.restockSku throws a native Error`, async () => {
+  it(`throws the same Error if DbRestockSkuClient.restockSku throws an unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_throws(mockError)
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)

@@ -155,7 +155,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
     expect(mockDbAllocateOrderStockClient.allocateOrderStock).toHaveBeenCalledWith(expectedAllocateOrderStockCommand)
   })
 
-  it(`throws the same Error if DbAllocateOrderStockClient.allocateOrderStock throws a native Error`, async () => {
+  it(`throws the same Error if DbAllocateOrderStockClient.allocateOrderStock throws an unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_throws(mockError)
     const mockEsRaiseOrderStockAllocatedEventClient = buildMockEsRaiseOrderStockAllocatedEventClient_resolves()
@@ -236,7 +236,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
       expect(result).toBeUndefined()
     })
 
-    it(`throws the same Error if EsRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent throws a native Error`, async () => {
+    it(`throws the same Error if EsRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent throws an unwrapped Error`, async () => {
       const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_resolves()
       const mockMessage = 'Mock message' as never
       const mockError = new Error(mockMessage) as AppError
@@ -328,7 +328,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
       expect(result).toBeUndefined()
     })
 
-    it(`throws the same Error if EsRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent throws a native Error`, async () => {
+    it(`throws the same Error if EsRaiseOrderStockAllocatedEventClient.raiseOrderStockAllocatedEvent throws an unwrapped Error`, async () => {
       const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_throws(
         DuplicateStockAllocationError.from(),
       )
@@ -421,7 +421,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
       expect(result).toBeUndefined()
     })
 
-    it(`throws the same Error if EsRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent throws a native Error`, async () => {
+    it(`throws the same Error if EsRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent throws an unwrapped Error`, async () => {
       const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_throws(
         DepletedStockAllocationError.from(),
       )
@@ -441,9 +441,9 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
   })
 
   //
-  // When DbAllocateOrderStockClient.allocateOrderStock throws a native Error, InvalidArgumentsError or UnrecognizedError
+  // When DbAllocateOrderStockClient.allocateOrderStock throws an unwrapped Error, InvalidArgumentsError or UnrecognizedError
   //
-  describe(`when DbAllocateOrderStockClient.allocateOrderStock throws a native Error, InvalidArgumentsError or UnrecognizedError`, () => {
+  describe(`when DbAllocateOrderStockClient.allocateOrderStock throws an unwrapped Error, InvalidArgumentsError or UnrecognizedError`, () => {
     it(`throws the same Error if DbAllocateOrderStockClient.allocateOrderStock throws an InvalidArgumentsError`, async () => {
       const mockError = InvalidArgumentsError.from()
       const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_throws(mockError)
@@ -474,7 +474,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
       )
     })
 
-    it(`throws the same Error if DbAllocateOrderStockClient.allocateOrderStock throws a native Error`, async () => {
+    it(`throws the same Error if DbAllocateOrderStockClient.allocateOrderStock throws an unwrapped Error`, async () => {
       const mockError = new Error('mockError')
       const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_throws(mockError)
       const mockEsRaiseOrderStockAllocatedEventClient = buildMockEsRaiseOrderStockAllocatedEventClient_resolves()

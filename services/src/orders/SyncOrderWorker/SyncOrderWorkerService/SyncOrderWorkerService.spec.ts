@@ -222,7 +222,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -270,7 +270,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws an unwrapped Error`, async () => {
       const mockError = new Error('mockError')
       const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
@@ -288,7 +288,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it creates the Order in the database
     //
-    it(`throws the same Error if CreateOrderCommand.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if CreateOrderCommand.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -336,7 +336,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbCreateOrderClient.createOrder).toHaveBeenCalledWith(expectedCreateOrderCommand)
     })
 
-    it(`throws the same Error if DbCreateOrderClient.createOrder throws a native Error`, async () => {
+    it(`throws the same Error if DbCreateOrderClient.createOrder throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockError = new Error('mockError')
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_throws(mockError)
@@ -351,7 +351,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(syncOrderWorkerService.syncOrder(mockValidOrderPlacedEvent)).rejects.toThrow(mockError)
     })
 
-    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -402,7 +402,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
     })
 
-    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws a native Error`, async () => {
+    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -460,7 +460,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -508,7 +508,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws an unwrapped Error`, async () => {
       const mockError = new Error('mockError')
       const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
@@ -541,7 +541,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbCreateOrderClient.createOrder).toHaveBeenCalledTimes(0)
     })
 
-    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if OrderCreatedEvent.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -589,7 +589,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
     })
 
-    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws a native Error`, async () => {
+    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -643,7 +643,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -691,7 +691,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws an unwrapped Error`, async () => {
       const mockError = new Error('mockError')
       const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
@@ -709,7 +709,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it updates the Order in the database
     //
-    it(`throws the same Error if UpdateOrderCommand.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if UpdateOrderCommand.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -757,7 +757,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbUpdateOrderClient.updateOrder).toHaveBeenCalledWith(expectedUpdateOrderCommand)
     })
 
-    it(`throws the same Error if DbUpdateOrderClient.updateOrder throws a native Error`, async () => {
+    it(`throws the same Error if DbUpdateOrderClient.updateOrder throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockError = new Error('mockError')
@@ -819,7 +819,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
     //
     // Test that it reads the Order from the database
     //
-    it(`throws the same Error if GetOrderCommand.validateAndBuild throws a native Error`, async () => {
+    it(`throws the same Error if GetOrderCommand.validateAndBuild throws an unwrapped Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -867,7 +867,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
-    it(`throws the same Error if DbGetOrderClient.getOrder throws a native Error`, async () => {
+    it(`throws the same Error if DbGetOrderClient.getOrder throws an unwrapped Error`, async () => {
       const mockError = new Error('mockError')
       const mockDbGetOrderClient = buildMockDbGetOrderClient_throws(mockError)
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()

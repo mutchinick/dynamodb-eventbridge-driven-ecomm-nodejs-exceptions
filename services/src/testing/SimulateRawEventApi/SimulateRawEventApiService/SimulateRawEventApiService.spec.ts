@@ -86,7 +86,7 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
     expect(mockEsRaiseRawSimulatedEventClient.raiseRawSimulatedEvent).toHaveBeenCalledWith(expectedRawSimulatedEvent)
   })
 
-  it(`throws the same Error if EsRaiseRawSimulatedEventClient.simulateRawEvent throws a native Error`, async () => {
+  it(`throws the same Error if EsRaiseRawSimulatedEventClient.simulateRawEvent throws an unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_throws(mockError)
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
