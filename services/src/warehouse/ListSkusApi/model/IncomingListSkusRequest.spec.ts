@@ -4,7 +4,7 @@ import { IncomingListSkusRequest, IncomingListSkusRequestInput } from './Incomin
 function buildMockIncomingListSkusRequestInput(): IncomingListSkusRequestInput {
   const mockValidRequestInput: IncomingListSkusRequestInput = {
     sku: 'mockSku',
-    sortOrder: 'asc',
+    sortDirection: 'asc',
     limit: 10,
   }
   return mockValidRequestInput
@@ -97,53 +97,53 @@ describe(`Warehouse Service ListSkusApi IncomingListSkusRequest tests`, () => {
   })
 
   //
-  // Test IncomingListSkusRequestInput.sortOrder edge cases
+  // Test IncomingListSkusRequestInput.sortDirection edge cases
   //
-  it(`does not throw if the input IncomingListSkusRequestInput.sortOrder is missing`, async () => {
+  it(`does not throw if the input IncomingListSkusRequestInput.sortDirection is missing`, async () => {
     const mockIncomingListSkusRequestInput = buildMockIncomingListSkusRequestInput()
-    delete mockIncomingListSkusRequestInput.sortOrder
+    delete mockIncomingListSkusRequestInput.sortDirection
     const testingFunc = () => IncomingListSkusRequest.validateAndBuild(mockIncomingListSkusRequestInput)
     expect(testingFunc).not.toThrow()
   })
 
-  it(`does not throw if the input IncomingListSkusRequestInput.sortOrder is undefined`, async () => {
+  it(`does not throw if the input IncomingListSkusRequestInput.sortDirection is undefined`, async () => {
     const mockIncomingListSkusRequestInput = buildMockIncomingListSkusRequestInput()
-    mockIncomingListSkusRequestInput.sortOrder = undefined as never
+    mockIncomingListSkusRequestInput.sortDirection = undefined as never
     const testingFunc = () => IncomingListSkusRequest.validateAndBuild(mockIncomingListSkusRequestInput)
     expect(testingFunc).not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListSkusRequestInput.sortOrder is null`, async () => {
+      IncomingListSkusRequestInput.sortDirection is null`, async () => {
     const mockIncomingListSkusRequestInput = buildMockIncomingListSkusRequestInput()
-    mockIncomingListSkusRequestInput.sortOrder = null as never
+    mockIncomingListSkusRequestInput.sortDirection = null as never
     const testingFunc = () => IncomingListSkusRequest.validateAndBuild(mockIncomingListSkusRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListSkusRequestInput.sortOrder is empty`, async () => {
+      IncomingListSkusRequestInput.sortDirection is empty`, async () => {
     const mockIncomingListSkusRequestInput = buildMockIncomingListSkusRequestInput()
-    mockIncomingListSkusRequestInput.sortOrder = '' as never
+    mockIncomingListSkusRequestInput.sortDirection = '' as never
     const testingFunc = () => IncomingListSkusRequest.validateAndBuild(mockIncomingListSkusRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListSkusRequestInput.sortOrder is blank`, async () => {
+      IncomingListSkusRequestInput.sortDirection is blank`, async () => {
     const mockIncomingListSkusRequestInput = buildMockIncomingListSkusRequestInput()
-    mockIncomingListSkusRequestInput.sortOrder = '      ' as never
+    mockIncomingListSkusRequestInput.sortDirection = '      ' as never
     const testingFunc = () => IncomingListSkusRequest.validateAndBuild(mockIncomingListSkusRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListSkusRequestInput.sortOrder is a random string`, async () => {
+      IncomingListSkusRequestInput.sortDirection is a random string`, async () => {
     const mockIncomingListSkusRequestInput = buildMockIncomingListSkusRequestInput()
-    mockIncomingListSkusRequestInput.sortOrder = 'xyz' as never
+    mockIncomingListSkusRequestInput.sortDirection = 'xyz' as never
     const testingFunc = () => IncomingListSkusRequest.validateAndBuild(mockIncomingListSkusRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -290,7 +290,7 @@ describe(`Warehouse Service ListSkusApi IncomingListSkusRequest tests`, () => {
     const result = IncomingListSkusRequest.validateAndBuild(mockIncomingListSkusRequestInput)
     const expectedRequest: IncomingListSkusRequest = {
       sku: mockIncomingListSkusRequestInput.sku,
-      sortOrder: mockIncomingListSkusRequestInput.sortOrder,
+      sortDirection: mockIncomingListSkusRequestInput.sortDirection,
       limit: mockIncomingListSkusRequestInput.limit,
     }
     expect(result).toStrictEqual(expect.objectContaining(expectedRequest))

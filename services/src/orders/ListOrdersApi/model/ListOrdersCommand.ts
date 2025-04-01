@@ -2,9 +2,11 @@ import { z } from 'zod'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { ValueValidators } from '../../model/ValueValidators'
-import { SortOrder } from '../../model/SortOrder'
+import { SortDirection } from '../../model/SortDirection'
 
-type ListOrdersCommandQueryData = Partial<Pick<OrderData, 'orderId'> & { sortOrder: SortOrder } & { limit: number }>
+type ListOrdersCommandQueryData = Partial<
+  Pick<OrderData, 'orderId'> & { sortDirection: SortDirection } & { limit: number }
+>
 
 export type ListOrdersCommandInput = ListOrdersCommandQueryData
 
@@ -49,9 +51,9 @@ export class ListOrdersCommand implements ListOrdersCommandProps {
   private static buildProps(listOrdersCommandInput: ListOrdersCommandInput): ListOrdersCommandProps {
     this.validateInput(listOrdersCommandInput)
 
-    const { orderId, sortOrder, limit } = listOrdersCommandInput
+    const { orderId, sortDirection, limit } = listOrdersCommandInput
     const listOrdersCommandProps: ListOrdersCommandProps = {
-      queryData: { orderId, sortOrder, limit },
+      queryData: { orderId, sortDirection, limit },
       options: {},
     }
     return listOrdersCommandProps
@@ -66,7 +68,7 @@ export class ListOrdersCommand implements ListOrdersCommandProps {
     // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
       orderId: ValueValidators.validOrderId().optional(),
-      sortOrder: ValueValidators.validSortOrder().optional(),
+      sortDirection: ValueValidators.validSortDirection().optional(),
       limit: ValueValidators.validLimit().optional(),
     })
 

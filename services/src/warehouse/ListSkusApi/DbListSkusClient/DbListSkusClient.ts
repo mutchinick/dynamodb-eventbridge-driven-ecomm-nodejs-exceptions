@@ -1,7 +1,7 @@
 import { DynamoDBDocumentClient, NativeAttributeValue, QueryCommand, QueryCommandInput } from '@aws-sdk/lib-dynamodb'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
-import { SortOrder } from '../../model/SortOrder'
+import { SortDirection } from '../../model/SortDirection'
 import { ListSkusCommand } from '../model/ListSkusCommand'
 
 export interface IDbListSkusClient {
@@ -17,7 +17,7 @@ export interface IDbListSkusClient {
  */
 export class DbListSkusClient implements IDbListSkusClient {
   public static readonly DEFAULT_LIMIT = 50
-  public static readonly DEFAULT_SORT_ORDER = SortOrder['asc']
+  public static readonly DEFAULT_SORT_DIRECTION = SortDirection['asc']
 
   /**
    *
@@ -67,7 +67,7 @@ export class DbListSkusClient implements IDbListSkusClient {
     try {
       const tableName = process.env.WAREHOUSE_TABLE_NAME
 
-      const { sku, sortOrder, limit } = listSkusCommand.queryData
+      const { sku, sortDirection, limit } = listSkusCommand.queryData
 
       let params: QueryCommandInput
       if (sku) {
@@ -88,8 +88,8 @@ export class DbListSkusClient implements IDbListSkusClient {
       } else {
         const skuListIndexName = 'gsi1pk-gsi1sk-index'
         const skuListGsi1pk = `WAREHOUSE#SKU`
-        const skuListSortOrder = SortOrder[sortOrder] ?? DbListSkusClient.DEFAULT_SORT_ORDER
-        const skuListScanIndexForward = skuListSortOrder === DbListSkusClient.DEFAULT_SORT_ORDER
+        const skuListSortDirection = SortDirection[sortDirection] ?? DbListSkusClient.DEFAULT_SORT_DIRECTION
+        const skuListScanIndexForward = skuListSortDirection === DbListSkusClient.DEFAULT_SORT_DIRECTION
         const skuListLimit = limit || DbListSkusClient.DEFAULT_LIMIT
         params = {
           TableName: tableName,

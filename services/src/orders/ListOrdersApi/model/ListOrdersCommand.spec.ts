@@ -4,7 +4,7 @@ import { ListOrdersCommand, ListOrdersCommandInput } from './ListOrdersCommand'
 function buildMockListOrdersCommandInput() {
   const mockValidInput: ListOrdersCommandInput = {
     orderId: 'mockOrderId',
-    sortOrder: 'asc',
+    sortDirection: 'asc',
     limit: 10,
   }
   return mockValidInput
@@ -89,53 +89,53 @@ describe(`Orders Service ListOrdersApi ListOrdersCommand tests`, () => {
   })
 
   //
-  // Test ListOrdersCommandInput.sortOrder edge cases
+  // Test ListOrdersCommandInput.sortDirection edge cases
   //
-  it(`does not throw if the input ListOrdersCommandInput.sortOrder is missing`, async () => {
+  it(`does not throw if the input ListOrdersCommandInput.sortDirection is missing`, async () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
-    delete mockListOrdersCommandInput.sortOrder
+    delete mockListOrdersCommandInput.sortDirection
     const testingFunc = () => ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
     expect(testingFunc).not.toThrow()
   })
 
-  it(`does not throw if the input ListOrdersCommandInput.sortOrder is undefined`, async () => {
+  it(`does not throw if the input ListOrdersCommandInput.sortDirection is undefined`, async () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
-    mockListOrdersCommandInput.sortOrder = undefined as never
+    mockListOrdersCommandInput.sortDirection = undefined as never
     const testingFunc = () => ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
     expect(testingFunc).not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListOrdersCommandInput.sortOrder is null`, async () => {
+      ListOrdersCommandInput.sortDirection is null`, async () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
-    mockListOrdersCommandInput.sortOrder = null as never
+    mockListOrdersCommandInput.sortDirection = null as never
     const testingFunc = () => ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListOrdersCommandInput.sortOrder is empty`, async () => {
+      ListOrdersCommandInput.sortDirection is empty`, async () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
-    mockListOrdersCommandInput.sortOrder = '' as never
+    mockListOrdersCommandInput.sortDirection = '' as never
     const testingFunc = () => ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListOrdersCommandInput.sortOrder is blank`, async () => {
+      ListOrdersCommandInput.sortDirection is blank`, async () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
-    mockListOrdersCommandInput.sortOrder = '      ' as never
+    mockListOrdersCommandInput.sortDirection = '      ' as never
     const testingFunc = () => ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListOrdersCommandInput.sortOrder is a random string`, async () => {
+      ListOrdersCommandInput.sortDirection is a random string`, async () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
-    mockListOrdersCommandInput.sortOrder = 'xyz' as never
+    mockListOrdersCommandInput.sortDirection = 'xyz' as never
     const testingFunc = () => ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -213,7 +213,7 @@ describe(`Orders Service ListOrdersApi ListOrdersCommand tests`, () => {
       queryData: {
         orderId: mockListOrdersCommandInput.orderId,
         limit: mockListOrdersCommandInput.limit,
-        sortOrder: mockListOrdersCommandInput.sortOrder,
+        sortDirection: mockListOrdersCommandInput.sortDirection,
       },
       options: {},
     }

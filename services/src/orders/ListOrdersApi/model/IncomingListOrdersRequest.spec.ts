@@ -4,7 +4,7 @@ import { IncomingListOrdersRequest, IncomingListOrdersRequestInput } from './Inc
 function buildMockIncomingListOrdersRequestInput(): IncomingListOrdersRequestInput {
   const mockValidRequestInput: IncomingListOrdersRequestInput = {
     orderId: 'mockOrderId',
-    sortOrder: 'asc',
+    sortDirection: 'asc',
     limit: 10,
   }
   return mockValidRequestInput
@@ -97,53 +97,53 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
   })
 
   //
-  // Test IncomingListOrdersRequestInput.sortOrder edge cases
+  // Test IncomingListOrdersRequestInput.sortDirection edge cases
   //
-  it(`does not throw if the input IncomingListOrdersRequestInput.sortOrder is missing`, async () => {
+  it(`does not throw if the input IncomingListOrdersRequestInput.sortDirection is missing`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
-    delete mockIncomingListOrdersRequestInput.sortOrder
+    delete mockIncomingListOrdersRequestInput.sortDirection
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).not.toThrow()
   })
 
-  it(`does not throw if the input IncomingListOrdersRequestInput.sortOrder is undefined`, async () => {
+  it(`does not throw if the input IncomingListOrdersRequestInput.sortDirection is undefined`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
-    mockIncomingListOrdersRequestInput.sortOrder = undefined as never
+    mockIncomingListOrdersRequestInput.sortDirection = undefined as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListOrdersRequestInput.sortOrder is null`, async () => {
+      IncomingListOrdersRequestInput.sortDirection is null`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
-    mockIncomingListOrdersRequestInput.sortOrder = null as never
+    mockIncomingListOrdersRequestInput.sortDirection = null as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListOrdersRequestInput.sortOrder is empty`, async () => {
+      IncomingListOrdersRequestInput.sortDirection is empty`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
-    mockIncomingListOrdersRequestInput.sortOrder = '' as never
+    mockIncomingListOrdersRequestInput.sortDirection = '' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListOrdersRequestInput.sortOrder is blank`, async () => {
+      IncomingListOrdersRequestInput.sortDirection is blank`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
-    mockIncomingListOrdersRequestInput.sortOrder = '      ' as never
+    mockIncomingListOrdersRequestInput.sortDirection = '      ' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingListOrdersRequestInput.sortOrder is a random string`, async () => {
+      IncomingListOrdersRequestInput.sortDirection is a random string`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
-    mockIncomingListOrdersRequestInput.sortOrder = 'xyz' as never
+    mockIncomingListOrdersRequestInput.sortDirection = 'xyz' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -290,7 +290,7 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     const result = IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     const expectedRequest: IncomingListOrdersRequest = {
       orderId: mockIncomingListOrdersRequestInput.orderId,
-      sortOrder: mockIncomingListOrdersRequestInput.sortOrder,
+      sortDirection: mockIncomingListOrdersRequestInput.sortDirection,
       limit: mockIncomingListOrdersRequestInput.limit,
     }
     expect(result).toStrictEqual(expect.objectContaining(expectedRequest))

@@ -2,7 +2,7 @@ import { DynamoDBDocumentClient, QueryCommand, QueryCommandOutput } from '@aws-s
 import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
-import { type SortOrder } from '../../model/SortOrder'
+import { type SortDirection } from '../../model/SortDirection'
 import { ListSkusCommand, ListSkusCommandInput } from '../model/ListSkusCommand'
 import { DbListSkusClient } from './DbListSkusClient'
 
@@ -14,7 +14,7 @@ jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 const mockSku = 'mockSku'
-const mockSortOrder = 'desc'
+const mockSortDirection = 'desc'
 const mockLimit = 30
 
 function buildMockListSkusCommand(listSkusCommandInput: ListSkusCommandInput): TypeUtilsMutable<ListSkusCommand> {
@@ -44,9 +44,9 @@ function buildMockDdbCommand_BySku(sku: string): QueryCommand {
 }
 
 //
-// List many (sortOrder and limit)
+// List many (sortDirection and limit)
 //
-function buildMockDdbCommand_ListMany(sortOrder: SortOrder, limit: number): QueryCommand {
+function buildMockDdbCommand_ListMany(sortDirection: SortDirection, limit: number): QueryCommand {
   const indexName = 'gsi1pk-gsi1sk-index'
   const skuListGsi1pk = `WAREHOUSE#SKU`
   const ddbCommand = new QueryCommand({
@@ -59,7 +59,7 @@ function buildMockDdbCommand_ListMany(sortOrder: SortOrder, limit: number): Quer
     ExpressionAttributeValues: {
       ':gsi1pk': skuListGsi1pk,
     },
-    ScanIndexForward: sortOrder !== 'desc',
+    ScanIndexForward: sortDirection !== 'desc',
     Limit: limit,
   })
   return ddbCommand
@@ -81,7 +81,7 @@ function buildMockDdbCommand_ListDefault(): QueryCommand {
     ExpressionAttributeValues: {
       ':gsi1pk': skuListGsi1pk,
     },
-    ScanIndexForward: DbListSkusClient.DEFAULT_SORT_ORDER === 'asc',
+    ScanIndexForward: DbListSkusClient.DEFAULT_SORT_DIRECTION === 'asc',
     Limit: DbListSkusClient.DEFAULT_LIMIT,
   })
   return ddbCommand
@@ -198,11 +198,11 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
   })
 
   it(`calls DynamoDBDocumentClient.send with the expected input (list many)`, async () => {
-    const mockTestCommand = buildMockListSkusCommand({ sortOrder: mockSortOrder, limit: mockLimit })
+    const mockTestCommand = buildMockListSkusCommand({ sortDirection: mockSortDirection, limit: mockLimit })
     const mockDdbDocClient = buildMockDdbDocClient_resolves(mockTestCommand)
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     await dbListSkusClient.listSkus(mockTestCommand)
-    const expectedDdbCommand = buildMockDdbCommand_ListMany(mockSortOrder, mockLimit)
+    const expectedDdbCommand = buildMockDdbCommand_ListMany(mockSortDirection, mockLimit)
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
@@ -255,7 +255,7 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
   })
 
   it(`returns the expected RestockSkuData[] if DynamoDBDocumentClient.send returns Items with data (list many)`, async () => {
-    const mockTestCommand = buildMockListSkusCommand({ sortOrder: mockSortOrder, limit: mockLimit })
+    const mockTestCommand = buildMockListSkusCommand({ sortDirection: mockSortDirection, limit: mockLimit })
     const mockDdbDocClient = buildMockDdbDocClient_resolves(mockTestCommand)
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const result = await dbListSkusClient.listSkus(mockTestCommand)

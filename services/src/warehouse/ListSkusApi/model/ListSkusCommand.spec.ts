@@ -4,7 +4,7 @@ import { ListSkusCommand, ListSkusCommandInput } from './ListSkusCommand'
 function buildMockListSkusCommandInput() {
   const mockValidInput: ListSkusCommandInput = {
     sku: 'mockSku',
-    sortOrder: 'asc',
+    sortDirection: 'asc',
     limit: 10,
   }
   return mockValidInput
@@ -89,53 +89,53 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
   })
 
   //
-  // Test ListSkusCommandInput.sortOrder edge cases
+  // Test ListSkusCommandInput.sortDirection edge cases
   //
-  it(`does not throw if the input ListSkusCommandInput.sortOrder is missing`, async () => {
+  it(`does not throw if the input ListSkusCommandInput.sortDirection is missing`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
-    delete mockListSkusCommandInput.sortOrder
+    delete mockListSkusCommandInput.sortDirection
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).not.toThrow()
   })
 
-  it(`does not throw if the input ListSkusCommandInput.sortOrder is undefined`, async () => {
+  it(`does not throw if the input ListSkusCommandInput.sortDirection is undefined`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
-    mockListSkusCommandInput.sortOrder = undefined as never
+    mockListSkusCommandInput.sortDirection = undefined as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListSkusCommandInput.sortOrder is null`, async () => {
+      ListSkusCommandInput.sortDirection is null`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
-    mockListSkusCommandInput.sortOrder = null as never
+    mockListSkusCommandInput.sortDirection = null as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListSkusCommandInput.sortOrder is empty`, async () => {
+      ListSkusCommandInput.sortDirection is empty`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
-    mockListSkusCommandInput.sortOrder = '' as never
+    mockListSkusCommandInput.sortDirection = '' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListSkusCommandInput.sortOrder is blank`, async () => {
+      ListSkusCommandInput.sortDirection is blank`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
-    mockListSkusCommandInput.sortOrder = '      ' as never
+    mockListSkusCommandInput.sortDirection = '      ' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      ListSkusCommandInput.sortOrder is a random string`, async () => {
+      ListSkusCommandInput.sortDirection is a random string`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
-    mockListSkusCommandInput.sortOrder = 'xyz' as never
+    mockListSkusCommandInput.sortDirection = 'xyz' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -213,7 +213,7 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
       queryData: {
         sku: mockListSkusCommandInput.sku,
         limit: mockListSkusCommandInput.limit,
-        sortOrder: mockListSkusCommandInput.sortOrder,
+        sortDirection: mockListSkusCommandInput.sortDirection,
       },
       options: {},
     }

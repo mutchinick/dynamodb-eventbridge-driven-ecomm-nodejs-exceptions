@@ -2,9 +2,11 @@ import { z } from 'zod'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
-import { type SortOrder } from '../../model/SortOrder'
+import { type SortDirection } from '../../model/SortDirection'
 
-type IncomingListSkusRequestData = Partial<Pick<RestockSkuData, 'sku'> & { sortOrder: SortOrder } & { limit: number }>
+type IncomingListSkusRequestData = Partial<
+  Pick<RestockSkuData, 'sku'> & { sortDirection: SortDirection } & { limit: number }
+>
 
 export type IncomingListSkusRequestInput = IncomingListSkusRequestData
 
@@ -19,7 +21,7 @@ export class IncomingListSkusRequest implements IncomingListSkusRequestProps {
    */
   private constructor(
     public readonly sku?: string,
-    public readonly sortOrder?: 'asc' | 'desc',
+    public readonly sortDirection?: 'asc' | 'desc',
     public readonly limit?: number,
   ) {}
 
@@ -31,8 +33,8 @@ export class IncomingListSkusRequest implements IncomingListSkusRequestProps {
     console.info(`${logContext} init:`, { incomingListSkusRequestInput })
 
     try {
-      const { sku, sortOrder, limit } = this.buildProps(incomingListSkusRequestInput)
-      const incomingListSkusRequest = new IncomingListSkusRequest(sku, sortOrder, limit)
+      const { sku, sortDirection, limit } = this.buildProps(incomingListSkusRequestInput)
+      const incomingListSkusRequest = new IncomingListSkusRequest(sku, sortDirection, limit)
       console.info(`${logContext} exit success:`, { incomingListSkusRequest, incomingListSkusRequestInput })
       return incomingListSkusRequest
     } catch (error) {
@@ -46,10 +48,10 @@ export class IncomingListSkusRequest implements IncomingListSkusRequestProps {
    */
   private static buildProps(incomingListSkusRequestInput: IncomingListSkusRequestInput): IncomingListSkusRequestProps {
     this.validateInput(incomingListSkusRequestInput)
-    const { sku, sortOrder, limit } = incomingListSkusRequestInput
+    const { sku, sortDirection, limit } = incomingListSkusRequestInput
     const incomingListSkusRequestProps: IncomingListSkusRequestProps = {
       sku,
-      sortOrder,
+      sortDirection,
       limit,
     }
     return incomingListSkusRequestProps
@@ -64,7 +66,7 @@ export class IncomingListSkusRequest implements IncomingListSkusRequestProps {
     // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
       sku: ValueValidators.validSku().optional(),
-      sortOrder: ValueValidators.validSortOrder().optional(),
+      sortDirection: ValueValidators.validSortDirection().optional(),
       limit: ValueValidators.validLimit().optional(),
     })
 
