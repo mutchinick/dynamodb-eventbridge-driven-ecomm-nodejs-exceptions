@@ -48,7 +48,7 @@ export class DbListOrdersClient implements IDbListOrdersClient {
    * @throws {InvalidArgumentsError}
    */
   private validateInput(listOrdersCommand: ListOrdersCommand): void {
-    const logContext = 'DbCreateOrderClient.validateInput'
+    const logContext = 'DbListOrdersClient.validateInput'
 
     if (listOrdersCommand instanceof ListOrdersCommand === false) {
       const errorMessage = `Expected ListOrdersCommand but got ${listOrdersCommand}`
