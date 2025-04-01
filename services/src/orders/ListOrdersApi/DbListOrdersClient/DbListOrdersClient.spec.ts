@@ -134,7 +134,7 @@ function buildMockDdbDocClient_throws(error?: unknown): DynamoDBDocumentClient {
   return { send: jest.fn().mockRejectedValue(error ?? new Error()) } as unknown as DynamoDBDocumentClient
 }
 
-describe(`Orders Service SyncOrderWorker DbListOrdersClient tests`, () => {
+describe(`Orders Service ListOrdersApi DbListOrdersClient tests`, () => {
   //
   // Test ListOrdersCommand edge cases
   //

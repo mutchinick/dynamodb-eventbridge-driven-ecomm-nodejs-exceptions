@@ -10,7 +10,7 @@ function buildMockListOrdersCommandInput() {
   return mockValidInput
 }
 
-describe(`Orders Service SyncOrderWorker ListOrdersCommand tests`, () => {
+describe(`Orders Service ListOrdersApi ListOrdersCommand tests`, () => {
   //
   // Test ListOrdersCommandInput edge cases
   //
