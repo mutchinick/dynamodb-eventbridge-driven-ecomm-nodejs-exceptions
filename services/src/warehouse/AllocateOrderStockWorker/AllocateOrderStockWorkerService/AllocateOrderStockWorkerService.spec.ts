@@ -127,7 +127,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
   })
 
   //
-  // Test internal logic allocateOrderStock
+  // Test internal logic DbAllocateOrderStockClient.allocateOrderStock
   //
   it(`calls DbAllocateOrderStockClient.allocateOrderStock a single time`, async () => {
     const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_resolves()
