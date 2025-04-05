@@ -68,11 +68,14 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
   private buildDdbCommand(allocateOrderStockCommand: AllocateOrderStockCommand): TransactWriteCommand {
     const logContext = 'DbAllocateOrderStockClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but TransactWriteCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.WAREHOUSE_TABLE_NAME
 
       const { allocateOrderStockData } = allocateOrderStockCommand
       const { orderId, sku, units, price, userId, createdAt, updatedAt } = allocateOrderStockData
+      const { allocationStatus } = allocateOrderStockData
 
       const allocationPk = `WAREHOUSE#SKU#${sku}`
       const allocationSk = `SKU#${sku}#ORDER_ID#${orderId}#ALLOCATION`
@@ -80,7 +83,6 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
       const allocationSn = `WAREHOUSE`
       const allocationGsi1Pk = `WAREHOUSE#ALLOCATION`
       const allocationGsi1Sk = `CREATED_AT#${createdAt}`
-      const allocationStatus = `ALLOCATED`
 
       const skuItemPk = `WAREHOUSE#SKU#${sku}`
       const skuItemSk = `SKU#${sku}`
@@ -93,8 +95,8 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
               Item: {
                 pk: allocationPk,
                 sk: allocationSk,
-                sku,
                 orderId,
+                sku,
                 units,
                 price,
                 userId,

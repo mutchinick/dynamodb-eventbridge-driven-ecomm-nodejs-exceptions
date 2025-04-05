@@ -1,6 +1,8 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
+import { AllocationStatus } from '../../model/AllocationStatus'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
 
@@ -8,7 +10,11 @@ export type AllocateOrderStockCommandInput = {
   incomingOrderCreatedEvent: IncomingOrderCreatedEvent
 }
 
-type AllocateOrderStockCommandData = AllocateOrderStockData
+type AllocateOrderStockCommandData = TypeUtilsPretty<
+  AllocateOrderStockData & {
+    allocationStatus: AllocationStatus<'ALLOCATED'>
+  }
+>
 
 type AllocateOrderStockCommandProps = {
   readonly allocateOrderStockData: AllocateOrderStockCommandData
@@ -67,6 +73,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
         userId,
         createdAt: date,
         updatedAt: date,
+        allocationStatus: 'ALLOCATED',
       },
       options: {},
     }

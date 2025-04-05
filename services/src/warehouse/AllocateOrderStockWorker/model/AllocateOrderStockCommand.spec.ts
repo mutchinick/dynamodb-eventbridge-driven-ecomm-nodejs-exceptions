@@ -427,6 +427,7 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
         userId: mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId,
         createdAt: mockDate,
         updatedAt: mockDate,
+        allocationStatus: 'ALLOCATED',
       },
       options: {},
     }
