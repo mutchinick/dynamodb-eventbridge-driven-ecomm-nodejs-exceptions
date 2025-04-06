@@ -11,7 +11,7 @@ export type RestockSkuCommandInput = {
 type RestockSkuCommandData = RestockSkuData
 
 type RestockSkuCommandProps = {
-  readonly restockSkuData: RestockSkuCommandData
+  readonly commandData: RestockSkuCommandData
   readonly options?: Record<string, unknown>
 }
 
@@ -23,7 +23,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
    *
    */
   private constructor(
-    public readonly restockSkuData: RestockSkuCommandData,
+    public readonly commandData: RestockSkuCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
@@ -35,8 +35,8 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
     console.info(`${logContext} init:`, { restockSkuCommandInput })
 
     try {
-      const { restockSkuData, options } = this.buildProps(restockSkuCommandInput)
-      const restockSkuCommand = new RestockSkuCommand(restockSkuData, options)
+      const { commandData, options } = this.buildProps(restockSkuCommandInput)
+      const restockSkuCommand = new RestockSkuCommand(commandData, options)
       console.info(`${logContext} exit success:`, { restockSkuCommand, restockSkuCommandInput })
       return restockSkuCommand
     } catch (error) {
@@ -55,7 +55,7 @@ export class RestockSkuCommand implements RestockSkuCommandProps {
     const { sku, units, lotId } = incomingSkuRestockedEvent.eventData
     const date = new Date().toISOString()
     const restockSkuCommandProps: RestockSkuCommandProps = {
-      restockSkuData: {
+      commandData: {
         sku,
         units,
         lotId,

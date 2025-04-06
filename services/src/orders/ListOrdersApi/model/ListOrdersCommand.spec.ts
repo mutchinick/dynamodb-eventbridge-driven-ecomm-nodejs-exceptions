@@ -210,7 +210,7 @@ describe(`Orders Service ListOrdersApi ListOrdersCommand tests`, () => {
     const mockListOrdersCommandInput = buildMockListOrdersCommandInput()
     const result = ListOrdersCommand.validateAndBuild(mockListOrdersCommandInput)
     const expectedCommand: ListOrdersCommand = {
-      queryData: {
+      commandData: {
         orderId: mockListOrdersCommandInput.orderId,
         limit: mockListOrdersCommandInput.limit,
         sortDirection: mockListOrdersCommandInput.sortDirection,

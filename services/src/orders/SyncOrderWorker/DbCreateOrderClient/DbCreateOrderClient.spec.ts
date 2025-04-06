@@ -108,14 +108,14 @@ const expectedDdbCommand = buildMockDdbCommand()
 // Mock clients
 //
 const expectedCreatedOrderData: OrderData = {
-  orderId: mockCreateOrderCommand.orderData.orderId,
-  orderStatus: mockCreateOrderCommand.orderData.orderStatus,
-  sku: mockCreateOrderCommand.orderData.sku,
-  units: mockCreateOrderCommand.orderData.units,
-  price: mockCreateOrderCommand.orderData.price,
-  userId: mockCreateOrderCommand.orderData.userId,
-  createdAt: mockCreateOrderCommand.orderData.createdAt,
-  updatedAt: mockCreateOrderCommand.orderData.updatedAt,
+  orderId: mockCreateOrderCommand.commandData.orderId,
+  orderStatus: mockCreateOrderCommand.commandData.orderStatus,
+  sku: mockCreateOrderCommand.commandData.sku,
+  units: mockCreateOrderCommand.commandData.units,
+  price: mockCreateOrderCommand.commandData.price,
+  userId: mockCreateOrderCommand.commandData.userId,
+  createdAt: mockCreateOrderCommand.commandData.createdAt,
+  updatedAt: mockCreateOrderCommand.commandData.updatedAt,
 }
 
 function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
@@ -177,21 +177,21 @@ describe(`Orders Service SyncOrderWorker DbCreateOrderClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input CreateOrderCommand.orderData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input CreateOrderCommand.commandData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
     const mockTestCommand = buildMockCreateOrderCommand()
-    mockTestCommand.orderData = undefined
+    mockTestCommand.commandData = undefined
     const resultPromise = dbCreateOrderClient.createOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input CreateOrderCommand.orderData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input CreateOrderCommand.commandData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbCreateOrderClient = new DbCreateOrderClient(mockDdbDocClient)
     const mockTestCommand = buildMockCreateOrderCommand()
-    mockTestCommand.orderData = null
+    mockTestCommand.commandData = null
     const resultPromise = dbCreateOrderClient.createOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

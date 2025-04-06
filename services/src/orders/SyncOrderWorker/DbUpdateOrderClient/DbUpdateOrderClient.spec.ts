@@ -157,21 +157,21 @@ describe(`Orders Service SyncOrderWorker DbUpdateOrderClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.orderData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.commandData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const mockTestCommand = buildMockUpdateOrderCommand()
-    mockTestCommand.orderData = undefined
+    mockTestCommand.commandData = undefined
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.orderData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommand.commandData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbUpdateOrderClient = new DbUpdateOrderClient(mockDdbDocClient)
     const mockTestCommand = buildMockUpdateOrderCommand()
-    mockTestCommand.orderData = null
+    mockTestCommand.commandData = null
     const resultPromise = dbUpdateOrderClient.updateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

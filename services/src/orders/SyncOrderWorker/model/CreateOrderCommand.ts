@@ -10,8 +10,10 @@ export type CreateOrderCommandInput = {
   incomingOrderEvent: IncomingOrderEvent
 }
 
+type CreateOrderCommandData = OrderData
+
 type CreateOrderCommandProps = {
-  readonly orderData: OrderData
+  readonly commandData: CreateOrderCommandData
   readonly options?: Record<string, unknown>
 }
 
@@ -23,7 +25,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
    *
    */
   private constructor(
-    public readonly orderData: OrderData,
+    public readonly commandData: CreateOrderCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
@@ -36,8 +38,8 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     console.info(`${logContext} init:`, { createOrderCommandInput })
 
     try {
-      const { orderData, options } = this.buildProps(createOrderCommandInput)
-      const createOrderCommand = new CreateOrderCommand(orderData, options)
+      const { commandData, options } = this.buildProps(createOrderCommandInput)
+      const createOrderCommand = new CreateOrderCommand(commandData, options)
       console.info(`${logContext} exit success:`, { createOrderCommand, createOrderCommandInput })
       return createOrderCommand
     } catch (error) {
@@ -61,7 +63,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     const currentDate = new Date().toISOString()
 
     const createOrderCommandProps: CreateOrderCommandProps = {
-      orderData: {
+      commandData: {
         orderId,
         orderStatus: newOrderStatus,
         sku,

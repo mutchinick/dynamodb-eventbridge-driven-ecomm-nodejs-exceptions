@@ -20,7 +20,7 @@ export type UpdateOrderCommandInput = {
 type UpdateOrderCommandData = Pick<OrderData, 'orderId' | 'orderStatus' | 'updatedAt'>
 
 type UpdateOrderCommandProps = {
-  readonly orderData: UpdateOrderCommandData
+  readonly commandData: UpdateOrderCommandData
   readonly options?: Record<string, unknown>
 }
 
@@ -32,7 +32,7 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
    *
    */
   private constructor(
-    public readonly orderData: UpdateOrderCommandData,
+    public readonly commandData: UpdateOrderCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
@@ -48,8 +48,8 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     console.info(`${logContext} init:`, { updateOrderCommandInput })
 
     try {
-      const { orderData, options } = this.buildProps(updateOrderCommandInput)
-      const updateOrderCommand = new UpdateOrderCommand(orderData, options)
+      const { commandData, options } = this.buildProps(updateOrderCommandInput)
+      const updateOrderCommand = new UpdateOrderCommand(commandData, options)
       console.info(`${logContext} exit success:`, { updateOrderCommand, updateOrderCommandInput })
       return updateOrderCommand
     } catch (error) {
@@ -76,7 +76,7 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     const newOrderStatus = this.getNewOrderStatus({ existingOrderStatus, incomingEventName })
     const updatedAt = new Date().toISOString()
     const updateOrderCommandProps: UpdateOrderCommandProps = {
-      orderData: {
+      commandData: {
         orderId,
         orderStatus: newOrderStatus,
         updatedAt,

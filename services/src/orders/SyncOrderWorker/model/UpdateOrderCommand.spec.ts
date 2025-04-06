@@ -1177,13 +1177,13 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   //
   // Test expected results
   //
-  it(`returns the expected UpdateOrderCommand with the expected OrderData (ORDER_STOCK_ALLOCATED_STATUS)`, () => {
+  it(`returns the expected UpdateOrderCommand with the expected data (case ORDER_STOCK_ALLOCATED_STATUS)`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_CREATED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_STOCK_ALLOCATED_EVENT
     const result = UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     const expectedCommand: UpdateOrderCommand = {
-      orderData: {
+      commandData: {
         orderId: mockUpdateOrderCommandInput.existingOrderData.orderId,
         orderStatus: OrderStatus.ORDER_STOCK_ALLOCATED_STATUS,
         updatedAt: mockDate,
@@ -1193,13 +1193,13 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 
-  it(`returns the expected UpdateOrderCommand with the expected OrderData (ORDER_FULFILLED_STATUS)`, () => {
+  it(`returns the expected UpdateOrderCommand with the expected data (case ORDER_FULFILLED_STATUS)`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_PAYMENT_ACCEPTED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_FULFILLED_EVENT
     const result = UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     const expectedCommand: UpdateOrderCommand = {
-      orderData: {
+      commandData: {
         orderId: mockUpdateOrderCommandInput.existingOrderData.orderId,
         orderStatus: OrderStatus.ORDER_FULFILLED_STATUS,
         updatedAt: mockDate,

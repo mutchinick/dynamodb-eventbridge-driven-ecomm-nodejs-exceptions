@@ -108,7 +108,7 @@ const mockExistingRestockSkuData: RestockSkuData[] = [
 ]
 
 function buildMockDdbDocClient_resolves(listSkusCommand?: ListSkusCommand): DynamoDBDocumentClient {
-  const sku = listSkusCommand?.queryData?.sku
+  const sku = listSkusCommand?.commandData?.sku
   const mockGetCommandResult: QueryCommandOutput = {
     Items: sku ? [mockExistingRestockSkuData[0]] : mockExistingRestockSkuData,
     $metadata: {},
@@ -157,21 +157,21 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand.queryData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand.commandData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const mockTestCommand = buildMockListSkusCommand({})
-    mockTestCommand.queryData = undefined
+    mockTestCommand.commandData = undefined
     const resultPromise = dbListSkusClient.listSkus(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand.queryData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand.commandData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const mockTestCommand = buildMockListSkusCommand({})
-    mockTestCommand.queryData = null
+    mockTestCommand.commandData = null
     const resultPromise = dbListSkusClient.listSkus(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))

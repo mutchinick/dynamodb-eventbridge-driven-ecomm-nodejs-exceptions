@@ -17,7 +17,7 @@ type AllocateOrderStockCommandData = TypeUtilsPretty<
 >
 
 type AllocateOrderStockCommandProps = {
-  readonly allocateOrderStockData: AllocateOrderStockCommandData
+  readonly commandData: AllocateOrderStockCommandData
   readonly options?: Record<string, unknown>
 }
 
@@ -29,7 +29,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
    *
    */
   private constructor(
-    public readonly allocateOrderStockData: AllocateOrderStockCommandData,
+    public readonly commandData: AllocateOrderStockCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
@@ -43,8 +43,8 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     console.info(`${logContext} init:`, { allocateOrderStockCommandInput })
 
     try {
-      const { allocateOrderStockData, options } = this.buildProps(allocateOrderStockCommandInput)
-      const allocateOrderStockCommand = new AllocateOrderStockCommand(allocateOrderStockData, options)
+      const { commandData, options } = this.buildProps(allocateOrderStockCommandInput)
+      const allocateOrderStockCommand = new AllocateOrderStockCommand(commandData, options)
       console.info(`${logContext} exit success:`, { allocateOrderStockCommand, allocateOrderStockCommandInput })
       return allocateOrderStockCommand
     } catch (error) {
@@ -65,7 +65,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     const { orderId, sku, units, price, userId } = incomingOrderCreatedEvent.eventData
     const date = new Date().toISOString()
     const allocateOrderStockCommandProps: AllocateOrderStockCommandProps = {
-      allocateOrderStockData: {
+      commandData: {
         orderId,
         sku,
         units,

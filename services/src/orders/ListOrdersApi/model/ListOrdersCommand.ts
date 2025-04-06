@@ -4,14 +4,14 @@ import { OrderData } from '../../model/OrderData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { SortDirection } from '../../model/SortDirection'
 
-type ListOrdersCommandQueryData = Partial<
+export type ListOrdersCommandInput = Partial<
   Pick<OrderData, 'orderId'> & { sortDirection: SortDirection } & { limit: number }
 >
 
-export type ListOrdersCommandInput = ListOrdersCommandQueryData
+type ListOrdersCommandData = Partial<Pick<OrderData, 'orderId'> & { sortDirection: SortDirection } & { limit: number }>
 
 type ListOrdersCommandProps = {
-  readonly queryData: ListOrdersCommandQueryData
+  readonly commandData: ListOrdersCommandData
   readonly options?: Record<string, unknown>
 }
 
@@ -23,7 +23,7 @@ export class ListOrdersCommand implements ListOrdersCommandProps {
    *
    */
   private constructor(
-    public readonly queryData: ListOrdersCommandQueryData,
+    public readonly commandData: ListOrdersCommandData,
     public readonly options?: Record<string, unknown>,
   ) {}
 
@@ -35,8 +35,8 @@ export class ListOrdersCommand implements ListOrdersCommandProps {
     console.info(`${logContext} init:`, { listOrdersCommandInput })
 
     try {
-      const { queryData, options } = this.buildProps(listOrdersCommandInput)
-      const listOrdersCommand = new ListOrdersCommand(queryData, options)
+      const { commandData, options } = this.buildProps(listOrdersCommandInput)
+      const listOrdersCommand = new ListOrdersCommand(commandData, options)
       console.info(`${logContext} exit success:`, { listOrdersCommand, listOrdersCommandInput })
       return listOrdersCommand
     } catch (error) {
@@ -53,7 +53,7 @@ export class ListOrdersCommand implements ListOrdersCommandProps {
 
     const { orderId, sortDirection, limit } = listOrdersCommandInput
     const listOrdersCommandProps: ListOrdersCommandProps = {
-      queryData: { orderId, sortDirection, limit },
+      commandData: { orderId, sortDirection, limit },
       options: {},
     }
     return listOrdersCommandProps
