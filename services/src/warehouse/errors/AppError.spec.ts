@@ -1,11 +1,12 @@
 import {
   AppError,
   DepletedStockAllocationError,
-  InvalidArgumentsError,
-  InvalidOperationError,
   DuplicateEventRaisedError,
   DuplicateRestockOperationError,
   DuplicateStockAllocationError,
+  InvalidArgumentsError,
+  InvalidOperationError,
+  InvalidStockDeallocationError,
   UnrecognizedError,
   isTransientError,
 } from './AppError'
@@ -50,7 +51,7 @@ const testCases: ErrorTestCase<AppError>[] = [
   {
     name: 'DuplicateEventRaisedError',
     from: (cause, message) => DuplicateEventRaisedError.from(cause, message),
-    expectedMessage: 'Duplicate event raise operation error.',
+    expectedMessage: 'Duplicate event raised error.',
     expectedTransient: false,
     expectedInstance: DuplicateEventRaisedError,
   },
@@ -64,16 +65,23 @@ const testCases: ErrorTestCase<AppError>[] = [
   {
     name: 'DepletedStockAllocationError',
     from: (cause, message) => DepletedStockAllocationError.from(cause, message),
-    expectedMessage: 'Depleted restock operation error.',
+    expectedMessage: 'Depleted restock allocation error.',
     expectedTransient: false,
     expectedInstance: DepletedStockAllocationError,
   },
   {
     name: 'DuplicateStockAllocationError',
     from: (cause, message) => DuplicateStockAllocationError.from(cause, message),
-    expectedMessage: 'Duplicate stock allocation operation error.',
+    expectedMessage: 'Duplicate stock allocation error.',
     expectedTransient: false,
     expectedInstance: DuplicateStockAllocationError,
+  },
+  {
+    name: 'InvalidStockDeallocationError',
+    from: (cause, message) => InvalidStockDeallocationError.from(cause, message),
+    expectedMessage: 'Invalid stock deallocation error.',
+    expectedTransient: false,
+    expectedInstance: InvalidStockDeallocationError,
   },
 ]
 
@@ -104,13 +112,13 @@ describe(`Warehouse Service AppError tests`, () => {
           expect(err.transient).toBe(expectedTransient)
         })
 
-        it(`${name} stores expected custom message`, () => {
+        it(`${name} sets expected custom message`, () => {
           const customMessage = 'Mock message'
           const errWithCustomMessage = from(undefined, customMessage)
           expect(errWithCustomMessage.message).toBe(customMessage)
         })
 
-        it(`${name} stores expected cause`, () => {
+        it(`${name} sets expected cause`, () => {
           const cause = new Error('Root cause')
           const errWithCause = from(cause)
           expect(errWithCause.cause).toBe(cause)

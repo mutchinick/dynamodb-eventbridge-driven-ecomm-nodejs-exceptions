@@ -53,7 +53,7 @@ export class InvalidArgumentsError extends AppError {
  *
  */
 export class DuplicateEventRaisedError extends AppError {
-  private static readonly _defaultMessage = 'Duplicate event raise operation error.'
+  private static readonly _defaultMessage = 'Duplicate event raised error.'
 
   public static from(cause?: unknown, message?: string): UnrecognizedError {
     return new DuplicateEventRaisedError(message ?? this._defaultMessage, false, cause)
@@ -75,7 +75,7 @@ export class DuplicateRestockOperationError extends AppError {
  *
  */
 export class DepletedStockAllocationError extends AppError {
-  private static readonly _defaultMessage = 'Depleted restock operation error.'
+  private static readonly _defaultMessage = 'Depleted restock allocation error.'
 
   public static from(cause?: unknown, message?: string): DepletedStockAllocationError {
     return new DepletedStockAllocationError(message ?? this._defaultMessage, false, cause)
@@ -86,10 +86,21 @@ export class DepletedStockAllocationError extends AppError {
  *
  */
 export class DuplicateStockAllocationError extends AppError {
-  private static readonly _defaultMessage = 'Duplicate stock allocation operation error.'
+  private static readonly _defaultMessage = 'Duplicate stock allocation error.'
 
   public static from(cause?: unknown, message?: string): DuplicateStockAllocationError {
     return new DuplicateStockAllocationError(message ?? this._defaultMessage, false, cause)
+  }
+}
+
+/*
+ *
+ */
+export class InvalidStockDeallocationError extends AppError {
+  private static readonly _defaultMessage = 'Invalid stock deallocation error.'
+
+  public static from(cause?: unknown, message?: string): InvalidStockDeallocationError {
+    return new InvalidStockDeallocationError(message ?? this._defaultMessage, false, cause)
   }
 }
 
