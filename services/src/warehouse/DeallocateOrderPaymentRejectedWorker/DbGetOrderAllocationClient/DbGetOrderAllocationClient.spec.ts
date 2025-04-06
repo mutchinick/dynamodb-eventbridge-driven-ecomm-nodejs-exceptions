@@ -1,7 +1,7 @@
 import { DynamoDBDocumentClient, GetCommand, GetCommandOutput } from '@aws-sdk/lib-dynamodb'
 import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
-import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { GetOrderAllocationCommand } from '../model/GetOrderAllocationCommand'
 import { DbGetOrderAllocationClient } from './DbGetOrderAllocationClient'
 
@@ -41,7 +41,7 @@ const expectedDdbCommand = buildMockDdbCommand()
 //
 // Mock clients
 //
-const mockExistingOrderData: AllocateOrderStockData = {
+const mockExistingOrderData: OrderAllocationData = {
   orderId: mockGetOrderAllocationCommand.commandData.orderId,
   sku: mockGetOrderAllocationCommand.commandData.sku,
   units: 2,
@@ -161,15 +161,15 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     const mockDdbDocClient = buildMockDdbDocClient_resolves_nullItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const result = await dbGetOrderAllocationClient.getOrderAllocation(mockGetOrderAllocationCommand)
-    const expectedResult: AllocateOrderStockData = null
+    const expectedResult: OrderAllocationData = null
     expect(result).toBe(expectedResult)
   })
 
-  it(`returns the expected AllocateOrderStockData if DynamoDBDocumentClient.send returns an Item with data`, async () => {
+  it(`returns the expected OrderAllocationData if DynamoDBDocumentClient.send returns an Item with data`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const result = await dbGetOrderAllocationClient.getOrderAllocation(mockGetOrderAllocationCommand)
-    const expectedResult: AllocateOrderStockData = {
+    const expectedResult: OrderAllocationData = {
       orderId: mockExistingOrderData.orderId,
       sku: mockExistingOrderData.sku,
       units: mockExistingOrderData.units,

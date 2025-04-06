@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { AllocationStatus } from '../../model/AllocationStatus'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
@@ -11,7 +11,7 @@ export type AllocateOrderStockCommandInput = {
 }
 
 type AllocateOrderStockCommandData = TypeUtilsPretty<
-  AllocateOrderStockData & {
+  OrderAllocationData & {
     allocationStatus: AllocationStatus<'ALLOCATED'>
   }
 >

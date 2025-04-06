@@ -1,19 +1,19 @@
 import { z } from 'zod'
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { AllocationStatus } from '../../model/AllocationStatus'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { IncomingOrderPaymentRejectedEvent } from './IncomingOrderPaymentRejectedEvent'
 
 export interface DeallocateOrderPaymentRejectedCommandInput {
-  existingOrderAllocationData: AllocateOrderStockData
+  existingOrderAllocationData: OrderAllocationData
   incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent
 }
 
 type DeallocateOrderPaymentRejectedCommandData = TypeUtilsPretty<
-  Pick<AllocateOrderStockData, 'orderId' | 'sku' | 'units' | 'updatedAt' | 'allocationStatus'> & {
+  Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'updatedAt' | 'allocationStatus'> & {
     allocationStatus: AllocationStatus<'PAYMENT_REJECTED'>
     expectedAllocationStatus: AllocationStatus<'ALLOCATED'>
   }

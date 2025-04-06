@@ -1,6 +1,6 @@
 import { DynamoDBDocumentClient, GetCommand, NativeAttributeValue } from '@aws-sdk/lib-dynamodb'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
-import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { GetOrderAllocationCommand } from '../model/GetOrderAllocationCommand'
 
 export interface IDbGetOrderAllocationClient {
@@ -8,7 +8,7 @@ export interface IDbGetOrderAllocationClient {
    * @throws {InvalidArgumentsError}
    * @throws {UnrecognizedError}
    */
-  getOrderAllocation: (getOrderAllocationCommand: GetOrderAllocationCommand) => Promise<AllocateOrderStockData>
+  getOrderAllocation: (getOrderAllocationCommand: GetOrderAllocationCommand) => Promise<OrderAllocationData>
 }
 
 /**
@@ -24,9 +24,7 @@ export class DbGetOrderAllocationClient implements IDbGetOrderAllocationClient {
    * @throws {InvalidArgumentsError}
    * @throws {UnrecognizedError}
    */
-  public async getOrderAllocation(
-    getOrderAllocationCommand: GetOrderAllocationCommand,
-  ): Promise<AllocateOrderStockData> {
+  public async getOrderAllocation(getOrderAllocationCommand: GetOrderAllocationCommand): Promise<OrderAllocationData> {
     const logContext = 'DbGetOrderAllocationClient.getOrderAllocation'
     console.info(`${logContext} init:`, { getOrderAllocationCommand })
 
@@ -88,14 +86,14 @@ export class DbGetOrderAllocationClient implements IDbGetOrderAllocationClient {
   /**
    * @throws {UnrecognizedError}
    */
-  private async sendDdbCommand(ddbCommand: GetCommand): Promise<AllocateOrderStockData> {
+  private async sendDdbCommand(ddbCommand: GetCommand): Promise<OrderAllocationData> {
     const logContext = 'DbGetOrderAllocationClient.sendDdbCommand'
     console.info(`${logContext} init:`, { ddbCommand })
 
     try {
       const ddbOutput = await this.ddbDocClient.send(ddbCommand)
       if (!ddbOutput.Item) {
-        const orderAllocationData: AllocateOrderStockData = null
+        const orderAllocationData: OrderAllocationData = null
         console.info(`${logContext} exit success: null-Item:`, { orderAllocationData })
         return orderAllocationData
       } else {
@@ -113,8 +111,8 @@ export class DbGetOrderAllocationClient implements IDbGetOrderAllocationClient {
   /**
    *
    */
-  private buildOrderAllocationData(ddbItem: Record<string, NativeAttributeValue>): AllocateOrderStockData {
-    const orderAllocationData: AllocateOrderStockData = {
+  private buildOrderAllocationData(ddbItem: Record<string, NativeAttributeValue>): OrderAllocationData {
+    const orderAllocationData: OrderAllocationData = {
       orderId: ddbItem.orderId,
       sku: ddbItem.sku,
       units: ddbItem.units,

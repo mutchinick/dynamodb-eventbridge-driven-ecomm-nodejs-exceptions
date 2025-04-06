@@ -1,5 +1,5 @@
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { IDbDeallocateOrderPaymentRejectedClient } from '../DbDeallocateOrderPaymentRejectedClient/DbDeallocateOrderPaymentRejectedClient'
 import { IDbGetOrderAllocationClient } from '../DbGetOrderAllocationClient/DbGetOrderAllocationClient'
 import {
@@ -73,7 +73,7 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
    */
   private async getOrderAllocation(
     incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent,
-  ): Promise<AllocateOrderStockData> {
+  ): Promise<OrderAllocationData> {
     const logContext = 'DeallocateOrderPaymentRejectedWorkerService.getOrderAllocation'
     console.info(`${logContext} init:`, { incomingOrderPaymentRejectedEvent })
 
@@ -96,7 +96,7 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
    * @throws {UnrecognizedError}
    */
   private async deallocateOrder(
-    existingOrderAllocationData: AllocateOrderStockData,
+    existingOrderAllocationData: OrderAllocationData,
     incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent,
   ): Promise<void> {
     const logContext = 'DeallocateOrderPaymentRejectedWorkerService.deallocateOrder'

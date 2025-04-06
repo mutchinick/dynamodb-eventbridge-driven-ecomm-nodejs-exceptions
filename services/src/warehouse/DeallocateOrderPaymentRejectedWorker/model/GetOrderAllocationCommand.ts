@@ -1,11 +1,11 @@
 import { z } from 'zod'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { AllocateOrderStockData } from '../../model/AllocateOrderStockData'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { ValueValidators } from '../../model/ValueValidators'
 
-export type GetOrderAllocationCommandInput = Pick<AllocateOrderStockData, 'orderId' | 'sku'>
+export type GetOrderAllocationCommandInput = Pick<OrderAllocationData, 'orderId' | 'sku'>
 
-export type GetOrderAllocationCommandData = Pick<AllocateOrderStockData, 'orderId' | 'sku'>
+export type GetOrderAllocationCommandData = Pick<OrderAllocationData, 'orderId' | 'sku'>
 
 type GetOrderAllocationCommandProps = {
   readonly commandData: GetOrderAllocationCommandData
