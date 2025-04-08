@@ -53,14 +53,14 @@ export class IncomingOrderPaymentRejectedEvent implements IncomingOrderPaymentRe
 
     try {
       const { eventName, eventData, createdAt, updatedAt } = this.buildProps(incomingOrderPaymentRejectedEventInput)
-      const incomingOrderPaymentRejected = new IncomingOrderPaymentRejectedEvent(
+      const incomingOrderPaymentRejectedEvent = new IncomingOrderPaymentRejectedEvent(
         eventName,
         eventData,
         createdAt,
         updatedAt,
       )
-      console.info(`${logContext} exit success:`, { incomingOrderPaymentRejected })
-      return incomingOrderPaymentRejected
+      console.info(`${logContext} exit success:`, { incomingOrderPaymentRejectedEvent })
+      return incomingOrderPaymentRejectedEvent
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderPaymentRejectedEventInput })
       throw error
