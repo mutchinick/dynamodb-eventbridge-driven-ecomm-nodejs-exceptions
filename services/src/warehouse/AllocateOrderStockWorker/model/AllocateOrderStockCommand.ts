@@ -91,9 +91,11 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
       incomingOrderCreatedEvent: z.object({
         eventName: ValueValidators.validOrderCreatedEventName(),
         eventData: z.object({
+          orderId: ValueValidators.validOrderId(),
           sku: ValueValidators.validSku(),
           units: ValueValidators.validUnits(),
-          orderId: ValueValidators.validOrderId(),
+          price: ValueValidators.validPrice(),
+          userId: ValueValidators.validUserId(),
         }),
         createdAt: ValueValidators.validCreatedAt(),
         updatedAt: ValueValidators.validUpdatedAt(),

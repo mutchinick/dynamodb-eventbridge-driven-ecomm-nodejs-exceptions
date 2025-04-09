@@ -1,3 +1,4 @@
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { AllocateOrderStockCommand, AllocateOrderStockCommandInput } from './AllocateOrderStockCommand'
@@ -7,16 +8,8 @@ jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-type Mutable_IncomingOrderCreatedEvent = {
-  -readonly [K in keyof IncomingOrderCreatedEvent]: IncomingOrderCreatedEvent[K]
-}
-
-type Mutable_AllocateOrderStockCommandInput = {
-  incomingOrderCreatedEvent: Mutable_IncomingOrderCreatedEvent
-}
-
-function buildMockIncomingOrderCreatedEvent(): Mutable_IncomingOrderCreatedEvent {
-  const mockValidWarehouseEvent: Mutable_IncomingOrderCreatedEvent = {
+function buildMockIncomingOrderCreatedEvent(): TypeUtilsMutable<IncomingOrderCreatedEvent> {
+  const mockValidWarehouseEvent: TypeUtilsMutable<IncomingOrderCreatedEvent> = {
     eventName: WarehouseEventName.ORDER_CREATED_EVENT,
     eventData: {
       orderId: 'mockOrderId',
@@ -32,14 +25,15 @@ function buildMockIncomingOrderCreatedEvent(): Mutable_IncomingOrderCreatedEvent
 }
 
 function buildMockAllocateOrderStockCommandInput() {
-  const mockValidInput: Mutable_AllocateOrderStockCommandInput = {
+  const mockValidInput: TypeUtilsMutable<AllocateOrderStockCommandInput> = {
     incomingOrderCreatedEvent: buildMockIncomingOrderCreatedEvent(),
   }
   return mockValidInput
 }
 
 describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand tests`, () => {
-  it(`does not throw if the input AllocateOrderStockCommandInput.is valid`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput is valid`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
     expect(() => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)).not.toThrow()
   })
@@ -47,15 +41,56 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
   //
   // Test AllocateOrderStockCommandInput edge cases
   //
-  it(`throws a non-transient InvalidArgumentsError if the input AllocateOrderStockCommandInput.is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput is undefined`, () => {
     const mockAllocateOrderStockCommandInput: AllocateOrderStockCommandInput = undefined
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input AllocateOrderStockCommandInput.is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput is null`, () => {
     const mockAllocateOrderStockCommandInput: AllocateOrderStockCommandInput = null
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  //
+  // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent edge cases
+  //
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent is missing`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent is undefined`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent = undefined
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent is null`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent = null
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent is empty`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent = {} as never
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -113,6 +148,63 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
       AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName is not an ORDER_CREATED_EVENT`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
     mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventName = 'mockWarehouseEventName' as never
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  //
+  // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId edge cases
+  //
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is missing`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is undefined`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = undefined
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is null`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = null
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is empty`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = ''
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is blank`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = '      '
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId length < 4`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = '123'
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -242,57 +334,105 @@ describe(`Warehouse Service AllocateOrderStockWorker AllocateOrderStockCommand t
   })
 
   //
-  // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId edge cases
+  // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price edge cases
   //
   it(`throws a non-transient InvalidArgumentsError if the input
-      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is missing`, () => {
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price is missing`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
-    delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId
+    delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is undefined`, () => {
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
-    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = undefined
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price = undefined
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is null`, () => {
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price is null`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
-    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = null
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price = null
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is empty`, () => {
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price < 0`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
-    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = ''
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price = -1
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId is blank`, () => {
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price is not a number`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
-    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = '      '
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.price = '1' as unknown as number
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  //
+  // Test AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId edge cases
+  //
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId is missing`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    delete mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId length < 4`, () => {
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId is undefined`, () => {
     const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
-    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.orderId = '123'
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId = undefined
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId is null`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId = null
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId is empty`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId = ''
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId is blank`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId = '      '
+    const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
+    expect(testingFunc).toThrow(InvalidArgumentsError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  it(`throws a non-transient InvalidArgumentsError if the input
+      AllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId length < 4`, () => {
+    const mockAllocateOrderStockCommandInput = buildMockAllocateOrderStockCommandInput()
+    mockAllocateOrderStockCommandInput.incomingOrderCreatedEvent.eventData.userId = '123'
     const testingFunc = () => AllocateOrderStockCommand.validateAndBuild(mockAllocateOrderStockCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
