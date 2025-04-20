@@ -106,12 +106,6 @@ function buildMockDbUpdateOrderClient_throws(error?: unknown): IDbUpdateOrderCli
   return { updateOrder: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
-const mockGetOrderCommandInput: GetOrderCommandInput = {
-  orderId: 'mockOrderId',
-}
-
-const expectedGetOrderCommand = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
-
 describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
   /*
    *
@@ -333,6 +327,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
         mockEsRaiseOrderCreatedEventClient,
       )
       await syncOrderWorkerService.syncOrder(mockOrderPlacedEvent)
+      const mockGetOrderCommandInput: GetOrderCommandInput = { orderId: mockOrderId }
+      const expectedGetOrderCommand = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
@@ -477,8 +473,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       )
       await syncOrderWorkerService.syncOrder(mockOrderPlacedEvent)
       const mockOrderCreatedEventInput: OrderCreatedEventInput = {
-        incomingEventName: OrderEventName.ORDER_PLACED_EVENT,
-        orderData: mockOrderData,
+        orderId: mockOrderData.orderId,
+        sku: mockOrderData.sku,
+        units: mockOrderData.units,
+        price: mockOrderData.price,
+        userId: mockOrderData.userId,
       }
       const expectedOrderCreatedEvent = OrderCreatedEvent.validateAndBuild(mockOrderCreatedEventInput)
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
@@ -615,6 +614,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
         mockEsRaiseOrderCreatedEventClient,
       )
       await syncOrderWorkerService.syncOrder(mockOrderPlacedEvent)
+      const mockGetOrderCommandInput: GetOrderCommandInput = { orderId: mockOrderId }
+      const expectedGetOrderCommand = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 
@@ -686,8 +687,11 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       )
       await syncOrderWorkerService.syncOrder(mockOrderPlacedEvent)
       const mockOrderCreatedEventInput: OrderCreatedEventInput = {
-        incomingEventName: OrderEventName.ORDER_PLACED_EVENT,
-        orderData: mockOrderData,
+        orderId: mockOrderData.orderId,
+        sku: mockOrderData.sku,
+        units: mockOrderData.units,
+        price: mockOrderData.price,
+        userId: mockOrderData.userId,
       }
       const expectedOrderCreatedEvent = OrderCreatedEvent.validateAndBuild(mockOrderCreatedEventInput)
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
@@ -844,6 +848,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
         mockEsRaiseOrderCreatedEventClient,
       )
       await syncOrderWorkerService.syncOrder(mockOrderStockAllocatedEvent)
+      const mockGetOrderCommandInput: GetOrderCommandInput = { orderId: mockOrderId }
+      const expectedGetOrderCommand = GetOrderCommand.validateAndBuild(mockGetOrderCommandInput)
       expect(mockDbGetOrderClient.getOrder).toHaveBeenCalledWith(expectedGetOrderCommand)
     })
 

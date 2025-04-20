@@ -1,16 +1,14 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { OrderEvent } from '../../model/OrderEvent'
 import { OrderEventName } from '../../model/OrderEventName'
 import { ValueValidators } from '../../model/ValueValidators'
 
-type OrderCreatedEventData = Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+export type OrderCreatedEventInput = TypeUtilsPretty<Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>>
 
-export type OrderCreatedEventInput = {
-  incomingEventName: OrderEventName
-  orderData: OrderData
-}
+type OrderCreatedEventData = TypeUtilsPretty<Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>>
 
 type OrderCreatedEventProps = OrderEvent<string, OrderCreatedEventData>
 
@@ -52,8 +50,7 @@ export class OrderCreatedEvent implements OrderCreatedEventProps {
   private static buildProps(orderCreatedEventInput: OrderCreatedEventInput): OrderCreatedEventProps {
     this.validateInput(orderCreatedEventInput)
 
-    const { orderData } = orderCreatedEventInput
-    const { orderId, sku, units, price, userId } = orderData
+    const { orderId, sku, units, price, userId } = orderCreatedEventInput
     const currentDate = new Date().toISOString()
     const orderCreatedEventProps: OrderCreatedEventProps = {
       eventName: OrderEventName.ORDER_CREATED_EVENT,
@@ -72,17 +69,11 @@ export class OrderCreatedEvent implements OrderCreatedEventProps {
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
-      incomingEventName: ValueValidators.validOrderPlacedEventName(),
-      orderData: z.object({
-        orderId: ValueValidators.validOrderId(),
-        orderStatus: ValueValidators.validOrderStatus(),
-        sku: ValueValidators.validSku(),
-        units: ValueValidators.validUnits(),
-        price: ValueValidators.validPrice(),
-        userId: ValueValidators.validUserId(),
-        createdAt: ValueValidators.validCreatedAt(),
-        updatedAt: ValueValidators.validUpdatedAt(),
-      }),
+      orderId: ValueValidators.validOrderId(),
+      sku: ValueValidators.validSku(),
+      units: ValueValidators.validUnits(),
+      price: ValueValidators.validPrice(),
+      userId: ValueValidators.validUserId(),
     })
 
     try {
