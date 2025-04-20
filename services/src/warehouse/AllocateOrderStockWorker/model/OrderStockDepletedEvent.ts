@@ -1,13 +1,18 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEvent } from '../../model/WarehouseEvent'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 
-export type OrderStockDepletedEventData = Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+export type OrderStockDepletedEventInput = TypeUtilsPretty<
+  Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+>
 
-export type OrderStockDepletedEventInput = OrderStockDepletedEventData
+type OrderStockDepletedEventData = TypeUtilsPretty<
+  Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+>
 
 type OrderStockDepletedEventProps = WarehouseEvent<
   WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT,
@@ -53,20 +58,12 @@ export class OrderStockDepletedEvent implements OrderStockDepletedEventProps {
     this.validateInput(orderStockDepletedEventInput)
 
     const { orderId, sku, units, price, userId } = orderStockDepletedEventInput
-    const date = new Date().toISOString()
-    const orderStockDepletedEventData: OrderStockDepletedEventData = {
-      orderId,
-      sku,
-      units,
-      price,
-      userId,
-    }
-
+    const currentDate = new Date().toISOString()
     const orderStockDepletedEventProps: OrderStockDepletedEventProps = {
       eventName: WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT,
-      eventData: orderStockDepletedEventData,
-      createdAt: date,
-      updatedAt: date,
+      eventData: { orderId, sku, units, price, userId },
+      createdAt: currentDate,
+      updatedAt: currentDate,
     }
     return orderStockDepletedEventProps
   }

@@ -47,15 +47,15 @@ export class RawSimulatedEvent implements RawSimulatedEventProps {
   private static buildProps(rawSimulatedEventInput: RawSimulatedEventInput): RawSimulatedEventProps {
     this.validateInput(rawSimulatedEventInput)
 
-    const date = new Date().toISOString()
+    const currentDate = new Date().toISOString()
     const { pk, sk, eventName, eventData, createdAt, updatedAt } = rawSimulatedEventInput
     const rawSimulatedEventProps: RawSimulatedEventProps = {
       pk,
       sk,
       eventName,
       eventData,
-      createdAt: createdAt?.trim() || date,
-      updatedAt: updatedAt?.trim() || date,
+      createdAt: createdAt?.trim() || currentDate,
+      updatedAt: updatedAt?.trim() || currentDate,
     }
     return rawSimulatedEventProps
   }

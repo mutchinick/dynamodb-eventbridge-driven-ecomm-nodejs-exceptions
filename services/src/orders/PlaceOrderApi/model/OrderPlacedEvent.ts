@@ -51,13 +51,12 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
     this.validateInput(orderPlacedEventInput)
 
     const { orderId, sku, units, price, userId } = orderPlacedEventInput
-    const date = new Date().toISOString()
-    const orderPlacedEventData: OrderPlacedEventData = { orderId, sku, units, price, userId }
+    const currentDate = new Date().toISOString()
     const orderPlacedEventProps: OrderPlacedEventProps = {
       eventName: OrderEventName.ORDER_PLACED_EVENT,
-      eventData: orderPlacedEventData,
-      createdAt: date,
-      updatedAt: date,
+      eventData: { orderId, sku, units, price, userId },
+      createdAt: currentDate,
+      updatedAt: currentDate,
     }
     return orderPlacedEventProps
   }

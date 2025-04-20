@@ -1,13 +1,18 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEvent } from '../../model/WarehouseEvent'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 
-export type OrderStockAllocatedEventData = Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+export type OrderStockAllocatedEventInput = TypeUtilsPretty<
+  Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+>
 
-export type OrderStockAllocatedEventInput = OrderStockAllocatedEventData
+type OrderStockAllocatedEventData = TypeUtilsPretty<
+  Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+>
 
 type OrderStockAllocatedEventProps = WarehouseEvent<
   WarehouseEventName.ORDER_STOCK_ALLOCATED_EVENT,
@@ -57,20 +62,12 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
     this.validateInput(orderStockAllocatedEventInput)
 
     const { orderId, sku, units, price, userId } = orderStockAllocatedEventInput
-    const date = new Date().toISOString()
-    const orderStockAllocatedEventData: OrderStockAllocatedEventData = {
-      orderId,
-      sku,
-      units,
-      price,
-      userId,
-    }
-
+    const currentDate = new Date().toISOString()
     const orderStockAllocatedEventProps: OrderStockAllocatedEventProps = {
       eventName: WarehouseEventName.ORDER_STOCK_ALLOCATED_EVENT,
-      eventData: orderStockAllocatedEventData,
-      createdAt: date,
-      updatedAt: date,
+      eventData: { orderId, sku, units, price, userId },
+      createdAt: currentDate,
+      updatedAt: currentDate,
     }
     return orderStockAllocatedEventProps
   }

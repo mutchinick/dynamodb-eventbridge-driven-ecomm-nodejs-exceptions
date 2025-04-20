@@ -2,6 +2,7 @@ import { AttributeValue } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { EventBridgeEvent } from 'aws-lambda'
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { ValueValidators } from '../../model/ValueValidators'
@@ -21,7 +22,9 @@ type EventDetail = {
 
 export type IncomingOrderPaymentRejectedEventInput = EventBridgeEvent<string, EventDetail>
 
-type IncomingOrderPaymentRejectedEventData = Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+type IncomingOrderPaymentRejectedEventData = TypeUtilsPretty<
+  Pick<OrderAllocationData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+>
 
 type IncomingOrderPaymentRejectedEventProps = WarehouseEvent<
   WarehouseEventName.ORDER_PAYMENT_REJECTED_EVENT,
@@ -74,17 +77,13 @@ export class IncomingOrderPaymentRejectedEvent implements IncomingOrderPaymentRe
     incomingOrderPaymentRejectedEventInput: IncomingOrderPaymentRejectedEventInput,
   ): IncomingOrderPaymentRejectedEventProps {
     const validInput = this.parseValidateInput(incomingOrderPaymentRejectedEventInput)
+    const { eventName, eventData, createdAt, updatedAt } = validInput
+    const { orderId, sku, units, price, userId } = eventData
     const incomingOrderPaymentRejectedEventProps: IncomingOrderPaymentRejectedEventProps = {
-      eventName: validInput.eventName,
-      eventData: {
-        orderId: validInput.eventData.orderId,
-        sku: validInput.eventData.sku,
-        units: validInput.eventData.units,
-        price: validInput.eventData.price,
-        userId: validInput.eventData.userId,
-      },
-      createdAt: validInput.createdAt,
-      updatedAt: validInput.updatedAt,
+      eventName,
+      eventData: { orderId, sku, units, price, userId },
+      createdAt,
+      updatedAt,
     }
     return incomingOrderPaymentRejectedEventProps
   }
