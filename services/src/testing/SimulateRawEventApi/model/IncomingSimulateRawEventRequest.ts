@@ -1,10 +1,11 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { EventProps } from './EventProps'
+import { RawEventProps } from './RawEventProps'
 
-export type IncomingSimulateRawEventRequestInput = EventProps
+export type IncomingSimulateRawEventRequestInput = TypeUtilsPretty<RawEventProps>
 
-type IncomingSimulateRawEventRequestProps = EventProps
+type IncomingSimulateRawEventRequestProps = TypeUtilsPretty<RawEventProps>
 
 /**
  *
