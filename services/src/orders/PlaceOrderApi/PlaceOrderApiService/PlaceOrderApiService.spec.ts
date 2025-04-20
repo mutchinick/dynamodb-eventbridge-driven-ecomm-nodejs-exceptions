@@ -47,7 +47,8 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
     await expect(placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequest)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequest is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequest is undefined`, async () => {
     const mockEsRaiseOrderPlacedEventClient = buildMockEsRaiseOrderPlacedEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockEsRaiseOrderPlacedEventClient)
     const mockTestRequest = undefined as never
@@ -56,7 +57,8 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequest is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequest is null`, async () => {
     const mockEsRaiseOrderPlacedEventClient = buildMockEsRaiseOrderPlacedEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockEsRaiseOrderPlacedEventClient)
     const mockTestRequest = null as never
@@ -65,7 +67,8 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequest is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequest is not an instance of the class`, async () => {
     const mockEsRaiseOrderPlacedEventClient = buildMockEsRaiseOrderPlacedEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockEsRaiseOrderPlacedEventClient)
     const mockTestRequest = { ...mockIncomingPlaceOrderRequest }
@@ -106,7 +109,8 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
     expect(mockEsRaiseOrderPlacedEventClient.raiseOrderPlacedEvent).toHaveBeenCalledWith(expectedOrderPlacedEvent)
   })
 
-  it(`throws the same Error if EsRaiseOrderPlacedEventClient.placeOrder throws an unwrapped Error`, async () => {
+  it(`throws the same Error if EsRaiseOrderPlacedEventClient.placeOrder throws an
+      unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockEsRaiseOrderPlacedEventClient = buildMockEsRaiseOrderPlacedEventClient_throws(mockError)
     const placeOrderApiService = new PlaceOrderApiService(mockEsRaiseOrderPlacedEventClient)
@@ -119,7 +123,8 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected PlaceOrderApiServiceOutput if EsRaiseOrderPlacedEventClient.placeOrder throws DuplicateEventRaisedError`, async () => {
+  it(`returns the expected PlaceOrderApiServiceOutput if
+      EsRaiseOrderPlacedEventClient.placeOrder throws DuplicateEventRaisedError`, async () => {
     const mockError = DuplicateEventRaisedError.from()
     const mockEsRaiseOrderPlacedEventClient = buildMockEsRaiseOrderPlacedEventClient_throws(mockError)
     const placeOrderApiService = new PlaceOrderApiService(mockEsRaiseOrderPlacedEventClient)
@@ -134,7 +139,8 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiService tests`, () => {
     expect(result).toStrictEqual(expectedResult)
   })
 
-  it(`returns the expected PlaceOrderApiServiceOutput if the execution path is successful`, async () => {
+  it(`returns the expected PlaceOrderApiServiceOutput if the execution path is
+      successful`, async () => {
     const mockEsRaiseOrderPlacedEventClient = buildMockEsRaiseOrderPlacedEventClient_resolves()
     const placeOrderApiService = new PlaceOrderApiService(mockEsRaiseOrderPlacedEventClient)
     const result = await placeOrderApiService.placeOrder(mockIncomingPlaceOrderRequest)

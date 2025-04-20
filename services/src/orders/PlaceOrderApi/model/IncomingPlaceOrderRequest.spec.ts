@@ -30,14 +30,16 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(() => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput is undefined`, async () => {
     const mockIncomingPlaceOrderRequestInput = undefined as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput is null`, async () => {
     const mockIncomingPlaceOrderRequestInput = null as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -50,7 +52,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
    ************************************************************
    * Test IncomingPlaceOrderRequestInput.orderId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.orderId is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.orderId is undefined`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.orderId = undefined as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -58,7 +61,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.orderId is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.orderId is null`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.orderId = null as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -66,7 +70,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.orderId is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.orderId is empty`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.orderId = '' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -74,7 +79,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.orderId is blank`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.orderId is blank`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.orderId = '      ' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -82,7 +88,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.orderId length < 4`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.orderId length < 4`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.orderId = '123' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -96,7 +103,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
    ************************************************************
    * Test IncomingPlaceOrderRequestInput.sku edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.sku is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.sku is undefined`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.sku = undefined as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -104,7 +112,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.sku is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.sku is null`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.sku = null as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -112,7 +121,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.sku is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.sku is empty`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.sku = '' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -120,7 +130,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.sku is blank`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.sku is blank`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.sku = '      ' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -128,7 +139,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.sku length < 4`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.sku length < 4`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.sku = '123' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -142,7 +154,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
    ************************************************************
    * Test IncomingPlaceOrderRequestInput.units edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.units is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.units is undefined`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.units = undefined as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -150,7 +163,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.units is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.units is null`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.units = null as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -158,7 +172,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.units < 1`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.units < 1`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.units = 0
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -166,7 +181,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.units is not an integer`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.units is not an integer`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.units = 3.45
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -174,7 +190,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.units is not a number`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.units is not a number`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.units = '1' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -188,7 +205,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
    ************************************************************
    * Test IncomingPlaceOrderRequestInput.price edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.price is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.price is undefined`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.price = undefined as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -196,7 +214,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.price is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.price is null`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.price = null as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -204,7 +223,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.price < 0`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.price < 0`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.price = -1
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -212,7 +232,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.price is not a number`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.price is not a number`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.price = '0' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -226,7 +247,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
    ************************************************************
    * Test IncomingPlaceOrderRequestInput.userId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.userId is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.userId is undefined`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.userId = undefined as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -234,7 +256,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.userId is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.userId is undefined`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.userId = undefined as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -242,7 +265,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.userId is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.userId is null`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.userId = null as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -250,7 +274,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.userId is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.userId is empty`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.userId = '' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -258,7 +283,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.userId is blank`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.userId is blank`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.userId = '      ' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -266,7 +292,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingPlaceOrderRequestInput.userId length < 4`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingPlaceOrderRequestInput.userId length < 4`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.userId = '123' as never
     const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
@@ -280,7 +307,8 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected IncomingPlaceOrderRequest if the execution path is successful`, async () => {
+  it(`returns the expected IncomingPlaceOrderRequest if the execution path is
+      successful`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     const result = IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
     const expectedRequest: IncomingPlaceOrderRequest = {

@@ -88,7 +88,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(dbGetOrderAllocationClient.getOrderAllocation(mockGetOrderAllocationCommand)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      GetOrderAllocationCommand is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const mockTestCommand = undefined as never
@@ -97,7 +98,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      GetOrderAllocationCommand is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const mockTestCommand = null as never
@@ -106,7 +108,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      GetOrderAllocationCommand is not an instance of the class`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const mockTestCommand = { ...mockGetOrderAllocationCommand }
@@ -121,7 +124,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
    ************************************************************
    * Test GetOrderAllocationCommand.commandData edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand.commandData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      GetOrderAllocationCommand.commandData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const mockTestCommand = buildMockGetOrderAllocationCommand()
@@ -131,7 +135,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand.commandData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      GetOrderAllocationCommand.commandData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const mockTestCommand = buildMockGetOrderAllocationCommand()
@@ -161,7 +166,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
-  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an unwrapped Error`, async () => {
+  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an
+      unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
@@ -184,7 +190,8 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     expect(result).toBe(expectedResult)
   })
 
-  it(`returns the expected OrderAllocationData if DynamoDBDocumentClient.send returns an Item with data`, async () => {
+  it(`returns the expected OrderAllocationData if DynamoDBDocumentClient.send returns
+      an Item with data`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const result = await dbGetOrderAllocationClient.getOrderAllocation(mockGetOrderAllocationCommand)

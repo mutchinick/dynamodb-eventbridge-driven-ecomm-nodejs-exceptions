@@ -74,14 +74,16 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(() => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput is undefined`, () => {
     const mockUpdateOrderCommandInput: UpdateOrderCommandInput = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput is null`, () => {
     const mockUpdateOrderCommandInput: UpdateOrderCommandInput = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -94,7 +96,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.orderId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderId is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderId = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -102,7 +105,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderId is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderId = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -110,7 +114,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderId is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderId = '' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -118,7 +123,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderId is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderId = '      ' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -126,7 +132,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderId length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderId = 'ABC' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -140,7 +147,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.orderStatus edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderStatus is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderStatus is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -148,7 +156,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderStatus is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderStatus is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -156,7 +165,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderStatus is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderStatus is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = '' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -164,7 +174,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderStatus is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderStatus is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = '      ' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -172,7 +183,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.orderStatus not an OrderStatus`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.orderStatus not an OrderStatus`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = 'mockInvalidValue' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -186,7 +198,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.sku edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.sku is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.sku is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.sku = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -194,7 +207,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.sku is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.sku is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.sku = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -202,7 +216,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.sku is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.sku is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.sku = '' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -210,7 +225,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.sku is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.sku is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.sku = '      ' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -218,7 +234,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.sku length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.sku length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.sku = '      ' as OrderStatus
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -232,7 +249,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.units edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.units is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.units is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.units = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -240,7 +258,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.units is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.units is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.units = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -248,7 +267,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.units < 1`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.units < 1`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.units = 0
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -256,7 +276,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.units is not an integer`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.units is not an integer`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.units = 3.45
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -264,7 +285,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.units is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.units is not a number`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.units = '1' as unknown as number
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -278,7 +300,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.price edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.price is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.price is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.price = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -286,7 +309,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.price is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.price is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.price = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -294,7 +318,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.price < 0`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.price < 0`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.price = -1
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -302,7 +327,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.price is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.price is not a number`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.price = '1' as unknown as number
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -316,7 +342,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.userId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.userId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.userId is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.userId = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -324,7 +351,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.userId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.userId is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.userId = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -332,7 +360,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.userId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.userId is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.userId = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -340,7 +369,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.userId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.userId is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.userId = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -348,7 +378,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.userId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.userId length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.userId = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -362,7 +393,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.createdAt edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.createdAt is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.createdAt is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.createdAt = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -370,7 +402,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.createdAt is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.createdAt is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.createdAt = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -378,7 +411,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.createdAt is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.createdAt is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.createdAt = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -386,7 +420,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.createdAt is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.createdAt is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.createdAt = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -394,7 +429,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.createdAt length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.createdAt length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.createdAt = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -408,7 +444,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.existingOrderData.updatedAt edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.updatedAt is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.updatedAt is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.updatedAt = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -416,7 +453,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.updatedAt is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.updatedAt is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.updatedAt = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -424,7 +462,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.updatedAt is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.updatedAt is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.updatedAt = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -432,7 +471,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.updatedAt is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.updatedAt is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.updatedAt = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -440,7 +480,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.existingOrderData.updatedAt length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.existingOrderData.updatedAt length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.updatedAt = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -454,7 +495,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.eventName edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventName is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventName is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -462,7 +504,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventName is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventName is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -470,7 +513,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventName is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventName is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = '' as OrderEventName
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -478,7 +522,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventName is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventName is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = '      ' as OrderEventName
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -486,7 +531,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventName is not an OrderEventName`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventName is not an OrderEventName`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = 'mockOrderEventName' as OrderEventName
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -500,7 +546,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.createdAt edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.createdAt is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.createdAt is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.createdAt = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -508,7 +555,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.createdAt is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.createdAt is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.createdAt = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -516,7 +564,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.createdAt is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.createdAt is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.createdAt = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -524,7 +573,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.createdAt is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.createdAt is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.createdAt = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -532,7 +582,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.createdAt length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.createdAt length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.createdAt = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -546,7 +597,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.updatedAt edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.updatedAt is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.updatedAt is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.updatedAt = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -554,7 +606,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.updatedAt is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.updatedAt is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.updatedAt = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -562,7 +615,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.updatedAt is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.updatedAt is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.updatedAt = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -570,7 +624,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.updatedAt is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.updatedAt is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.updatedAt = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -578,7 +633,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.updatedAt length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.updatedAt length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.updatedAt = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -592,7 +648,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.orderId = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -600,7 +657,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.orderId = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -608,7 +666,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.orderId = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -616,7 +675,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.orderId = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -624,7 +684,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.orderId length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.orderId = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -638,7 +699,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.eventData.sku edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.sku = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -646,7 +708,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.sku = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -654,7 +717,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.sku = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -662,7 +726,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.sku is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.sku = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -670,7 +735,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.sku length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.sku length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.sku = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -684,7 +750,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.eventData.units edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.units is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.units is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.units = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -692,7 +759,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.units is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.units is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.units = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -700,7 +768,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.units < 1`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.units < 1`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.units = 0
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -708,7 +777,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.units is not an integer`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.units is not an integer`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.units = 3.45
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -716,7 +786,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.units is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.units is not a number`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.units = '1' as unknown as number
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -730,7 +801,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.eventData.price edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.price is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.price is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.price = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -738,7 +810,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.price is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.price is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.price = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -746,7 +819,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.price < 0`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.price < 0`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.price = -1
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -754,7 +828,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.price is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.price is not a number`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.price = '1' as unknown as number
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -768,7 +843,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test UpdateOrderCommandInput.incomingOrderEvent.eventData.userId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is undefined`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.userId = undefined
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -776,7 +852,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is null`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.userId = null
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -784,7 +861,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.userId = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -792,7 +870,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.userId is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.userId = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -800,7 +879,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input UpdateOrderCommandInput.incomingOrderEvent.eventData.userId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      UpdateOrderCommandInput.incomingOrderEvent.eventData.userId length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.incomingOrderEvent.eventData.userId = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
@@ -814,7 +894,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test Event and Order Status Transition edge cases
    ************************************************************/
-  it(`throws non-transient ForbiddenOrderStatusTransitionError if the input existingOrderData.orderStatus is not valid for transition`, () => {
+  it(`throws non-transient ForbiddenOrderStatusTransitionError if the input
+      existingOrderData.orderStatus is not valid for transition`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_CANCELED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_STOCK_ALLOCATED_EVENT
@@ -823,7 +904,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient RedundantOrderStatusTransitionError error if the input existingOrderData.orderStatus already is the new requested orderStatus`, () => {
+  it(`throws a non-transient RedundantOrderStatusTransitionError error if the input
+      existingOrderData.orderStatus already is the new requested orderStatus`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_PAYMENT_ACCEPTED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_PAYMENT_ACCEPTED_EVENT
@@ -832,7 +914,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a transient NotReadyOrderStatusTransitionError error if the input existingOrderData.orderStatus is not ready for transition`, () => {
+  it(`throws a transient NotReadyOrderStatusTransitionError error if the input
+      existingOrderData.orderStatus is not ready for transition`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_CREATED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_FULFILLED_EVENT
@@ -847,7 +930,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected UpdateOrderCommand if the execution path is successful (case ORDER_STOCK_ALLOCATED_STATUS)`, () => {
+  it(`returns the expected UpdateOrderCommand if the execution path is successful
+      (case ORDER_STOCK_ALLOCATED_STATUS)`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_CREATED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_STOCK_ALLOCATED_EVENT
@@ -863,7 +947,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(result).toStrictEqual(expect.objectContaining(expectedCommand))
   })
 
-  it(`returns the expected UpdateOrderCommand if the execution path is successful (case ORDER_FULFILLED_STATUS)`, () => {
+  it(`returns the expected UpdateOrderCommand if the execution path is successful
+      (case ORDER_FULFILLED_STATUS)`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_PAYMENT_ACCEPTED_STATUS
     mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_FULFILLED_EVENT

@@ -26,14 +26,16 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(() => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput is undefined`, async () => {
     const mockIncomingListOrdersRequestInput = undefined as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput is null`, async () => {
     const mockIncomingListOrdersRequestInput = null as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -53,7 +55,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.orderId is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.orderId is null`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.orderId = null as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -61,7 +64,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.orderId is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.orderId is empty`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.orderId = '' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -69,7 +73,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.orderId is blank`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.orderId is blank`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.orderId = '      ' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -77,7 +82,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.orderId length < 4`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.orderId length < 4`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.orderId = '123' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -91,14 +97,16 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
    ************************************************************
    * Test IncomingListOrdersRequestInput.sortDirection edge cases
    ************************************************************/
-  it(`does not throw if the input IncomingListOrdersRequestInput.sortDirection is undefined`, async () => {
+  it(`does not throw if the input IncomingListOrdersRequestInput.sortDirection is
+      undefined`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.sortDirection = undefined as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     expect(testingFunc).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.sortDirection is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.sortDirection is null`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.sortDirection = null as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -106,7 +114,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.sortDirection is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.sortDirection is empty`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.sortDirection = '' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -114,7 +123,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.sortDirection is blank`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.sortDirection is blank`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.sortDirection = '      ' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -122,7 +132,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.sortDirection is a random string`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.sortDirection is a random string`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.sortDirection = 'xyz' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -143,7 +154,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.limit is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.limit is null`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.limit = null as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -151,7 +163,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.limit < 1`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.limit < 1`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.limit = 0
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -159,7 +172,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.limit > 1000`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.limit > 1000`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.limit = 1001
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -167,7 +181,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.limit is not an integer`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.limit is not an integer`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.limit = 3.45
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -175,7 +190,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequestInput.limit is not a number`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequestInput.limit is not a number`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     mockIncomingListOrdersRequestInput.limit = '1' as never
     const testingFunc = () => IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
@@ -189,7 +205,8 @@ describe(`Orders Service ListOrdersApi IncomingListOrdersRequest tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected IncomingListOrdersRequest if the execution path is successful`, async () => {
+  it(`returns the expected IncomingListOrdersRequest if the execution path is
+      successful`, async () => {
     const mockIncomingListOrdersRequestInput = buildMockIncomingListOrdersRequestInput()
     const result = IncomingListOrdersRequest.validateAndBuild(mockIncomingListOrdersRequestInput)
     const expectedRequest: IncomingListOrdersRequest = {

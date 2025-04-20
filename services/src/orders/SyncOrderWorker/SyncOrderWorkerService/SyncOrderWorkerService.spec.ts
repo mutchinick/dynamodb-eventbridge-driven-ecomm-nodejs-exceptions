@@ -149,7 +149,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(syncOrderWorkerService.syncOrder(mockTestEvent)).resolves.not.toThrow()
     })
 
-    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent is undefined`, async () => {
+    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent is
+        undefined`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -166,7 +167,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
 
-    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent is null`, async () => {
+    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent is
+        null`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -183,7 +185,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
 
-    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent.eventName is undefined`, async () => {
+    it(`throws a non-transient InvalidArgumentsError if the input
+        IncomingOrderEvent.eventName is undefined`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -201,7 +204,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
 
-    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent.eventData is undefined`, async () => {
+    it(`throws a non-transient InvalidArgumentsError if the input
+        IncomingOrderEvent.eventData is undefined`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -219,7 +223,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
 
-    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent.eventData.orderId is undefined`, async () => {
+    it(`throws a non-transient InvalidArgumentsError if the input
+        IncomingOrderEvent.eventData.orderId is undefined`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -237,7 +242,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
 
-    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent is not an instance of the class`, async () => {
+    it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent is
+        not an instance of the class`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -457,7 +463,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledTimes(1)
     })
 
-    it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent with the expected OrderCreatedEvent`, async () => {
+    it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent with the expected
+        OrderCreatedEvent`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -477,7 +484,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
     })
 
-    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws an Error`, async () => {
+    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent
+        throws an Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_null()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -664,7 +672,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledTimes(1)
     })
 
-    it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent with the expected OrderCreatedEvent`, async () => {
+    it(`calls EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent with the expected
+        OrderCreatedEvent`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()
@@ -684,7 +693,8 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
       expect(mockEsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent).toHaveBeenCalledWith(expectedOrderCreatedEvent)
     })
 
-    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent throws an Error`, async () => {
+    it(`throws the same Error if EsRaiseOrderCreatedEventClient.raiseOrderCreatedEvent
+        throws an Error`, async () => {
       const mockDbGetOrderClient = buildMockDbGetOrderClient_resolves_OrderData()
       const mockDbCreateOrderClient = buildMockDbCreateOrderClient_resolves()
       const mockDbUpdateOrderClient = buildMockDbUpdateOrderClient_resolves()

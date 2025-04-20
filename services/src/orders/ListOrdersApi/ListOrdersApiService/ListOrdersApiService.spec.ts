@@ -71,7 +71,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiService tests`, () => {
     await expect(listOrdersApiService.listOrders(mockIncomingListOrdersRequest)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequest is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequest is undefined`, async () => {
     const mockDbListOrdersClient = buildMockDbListOrdersClient_resolves()
     const listOrdersApiService = new ListOrdersApiService(mockDbListOrdersClient)
     const mockTestRequest = undefined as never
@@ -80,7 +81,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequest is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequest is null`, async () => {
     const mockDbListOrdersClient = buildMockDbListOrdersClient_resolves()
     const listOrdersApiService = new ListOrdersApiService(mockDbListOrdersClient)
     const mockTestRequest = null as never
@@ -89,7 +91,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListOrdersRequest is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListOrdersRequest is not an instance of the class`, async () => {
     const mockDbListOrdersClient = buildMockDbListOrdersClient_resolves()
     const listOrdersApiService = new ListOrdersApiService(mockDbListOrdersClient)
     const mockTestRequest = { ...mockIncomingListOrdersRequest }
@@ -144,7 +147,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiService tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected ListOrdersApiServiceOutput if the execution path is successful`, async () => {
+  it(`returns the expected ListOrdersApiServiceOutput if the execution path is
+      successful`, async () => {
     const mockDbListOrdersClient = buildMockDbListOrdersClient_resolves()
     const listOrdersApiService = new ListOrdersApiService(mockDbListOrdersClient)
     const result = await listOrdersApiService.listOrders(mockIncomingListOrdersRequest)

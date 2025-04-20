@@ -26,14 +26,16 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(() => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput is undefined`, () => {
     const mockIncomingRestockSkuRequestInput = undefined as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput is null`, () => {
     const mockIncomingRestockSkuRequestInput = null as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -46,7 +48,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
    ************************************************************
    * Test IncomingRestockSkuRequestInput.sku edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.sku is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.sku is undefined`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.sku = undefined as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -54,7 +57,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.sku is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.sku is null`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.sku = null as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -62,7 +66,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.sku is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.sku is empty`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.sku = '' as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -70,7 +75,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.sku is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.sku is blank`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.sku = '      ' as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -78,7 +84,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.sku length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.sku length < 4`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.sku = '123' as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -92,7 +99,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
    ************************************************************
    * Test IncomingRestockSkuRequestInput.units edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.units is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.units is undefined`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.units = undefined as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -100,7 +108,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.units is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.units is null`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.units = null as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -108,7 +117,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.units < 1`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.units < 1`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.units = 0
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -116,7 +126,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.units is not an integer`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.units is not an integer`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.units = 2.34
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -124,7 +135,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.units is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.units is not a number`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.units = '1' as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -138,7 +150,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
    ************************************************************
    * Test IncomingRestockSkuRequestInput.lotId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.lotId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.lotId is undefined`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.lotId = undefined as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -146,7 +159,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.lotId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.lotId is null`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.lotId = null as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -154,7 +168,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.lotId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.lotId is empty`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.lotId = '' as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -162,7 +177,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.lotId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.lotId is blank`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.lotId = '      ' as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -170,7 +186,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequestInput.lotId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequestInput.lotId length < 4`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     mockIncomingRestockSkuRequestInput.lotId = '123' as never
     const testingFunc = () => IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
@@ -184,7 +201,8 @@ describe(`Warehouse Service RestockSkuApi IncomingRestockSkuRequest tests`, () =
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected IncomingRestockSkuRequest if the execution path is successful`, () => {
+  it(`returns the expected IncomingRestockSkuRequest if the execution path is
+      successful`, () => {
     const mockIncomingRestockSkuRequestInput = buildMockIncomingRestockSkuRequestInput()
     const result = IncomingRestockSkuRequest.validateAndBuild(mockIncomingRestockSkuRequestInput)
     const expectedRequest: IncomingRestockSkuRequestInput = {

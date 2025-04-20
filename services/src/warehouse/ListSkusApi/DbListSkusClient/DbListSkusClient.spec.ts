@@ -157,7 +157,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     await expect(dbListSkusClient.listSkus(mockListSkusCommand)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand is
+      undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const mockTestCommand = undefined as never
@@ -166,7 +167,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand is
+      null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const mockTestCommand = null as never
@@ -175,7 +177,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand is not
+      an instance of the class`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const mockTestCommand = { ...mockListSkusCommand }
@@ -190,7 +193,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
    ************************************************************
    * Test ListSkusCommand.commandData edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand.commandData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommand.commandData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const mockTestCommand = buildMockListSkusCommand({})
@@ -200,7 +204,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommand.commandData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommand.commandData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const mockTestCommand = buildMockListSkusCommand({})
@@ -250,7 +255,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
-  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an unwrapped Error`, async () => {
+  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an
+      unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
@@ -265,7 +271,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected empty RestockSkuData[] if DynamoDBDocumentClient.send returns Items with null items`, async () => {
+  it(`returns the expected empty RestockSkuData[] if DynamoDBDocumentClient.send
+      returns Items with null items`, async () => {
     const mockTestCommand = buildMockListSkusCommand({})
     const mockDdbDocClient = buildMockDdbDocClient_resolves_nullItems()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
@@ -274,7 +281,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     expect(result).toStrictEqual(expectedResult)
   })
 
-  it(`returns the expected empty RestockSkuData[] if DynamoDBDocumentClient.send returns Items with no items`, async () => {
+  it(`returns the expected empty RestockSkuData[] if DynamoDBDocumentClient.send
+      returns Items with no items`, async () => {
     const mockTestCommand = buildMockListSkusCommand({})
     const mockDdbDocClient = buildMockDdbDocClient_resolves('none')
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
@@ -283,7 +291,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     expect(result).toStrictEqual(expectedResult)
   })
 
-  it(`returns the expected RestockSkuData[] if DynamoDBDocumentClient.send returns Items with one item`, async () => {
+  it(`returns the expected RestockSkuData[] if DynamoDBDocumentClient.send returns
+      Items with one item`, async () => {
     const mockTestCommand = buildMockListSkusCommand({})
     const mockDdbDocClient = buildMockDdbDocClient_resolves('one')
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
@@ -300,7 +309,8 @@ describe(`Warehouse Service ListSkusApi DbListSkusClient tests`, () => {
     expect(result).toStrictEqual(expectedResult)
   })
 
-  it(`returns the expected RestockSkuData[] if DynamoDBDocumentClient.send returns Items with many items`, async () => {
+  it(`returns the expected RestockSkuData[] if DynamoDBDocumentClient.send returns
+      Items with many items`, async () => {
     const mockTestCommand = buildMockListSkusCommand({ sortDirection: mockSortDirection, limit: mockLimit })
     const mockDdbDocClient = buildMockDdbDocClient_resolves('many')
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)

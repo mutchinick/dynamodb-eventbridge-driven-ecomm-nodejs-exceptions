@@ -97,7 +97,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerService tests`, () 
     await expect(restockSkuWorkerService.restockSku(mockIncomingSkuRestockedEvent)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingSkuRestockedEvent is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingSkuRestockedEvent is undefined`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_resolves()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
     const mockTestEvent = undefined as never
@@ -106,7 +107,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerService tests`, () 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingSkuRestockedEvent is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingSkuRestockedEvent is null`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_resolves()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
     const mockTestEvent = null as never
@@ -115,7 +117,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerService tests`, () 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingSkuRestockedEvent is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingSkuRestockedEvent is not an instance of the class`, async () => {
     const mockDbRestockSkuClient = buildMockDbRestockSkuClient_resolves()
     const restockSkuWorkerService = new RestockSkuWorkerService(mockDbRestockSkuClient)
     const mockTestEvent = { ...mockIncomingSkuRestockedEvent }

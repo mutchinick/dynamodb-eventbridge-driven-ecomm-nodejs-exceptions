@@ -26,14 +26,16 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(() => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput
+      is undefined`, () => {
     const mockListSkusCommandInput = undefined as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput
+      is null`, () => {
     const mockListSkusCommandInput = null as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -53,7 +55,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sku is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sku is null`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sku = null as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -61,7 +64,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sku is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sku is empty`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sku = '' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -69,7 +73,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sku is blank`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sku is blank`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sku = '      ' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -77,7 +82,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sku length < 4`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sku length < 4`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sku = '123' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -98,7 +104,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sortDirection is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sortDirection is null`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sortDirection = null as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -106,7 +113,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sortDirection is empty`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sortDirection is empty`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sortDirection = '' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -114,7 +122,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sortDirection is blank`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sortDirection is blank`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sortDirection = '      ' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -122,7 +131,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.sortDirection is a random string`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.sortDirection is a random string`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.sortDirection = 'xyz' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -143,7 +153,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.limit is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.limit is null`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.limit = null as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -151,7 +162,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.limit is not a number`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.limit is not a number`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.limit = '1' as never
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -159,7 +171,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.limit < 1`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.limit < 1`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.limit = 0
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -167,7 +180,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.limit > 1000`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.limit > 1000`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.limit = 1001
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)
@@ -175,7 +189,8 @@ describe(`Warehouse Service ListSkusApi ListSkusCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input ListSkusCommandInput.limit is not an integer`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      ListSkusCommandInput.limit is not an integer`, async () => {
     const mockListSkusCommandInput = buildMockListSkusCommandInput()
     mockListSkusCommandInput.limit = 3.45
     const testingFunc = () => ListSkusCommand.validateAndBuild(mockListSkusCommandInput)

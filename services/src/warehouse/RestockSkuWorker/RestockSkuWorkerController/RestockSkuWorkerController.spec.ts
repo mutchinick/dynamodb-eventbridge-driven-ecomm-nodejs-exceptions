@@ -140,7 +140,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     await expect(restockSkuWorkerController.restockSkus(mockSqsEvent)).resolves.not.toThrow()
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent is
+      undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = undefined as never
@@ -148,7 +149,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent is undefined`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent is
+      undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = undefined as never
@@ -165,7 +167,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent is null`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent is
+      null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = null as never
@@ -180,7 +183,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test SQSEvent.Records edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records are missing`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records
+      are missing`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = {} as never
@@ -188,7 +192,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent records are missing`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
+      records are missing`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = {} as never
@@ -197,7 +202,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records are undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records
+      are undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent(undefined)
@@ -205,7 +211,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent records are undefined`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
+      records are undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent(undefined)
@@ -214,7 +221,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records are null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records
+      are null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent(null)
@@ -222,7 +230,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent records are null`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
+      records are null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent(null)
@@ -231,7 +240,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records are empty`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records
+      are empty`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent([])
@@ -239,7 +249,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent records are empty`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
+      records are empty`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent([])
@@ -254,7 +265,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test SQSRecord.body edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is
+      undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = { body: undefined } as unknown as SQSRecord
@@ -263,7 +275,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body is undefined`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body
+      is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = { body: undefined } as unknown as SQSRecord
@@ -273,7 +286,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is
+      null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = { body: null } as unknown as SQSRecord
@@ -282,7 +296,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body is null`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body
+      is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = { body: null } as unknown as SQSRecord
@@ -292,7 +307,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is not a valid JSON`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is
+      not a valid JSON`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = {} as unknown as SQSRecord
@@ -302,7 +318,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body is not a valid JSON`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body
+      is not a valid JSON`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = {} as unknown as SQSRecord
@@ -319,7 +336,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent is invalid`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent is invalid`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -331,7 +349,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent is invalid`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent is invalid`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -350,7 +369,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent.eventName edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventName is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventName is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -363,7 +383,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventName is undefined`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventName is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -377,7 +398,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventName is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventName is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -390,7 +412,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventName is null`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventName is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -410,7 +433,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent.createdAt edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.createdAt is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.createdAt is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -423,7 +447,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.createdAt is undefined`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.createdAt is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -437,7 +462,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.createdAt is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.createdAt is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -450,7 +476,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.createdAt is null`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.createdAt is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -470,7 +497,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent.updatedAt edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.updatedAt is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.updatedAt is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -483,7 +511,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.updatedAt is undefined`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.updatedAt is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -497,7 +526,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.updatedAt is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.updatedAt is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -510,7 +540,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.updatedAt is null`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.updatedAt is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -530,7 +561,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent.eventData edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -543,7 +575,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData is undefined`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -557,7 +590,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -570,7 +604,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData is null`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -590,7 +625,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent.eventData.sku edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData.sku is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData.sku is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -603,7 +639,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData.sku is undefined`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData.sku is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -617,7 +654,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData.sku is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData.sku is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -630,7 +668,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData.sku is null`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData.sku is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -650,7 +689,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent.eventData.units edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData.units is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData.units is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -663,7 +703,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData.units is undefined`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData.units is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -677,7 +718,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData.units is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData.units is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -690,7 +732,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData.units is null`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData.units is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -710,7 +753,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test IncomingSkuRestockedEvent.eventData.lotId edge cases
    ************************************************************/
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData.lotId is undefined`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData.lotId is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -723,7 +767,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData.lotId is undefined`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData.lotId is undefined`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -737,7 +782,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call RestockSkuWorkerService.restockSku if the input IncomingSkuRestockedEvent.eventData.lotId is null`, async () => {
+  it(`fails to call RestockSkuWorkerService.restockSku if the input
+      IncomingSkuRestockedEvent.eventData.lotId is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -750,7 +796,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).not.toHaveBeenCalled()
   })
 
-  it(`returns no SQSBatchResponse.batchItemFailures if the input IncomingSkuRestockedEvent.eventData.lotId is null`, async () => {
+  it(`returns no SQSBatchResponse.batchItemFailures if the input
+      IncomingSkuRestockedEvent.eventData.lotId is null`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
@@ -770,7 +817,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test internal logic
    ************************************************************/
-  it(`calls RestockSkuWorkerService.restockSku a single time for an SQSEvent with a single record`, async () => {
+  it(`calls RestockSkuWorkerService.restockSku a single time for an SQSEvent with a
+      single record`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA']
@@ -779,7 +827,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).toHaveBeenCalledTimes(1)
   })
 
-  it(`calls RestockSkuWorkerService.restockSku multiple times for an SQSEvent with multiple records`, async () => {
+  it(`calls RestockSkuWorkerService.restockSku multiple times for an SQSEvent with
+      multiple records`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB', 'CC']
@@ -805,7 +854,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test transient/non-transient edge cases
    ************************************************************/
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService does not throw`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the
+      RestockSkuWorkerService does not throw`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB', 'CC']
@@ -815,7 +865,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService throws a non-transient Error (test 1)`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the
+      RestockSkuWorkerService throws a non-transient Error (test 1)`, async () => {
     const nonTransientError = InvalidOperationError.nonTransient()
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_throwsOnData(nonTransientError)
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
@@ -826,7 +877,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService throws a non-transient Error (test 2)`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the
+      RestockSkuWorkerService throws a non-transient Error (test 2)`, async () => {
     const nonTransientError = InvalidOperationError.nonTransient()
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_throwsOnData(nonTransientError)
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
@@ -837,7 +889,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns an empty SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService throws a non-transient Error (test 3)`, async () => {
+  it(`returns an empty SQSBatchResponse.batchItemFailures if the
+      RestockSkuWorkerService throws a non-transient Error (test 3)`, async () => {
     const nonTransientError = InvalidOperationError.nonTransient()
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_throwsOnData(nonTransientError)
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
@@ -848,7 +901,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns the expected response SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService throws a transient Error (test 1)`, async () => {
+  it(`returns the expected response SQSBatchResponse.batchItemFailures if the
+      RestockSkuWorkerService throws a transient Error (test 1)`, async () => {
     const transientError = InvalidOperationError.transient()
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_throwsOnData(transientError)
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
@@ -864,7 +918,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns the expected response SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService throws a transient Error (test 2)`, async () => {
+  it(`returns the expected response SQSBatchResponse.batchItemFailures if the
+      RestockSkuWorkerService throws a transient Error (test 2)`, async () => {
     const transientError = InvalidOperationError.transient()
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_throwsOnData(transientError)
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
@@ -880,7 +935,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns the expected response SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService throws a transient Error (test 3)`, async () => {
+  it(`returns the expected response SQSBatchResponse.batchItemFailures if the
+      RestockSkuWorkerService throws a transient Error (test 3)`, async () => {
     const transientError = InvalidOperationError.transient()
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_throwsOnData(transientError)
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
@@ -898,7 +954,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(result).toStrictEqual(expectedResponse)
   })
 
-  it(`returns all SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService throws all and only transient Error`, async () => {
+  it(`returns all SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService
+      throws all and only transient Error`, async () => {
     const transientError = InvalidOperationError.transient()
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_throwsOnData(transientError)
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)

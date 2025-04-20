@@ -97,7 +97,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     await expect(esRaiseOrderCreatedEventClient.raiseOrderCreatedEvent(mockOrderCreatedEvent)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is
+      undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
     const mockTestEvent = undefined as OrderCreatedEvent
@@ -106,7 +107,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is
+      null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
     const mockTestEvent = null as OrderCreatedEvent
@@ -115,7 +117,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent is
+      not an instance of the class`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
     const mockTestEvent = { ...mockOrderCreatedEvent }
@@ -130,7 +133,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
    ************************************************************
    * Test OrderCreatedEvent.eventData edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent.eventData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderCreatedEvent.eventData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
     const mockTestEvent = buildMockOrderCreatedEvent()
@@ -140,7 +144,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderCreatedEvent.eventData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderCreatedEvent.eventData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
     const mockTestEvent = buildMockOrderCreatedEvent()
@@ -170,7 +175,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
-  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an unwrapped Error`, async () => {
+  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an
+      unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)
@@ -179,7 +185,8 @@ describe(`Orders Service SyncOrderWorker EsRaiseOrderCreatedEventClient tests`, 
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
 
-  it(`throws a non-transient DuplicateEventRaisedError if DynamoDBDocumentClient.send throws a ConditionalCheckFailedException`, async () => {
+  it(`throws a non-transient DuplicateEventRaisedError if DynamoDBDocumentClient.send
+      throws a ConditionalCheckFailedException`, async () => {
     const mockError = new ConditionalCheckFailedException({ $metadata: {}, message: '' })
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const esRaiseOrderCreatedEventClient = new EsRaiseOrderCreatedEventClient(mockDdbDocClient)

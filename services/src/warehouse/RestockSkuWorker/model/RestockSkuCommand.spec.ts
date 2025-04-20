@@ -47,14 +47,16 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(() => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput
+      is undefined`, () => {
     const mockRestockSkuCommandInput = undefined as never
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput
+      is null`, () => {
     const mockRestockSkuCommandInput = null as never
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -67,7 +69,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
    ************************************************************
    * Test RestockSkuCommandInput.incomingSkuRestockedEvent.eventName edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is undefined`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventName = undefined
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -75,7 +78,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is null`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventName = null
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -83,7 +87,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is empty`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventName = '' as never
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -91,7 +96,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is blank`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventName = '      ' as never
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -99,7 +105,9 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is not an SKU_RESTOCKED_EVENT`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventName is not an
+      SKU_RESTOCKED_EVENT`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventName = WarehouseEventName.ORDER_CANCELED_EVENT as never
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -113,7 +121,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
    ************************************************************
    * Test RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is undefined`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.createdAt = undefined
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -121,7 +130,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is null`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.createdAt = null
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -129,7 +139,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is empty`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.createdAt = ''
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -137,7 +148,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt is blank`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.createdAt = '      '
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -145,7 +157,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.createdAt length < 4`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.createdAt = '123'
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -159,7 +172,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
    ************************************************************
    * Test RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is undefined`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt = undefined
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -167,7 +181,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is null`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt = null
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -175,7 +190,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is empty`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt = ''
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -183,7 +199,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt is blank`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt = '      '
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -191,7 +208,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt length < 4`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.updatedAt = '123'
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -205,7 +223,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
    ************************************************************
    * Test RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is undefined`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku = undefined
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -213,7 +232,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is null`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku = null
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -221,7 +241,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is empty`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku = ''
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -229,7 +250,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku is blank`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku = '      '
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -237,7 +259,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku length < 4`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.sku = '123'
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -251,7 +274,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
    ************************************************************
    * Test RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is undefined`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units = undefined
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -259,7 +283,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is null`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units = null
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -267,7 +292,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units < 1`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units < 1`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units = 0
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -275,7 +301,9 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is not an integer`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is not an
+      integer`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units = 3.45
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -283,7 +311,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units is not a number`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.units = '1' as unknown as number
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -297,7 +326,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
    ************************************************************
    * Test RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is undefined`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId = undefined
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -305,7 +335,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is null`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId = null
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -313,7 +344,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is empty`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId = ''
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -321,7 +353,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId is blank`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId = '      '
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)
@@ -329,7 +362,8 @@ describe(`Warehouse Service RestockSkuWorker RestockSkuCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      RestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId length < 4`, () => {
     const mockRestockSkuCommandInput = buildMockRestockSkuCommandInput()
     mockRestockSkuCommandInput.incomingSkuRestockedEvent.eventData.lotId = '123'
     const testingFunc = () => RestockSkuCommand.validateAndBuild(mockRestockSkuCommandInput)

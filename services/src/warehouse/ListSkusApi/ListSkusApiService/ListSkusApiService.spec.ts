@@ -64,7 +64,8 @@ describe(`Warehouse Service ListSkusApi ListSkusApiService tests`, () => {
     await expect(listSkusApiService.listSkus(mockIncomingListSkusRequest)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListSkusRequest is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListSkusRequest is undefined`, async () => {
     const mockDbListSkusClient = buildMockDbListSkusClient_resolves()
     const listSkusApiService = new ListSkusApiService(mockDbListSkusClient)
     const mockTestRequest = undefined as never
@@ -73,7 +74,8 @@ describe(`Warehouse Service ListSkusApi ListSkusApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListSkusRequest is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListSkusRequest is null`, async () => {
     const mockDbListSkusClient = buildMockDbListSkusClient_resolves()
     const listSkusApiService = new ListSkusApiService(mockDbListSkusClient)
     const mockTestRequest = null as never
@@ -82,7 +84,8 @@ describe(`Warehouse Service ListSkusApi ListSkusApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingListSkusRequest is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingListSkusRequest is not an instance of the class`, async () => {
     const mockDbListSkusClient = buildMockDbListSkusClient_resolves()
     const listSkusApiService = new ListSkusApiService(mockDbListSkusClient)
     const mockTestRequest = { ...mockIncomingListSkusRequest }
@@ -138,7 +141,8 @@ describe(`Warehouse Service ListSkusApi ListSkusApiService tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected ListSkusApiServiceOutput if the execution path is successful`, async () => {
+  it(`returns the expected ListSkusApiServiceOutput if the execution path is
+      successful`, async () => {
     const mockDbListSkusClient = buildMockDbListSkusClient_resolves()
     const listSkusApiService = new ListSkusApiService(mockDbListSkusClient)
     const result = await listSkusApiService.listSkus(mockIncomingListSkusRequest)

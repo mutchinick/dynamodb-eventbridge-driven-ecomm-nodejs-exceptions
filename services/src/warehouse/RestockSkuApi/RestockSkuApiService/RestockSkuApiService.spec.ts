@@ -45,7 +45,8 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
     await expect(restockSkuApiService.restockSku(mockIncomingRestockSkuRequest)).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequest is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequest is undefined`, async () => {
     const mockEsRaiseSkuRestockedEventClient = buildMockEsRaiseSkuRestockedEventClient_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockEsRaiseSkuRestockedEventClient)
     const mockTestRequest = undefined as never
@@ -54,7 +55,8 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequest is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequest is null`, async () => {
     const mockEsRaiseSkuRestockedEventClient = buildMockEsRaiseSkuRestockedEventClient_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockEsRaiseSkuRestockedEventClient)
     const mockTestRequest = null as never
@@ -63,7 +65,8 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input IncomingRestockSkuRequest is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      IncomingRestockSkuRequest is not an instance of the class`, async () => {
     const mockEsRaiseSkuRestockedEventClient = buildMockEsRaiseSkuRestockedEventClient_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockEsRaiseSkuRestockedEventClient)
     const mockTestRequest = { ...mockIncomingRestockSkuRequest }
@@ -104,7 +107,8 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
     expect(mockEsRaiseSkuRestockedEventClient.raiseSkuRestockedEvent).toHaveBeenCalledWith(expectedSkuRestockedEvent)
   })
 
-  it(`throws a the same Error if EsRaiseSkuRestockedEventClient.restockSku throws an unwrapped Error`, async () => {
+  it(`throws a the same Error if EsRaiseSkuRestockedEventClient.restockSku throws an
+      unwrapped Error`, async () => {
     const mockError = new Error('mockError')
     const mockEsRaiseSkuRestockedEventClient = buildMockEsRaiseSkuRestockedEventClient_throws(mockError)
     const restockSkuApiService = new RestockSkuApiService(mockEsRaiseSkuRestockedEventClient)
@@ -117,7 +121,8 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiService tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns a RestockSkuApiServiceOutput with the expected sku if EsRaiseSkuRestockedEventClient.restockSku throws DuplicateEventRaisedError`, async () => {
+  it(`returns a RestockSkuApiServiceOutput with the expected sku if
+      EsRaiseSkuRestockedEventClient.restockSku throws DuplicateEventRaisedError`, async () => {
     const mockError = DuplicateEventRaisedError.from()
     const mockEsRaiseSkuRestockedEventClient = buildMockEsRaiseSkuRestockedEventClient_throws(mockError)
     const restockSkuApiService = new RestockSkuApiService(mockEsRaiseSkuRestockedEventClient)

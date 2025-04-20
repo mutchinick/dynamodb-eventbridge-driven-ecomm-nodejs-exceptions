@@ -128,7 +128,8 @@ function buildMockDdbDocClient_throws(error?: unknown): DynamoDBDocumentClient {
   return { send: jest.fn().mockRejectedValue(error ?? new Error()) } as unknown as DynamoDBDocumentClient
 }
 
-describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrderPaymentRejectedClient tests`, () => {
+describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker
+          DbDeallocateOrderPaymentRejectedClient tests`, () => {
   /*
    *
    *
@@ -143,7 +144,8 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrd
     ).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input DeallocateOrderPaymentRejectedCommand is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      DeallocateOrderPaymentRejectedCommand is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = undefined as DeallocateOrderPaymentRejectedCommand
@@ -152,7 +154,8 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrd
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input DeallocateOrderPaymentRejectedCommand is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      DeallocateOrderPaymentRejectedCommand is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = null as DeallocateOrderPaymentRejectedCommand
@@ -161,7 +164,8 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrd
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input DeallocateOrderPaymentRejectedCommand is not an instance of the class`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      DeallocateOrderPaymentRejectedCommand is not an instance of the class`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = { ...mockDeallocateOrderPaymentRejectedCommand }
@@ -176,7 +180,8 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrd
    ************************************************************
    * Test DeallocateOrderPaymentRejectedCommand.commandData edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input DeallocateOrderPaymentRejectedCommand.commandData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      DeallocateOrderPaymentRejectedCommand.commandData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = buildMockDeallocateOrderPaymentRejectedCommand()
@@ -186,7 +191,8 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrd
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input DeallocateOrderPaymentRejectedCommand.commandData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      DeallocateOrderPaymentRejectedCommand.commandData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = buildMockDeallocateOrderPaymentRejectedCommand()
@@ -216,7 +222,8 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrd
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
-  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an unwrapped Error`, async () => {
+  it(`throws a transient UnrecognizedError if DynamoDBDocumentClient.send throws an
+      unwrapped Error`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(
@@ -226,7 +233,9 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker DbDeallocateOrd
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
 
-  it(`throws a non-transient InvalidStockDeallocationError if DynamoDBDocumentClient.send throws a ConditionalCheckFailedException when allocating the stock`, async () => {
+  it(`throws a non-transient InvalidStockDeallocationError if
+      DynamoDBDocumentClient.send throws a ConditionalCheckFailedException when
+      allocating the stock`, async () => {
     const mockError: Error = new TransactionCanceledException({ $metadata: {}, message: '' })
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)

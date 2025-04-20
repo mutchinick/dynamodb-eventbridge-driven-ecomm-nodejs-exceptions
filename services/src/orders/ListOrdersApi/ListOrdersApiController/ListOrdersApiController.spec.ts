@@ -91,7 +91,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     await expect(listOrdersApiController.listOrders(mockApiEvent)).resolves.not.toThrow()
   })
 
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2 is undefined`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2 is undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEvent = undefined as unknown as APIGatewayProxyEventV2
@@ -108,7 +109,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2 is invalid`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2 is invalid`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEvent = 'mockInvalidValue' as unknown as APIGatewayProxyEventV2
@@ -131,7 +133,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
    ************************************************************
    * Test APIGatewayProxyEventV2.body edge cases
    ************************************************************/
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body is undefined`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body is undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEvent = { body: undefined } as unknown as APIGatewayProxyEventV2
@@ -139,7 +142,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).not.toHaveBeenCalled()
   })
 
-  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is undefined`, async () => {
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is
+      undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEvent = { body: undefined } as unknown as APIGatewayProxyEventV2
@@ -148,7 +152,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body is null`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body is null`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEvent = { body: null } as unknown as APIGatewayProxyEventV2
@@ -165,7 +170,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body is not a valid JSON`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body is not a valid JSON`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEvent = { body: 'mockInvalidValue' } as unknown as APIGatewayProxyEventV2
@@ -173,7 +179,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).not.toHaveBeenCalled()
   })
 
-  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is not a valid JSON`, async () => {
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is not a
+      valid JSON`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEvent = { body: 'mockInvalidValue' } as unknown as APIGatewayProxyEventV2
@@ -188,7 +195,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
    ************************************************************
    * Test APIGatewayProxyEventV2.body.orderId edge cases
    ************************************************************/
-  it(`calls ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body.orderId is undefined`, async () => {
+  it(`calls ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body.orderId is undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -198,7 +206,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).toHaveBeenCalled()
   })
 
-  it(`responds with 200 OK if the input APIGatewayProxyEventV2.body.orderId is undefined`, async () => {
+  it(`responds with 200 OK if the input APIGatewayProxyEventV2.body.orderId is
+      undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -208,7 +217,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response.statusCode).toBe(200)
   })
 
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body.orderId is null`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body.orderId is null`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -218,7 +228,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).not.toHaveBeenCalled()
   })
 
-  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.orderId is null`, async () => {
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.orderId
+      is null`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -235,7 +246,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
    ************************************************************
    * Test APIGatewayProxyEventV2.body.limit edge cases
    ************************************************************/
-  it(`calls ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body.limit is undefined`, async () => {
+  it(`calls ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body.limit is undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -255,7 +267,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response.statusCode).toBe(200)
   })
 
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body.limit is null`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body.limit is null`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -265,7 +278,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).not.toHaveBeenCalled()
   })
 
-  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.limit is null`, async () => {
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.limit is
+      null`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -282,7 +296,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
    ************************************************************
    * Test APIGatewayProxyEventV2.body.sortDirection edge cases
    ************************************************************/
-  it(`calls ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body.sortDirection is undefined`, async () => {
+  it(`calls ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body.sortDirection is undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -292,7 +307,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).toHaveBeenCalled()
   })
 
-  it(`responds with 200 OK if the input APIGatewayProxyEventV2.body.sortDirection is undefined`, async () => {
+  it(`responds with 200 OK if the input APIGatewayProxyEventV2.body.sortDirection is
+      undefined`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -302,7 +318,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response.statusCode).toBe(200)
   })
 
-  it(`fails to call ListOrdersApiService.listOrders if the input APIGatewayProxyEventV2.body.sortDirection is null`, async () => {
+  it(`fails to call ListOrdersApiService.listOrders if the input
+      APIGatewayProxyEventV2.body.sortDirection is null`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -312,7 +329,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).not.toHaveBeenCalled()
   })
 
-  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.sortDirection is null`, async () => {
+  it(`responds with 400 Bad Request if the input
+      APIGatewayProxyEventV2.body.sortDirection is null`, async () => {
     const mockListOrdersApiService = buildMockListOrdersApiService_resolves()
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
@@ -348,7 +366,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(mockListOrdersApiService.listOrders).toHaveBeenCalledWith(expectedServiceInput)
   })
 
-  it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders throws an Error not accounted for`, async () => {
+  it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders
+      throws an Error not accounted for`, async () => {
     const mockError = new Error('mockError')
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(mockError)
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
@@ -360,7 +379,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders throws an UnrecognizedError`, async () => {
+  it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders
+      throws an UnrecognizedError`, async () => {
     const unrecognizedError = UnrecognizedError.from()
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(unrecognizedError)
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
@@ -372,7 +392,8 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if ListOrdersApiService.listOrders throws an InvalidArgumentsError`, async () => {
+  it(`responds with 400 Bad Request if ListOrdersApiService.listOrders throws an
+      InvalidArgumentsError`, async () => {
     const mockError = InvalidArgumentsError.from()
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(mockError)
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)

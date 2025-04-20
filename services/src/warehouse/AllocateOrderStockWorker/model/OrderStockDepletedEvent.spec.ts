@@ -34,21 +34,24 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(() => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)).not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput is undefined`, () => {
     const mockOrderStockDepletedEventInput = undefined as unknown as OrderStockDepletedEventInput
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput is null`, () => {
     const mockOrderStockDepletedEventInput = null as unknown as OrderStockDepletedEventInput
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput is null`, () => {
     const mockOrderStockDepletedEventInput = null as unknown as OrderStockDepletedEventInput
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -61,7 +64,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
    ************************************************************
    * Test OrderStockDepletedEventInput.orderId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.orderId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.orderId is undefined`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.orderId = undefined
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -69,7 +73,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.orderId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.orderId is null`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.orderId = null
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -77,7 +82,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.orderId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.orderId is empty`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.orderId = ''
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -85,7 +91,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.orderId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.orderId is blank`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.orderId = '      '
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -93,7 +100,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.orderId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.orderId length < 4`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.orderId = '123'
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -107,7 +115,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
    ************************************************************
    * Test OrderStockDepletedEventInput.sku edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.sku is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.sku is undefined`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.sku = undefined
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -115,7 +124,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.sku is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.sku is null`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.sku = null
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -123,7 +133,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.sku is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.sku is empty`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.sku = ''
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -131,7 +142,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.sku is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.sku is blank`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.sku = '      '
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -139,7 +151,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.sku length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.sku length < 4`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.sku = '123'
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -153,7 +166,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
    ************************************************************
    * Test OrderStockDepletedEventInput.units edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.units is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.units is undefined`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.units = undefined
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -161,7 +175,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.units is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.units is null`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.units = null
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -169,7 +184,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.units < 1`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.units < 1`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.units = 0
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -177,7 +193,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.units is not an integer`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.units is not an integer`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.units = 2.34
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -185,7 +202,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.units is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.units is not a number`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.units = '1' as unknown as number
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -199,7 +217,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
    ************************************************************
    * Test OrderStockDepletedEventInput.price edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.price is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.price is undefined`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.price = undefined
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -207,7 +226,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.price is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.price is null`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.price = null
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -215,7 +235,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.price < 0`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.price < 0`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.price = -1
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -223,7 +244,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.price is not a number`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.price is not a number`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.price = '1' as unknown as number
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -237,7 +259,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
    ************************************************************
    * Test OrderStockDepletedEventInput.userId edge cases
    ************************************************************/
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.userId is undefined`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.userId is undefined`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.userId = undefined
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -245,7 +268,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.userId is null`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.userId is null`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.userId = null
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -253,7 +277,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.userId is empty`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.userId is empty`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.userId = ''
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -261,7 +286,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.userId is blank`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.userId is blank`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.userId = '      '
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
@@ -269,7 +295,8 @@ describe(`Warehouse Service AllocateOrderStockApi OrderStockDepletedEvent tests`
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEventInput.userId length < 4`, () => {
+  it(`throws a non-transient InvalidArgumentsError if the input
+      OrderStockDepletedEventInput.userId length < 4`, () => {
     const mockOrderStockDepletedEventInput = buildMockOrderStockDepletedEventInput()
     mockOrderStockDepletedEventInput.userId = '123'
     const testingFunc = () => OrderStockDepletedEvent.validateAndBuild(mockOrderStockDepletedEventInput)
