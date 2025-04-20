@@ -22,15 +22,15 @@ type ErrorTestCase<T extends AppError> = {
 const testCases: ErrorTestCase<AppError>[] = [
   {
     name: 'InvalidOperationError (transient)',
-    from: (cause, message) => InvalidOperationError.from('transient', cause, message),
-    expectedMessage: 'Unrecognized error.',
+    from: (cause, message) => InvalidOperationError.transient(cause, message),
+    expectedMessage: 'Invalid operation error.',
     expectedTransient: true,
     expectedInstance: InvalidOperationError,
   },
   {
     name: 'InvalidOperationError (non-transient)',
-    from: (cause, message) => InvalidOperationError.from('non-transient', cause, message),
-    expectedMessage: 'Unrecognized error.',
+    from: (cause, message) => InvalidOperationError.nonTransient(cause, message),
+    expectedMessage: 'Invalid operation error.',
     expectedTransient: false,
     expectedInstance: InvalidOperationError,
   },
@@ -86,9 +86,12 @@ const testCases: ErrorTestCase<AppError>[] = [
 ]
 
 describe(`Warehouse Service AppError tests`, () => {
-  //
-  // Test AppError subclasses builder functions
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test AppError subclasses builder functions
+   ************************************************************/
   describe(`Test AppError subclasses builder functions`, () => {
     testCases.forEach(({ name, from, expectedMessage, expectedTransient, expectedInstance }) => {
       describe(name, () => {
@@ -127,9 +130,12 @@ describe(`Warehouse Service AppError tests`, () => {
     })
   })
 
-  //
-  // Test isTransientError Function
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test isTransientError Function
+   ************************************************************/
   describe(`Test isTransientError Function`, () => {
     it(`isTransientError returns true for transient errors`, () => {
       const err = UnrecognizedError.from()

@@ -5,9 +5,9 @@ import { OrderEvent } from '../../model/OrderEvent'
 import { OrderEventName } from '../../model/OrderEventName'
 import { ValueValidators } from '../../model/ValueValidators'
 
-export type OrderPlacedEventData = Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+type OrderPlacedEventData = Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
 
-export type OrderPlacedEventInput = OrderPlacedEventData
+export type OrderPlacedEventInput = Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
 
 type OrderPlacedEventProps = OrderEvent<OrderEventName.ORDER_PLACED_EVENT, OrderPlacedEventData>
 

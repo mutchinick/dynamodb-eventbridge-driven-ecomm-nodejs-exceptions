@@ -102,7 +102,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       throw error
     }
 
-    const invalidOperationError = InvalidOperationError.from('non-transient')
+    const invalidOperationError = InvalidOperationError.nonTransient()
     console.error(`${logContext} exit error:`, { invalidOperationError, incomingOrderEvent })
     throw invalidOperationError
   }
@@ -146,7 +146,6 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
 
   /**
    * @throws {InvalidArgumentsError}
-   * @throws {ForbiddenOrderStatusTransitionError}
    * @throws {UnrecognizedError}
    */
   private async createOrder(incomingOrderEvent: IncomingOrderEvent): Promise<OrderData> {

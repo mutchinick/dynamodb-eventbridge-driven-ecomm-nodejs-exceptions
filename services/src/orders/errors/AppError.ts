@@ -18,12 +18,12 @@ export abstract class AppError extends Error {
 export class InvalidOperationError extends AppError {
   private static readonly _defaultMessage = 'Invalid operation error.'
 
-  public static from(
-    transitivity: 'transient' | 'non-transient',
-    cause?: unknown,
-    message?: string,
-  ): InvalidOperationError {
-    return new InvalidOperationError(message ?? this._defaultMessage, transitivity === 'transient', cause)
+  public static transient(cause?: unknown, message?: string): InvalidOperationError {
+    return new InvalidOperationError(message ?? this._defaultMessage, true, cause)
+  }
+
+  public static nonTransient(cause?: unknown, message?: string): InvalidOperationError {
+    return new InvalidOperationError(message ?? this._defaultMessage, false, cause)
   }
 }
 

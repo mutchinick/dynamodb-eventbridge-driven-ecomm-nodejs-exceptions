@@ -6,6 +6,8 @@ import { IRestockSkuApiService, RestockSkuApiServiceOutput } from '../RestockSku
 import { RestockSkuApiController } from './RestockSkuApiController'
 
 const mockSku = 'mockSku'
+const mockUnits = 12
+const mockLotId = 'mockLotId'
 
 type MockApiEventBody = {
   sku: string
@@ -16,8 +18,8 @@ type MockApiEventBody = {
 function buildMockApiEventBody(): MockApiEventBody {
   const mockValidRequest: MockApiEventBody = {
     sku: mockSku,
-    units: 2,
-    lotId: 'mockLotId',
+    units: mockUnits,
+    lotId: mockLotId,
   }
   return mockValidRequest
 }
@@ -29,9 +31,12 @@ function buildMockApiEvent(incomingRestockSkuRequest: IncomingRestockSkuRequest)
   return mockApiEvent
 }
 
-//
-// Mock services
-//
+/*
+ *
+ *
+ ************************************************************
+ * Mock services
+ ************************************************************/
 function buildMockRestockSkuApiService_resolves(): IRestockSkuApiService {
   const mockApiEventBody = buildMockApiEventBody()
   const mockServiceOutput: RestockSkuApiServiceOutput = mockApiEventBody
@@ -43,10 +48,29 @@ function buildMockRestockSkuApiService_throws(error?: unknown): IRestockSkuApiSe
 }
 
 describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => {
-  //
-  // Test APIGatewayProxyEventV2 edge cases
-  //
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2 is undefined`, async () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test APIGatewayProxyEventV2 edge cases
+   ************************************************************/
+  it(`does not throw if the input APIGatewayProxyEventV2 is valid`, async () => {
+    const mockListOrdersApiService = buildMockRestockSkuApiService_resolves()
+    const listOrdersApiController = new RestockSkuApiController(mockListOrdersApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await expect(listOrdersApiController.restockSku(mockApiEvent)).resolves.not.toThrow()
+  })
+
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2 is undefined`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEvent = undefined as unknown as APIGatewayProxyEventV2
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2 is undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const expectedResponse = HttpResponse.BadRequestError()
@@ -55,7 +79,15 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2 is invalid`, async () => {
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2 is invalid`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEvent = 'mockInvalidValue' as unknown as APIGatewayProxyEventV2
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2 is invalid`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const expectedResponse = HttpResponse.BadRequestError()
@@ -64,25 +96,55 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body is missing`, async () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test APIGatewayProxyEventV2.body edge cases
+   ************************************************************/
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body is undefined`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEvent = { body: undefined } as unknown as APIGatewayProxyEventV2
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEvent = {} as unknown as APIGatewayProxyEventV2
+    const mockApiEvent = { body: undefined } as unknown as APIGatewayProxyEventV2
     const response = await restockSkuApiController.restockSku(mockApiEvent)
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body is empty`, async () => {
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body is null`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEvent = { body: null } as unknown as APIGatewayProxyEventV2
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is null`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEvent = { body: '' } as unknown as APIGatewayProxyEventV2
+    const mockApiEvent = { body: null } as unknown as APIGatewayProxyEventV2
     const response = await restockSkuApiController.restockSku(mockApiEvent)
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body is not a valid JSON`, async () => {
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body is not a valid JSON`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEvent = { body: 'mockInvalidValue' } as unknown as APIGatewayProxyEventV2
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is not a valid JSON`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const expectedResponse = HttpResponse.BadRequestError()
@@ -91,161 +153,156 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  //
-  // Test APIGatewayProxyEventV2.body.sku edge cases
-  //
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sku is missing`, async () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test APIGatewayProxyEventV2.body.sku edge cases
+   ************************************************************/
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body.sku is undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
-    delete mockApiEventBody.sku
+    mockApiEventBody.sku = undefined
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.sku is undefined`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    mockApiEventBody.sku = undefined
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sku is undefined`, async () => {
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body.sku is null`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.sku = undefined as never
+    mockApiEventBody.sku = null
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.sku is null`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    mockApiEventBody.sku = null
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sku is null`, async () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test APIGatewayProxyEventV2.body.units edge cases
+   ************************************************************/
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body.units is undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.sku = null as never
+    mockApiEventBody.units = undefined
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.units is undefined`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    mockApiEventBody.units = undefined
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.sku is not a string`, async () => {
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body.units is null`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.sku = 123456 as never
+    mockApiEventBody.units = null
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.units is null`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    mockApiEventBody.units = null
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  //
-  // Test APIGatewayProxyEventV2.body.units edge cases
-  //
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.units is missing`, async () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test APIGatewayProxyEventV2.body.lotId edge cases
+   ************************************************************/
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body.lotId is undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
-    delete mockApiEventBody.units
+    mockApiEventBody.lotId = undefined
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.lotId is undefined`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    mockApiEventBody.lotId = undefined
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.units is undefined`, async () => {
+  it(`fails to call RestockSkuApiService.restockSku if the input APIGatewayProxyEventV2.body.lotId is null`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.units = undefined as never
+    mockApiEventBody.lotId = null
+    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
+    await restockSkuApiController.restockSku(mockApiEvent)
+    expect(mockRestockSkuApiService.restockSku).not.toHaveBeenCalled()
+  })
+
+  it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body.lotId is null`, async () => {
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
+    const mockApiEventBody = buildMockApiEventBody()
+    mockApiEventBody.lotId = null
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.units is null`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
-    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.units = null as never
-    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response).toStrictEqual(expectedResponse)
-  })
-
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.units is not a number`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
-    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.units = '1' as never
-    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response).toStrictEqual(expectedResponse)
-  })
-
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.units is not an integer`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
-    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.units = 2.34
-    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response).toStrictEqual(expectedResponse)
-  })
-
-  //
-  // Test APIGatewayProxyEventV2.body.lotId edge cases
-  //
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.lotId is missing`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
-    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEventBody = buildMockApiEventBody()
-    delete mockApiEventBody.lotId
-    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response).toStrictEqual(expectedResponse)
-  })
-
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.lotId is undefined`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
-    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.lotId = undefined as never
-    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response).toStrictEqual(expectedResponse)
-  })
-
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.lotId is null`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
-    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.lotId = null as never
-    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response).toStrictEqual(expectedResponse)
-  })
-
-  it(`responds with 400 Bad Request if the APIGatewayProxyEventV2.body.lotId is not a string`, async () => {
-    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
-    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
-    const mockApiEventBody = buildMockApiEventBody()
-    mockApiEventBody.lotId = 123456 as never
-    const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response).toStrictEqual(expectedResponse)
-  })
-
-  //
-  // Test internal logic
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test internal logic
+   ************************************************************/
   it(`calls RestockSkuApiService.restockSku a single time`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
@@ -265,7 +322,7 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
     expect(mockRestockSkuApiService.restockSku).toHaveBeenCalledWith(expectedServiceInput)
   })
 
-  it(`responds with 500 Internal Server Error if RestockSkuApiService.restockSku throws an unwrapped Error`, async () => {
+  it(`responds with 500 Internal Server Error if RestockSkuApiService.restockSku throws an Error not accounted for`, async () => {
     const mockError = new Error('mockError')
     const mockRestockSkuApiService = buildMockRestockSkuApiService_throws(mockError)
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
@@ -301,16 +358,19 @@ describe(`Warehouse Service RestockSkuApi RestockSkuApiController tests`, () => 
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  //
-  // Test expected results
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test expected results
+   ************************************************************/
   it(`responds with status code 202 Accepted`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     const response = await restockSkuApiController.restockSku(mockApiEvent)
-    expect(response.statusCode).toStrictEqual(202)
+    expect(response.statusCode).toBe(202)
   })
 
   it(`responds with the expected HttpResponse.Accepted response`, async () => {

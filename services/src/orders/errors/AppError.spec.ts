@@ -22,14 +22,14 @@ type ErrorTestCase<T extends AppError> = {
 const testCases: ErrorTestCase<AppError>[] = [
   {
     name: 'InvalidOperationError (transient)',
-    from: (cause, message) => InvalidOperationError.from('transient', cause, message),
+    from: (cause, message) => InvalidOperationError.transient(cause, message),
     expectedMessage: 'Invalid operation error.',
     expectedTransient: true,
     expectedInstance: InvalidOperationError,
   },
   {
     name: 'InvalidOperationError (non-transient)',
-    from: (cause, message) => InvalidOperationError.from('non-transient', cause, message),
+    from: (cause, message) => InvalidOperationError.nonTransient(cause, message),
     expectedMessage: 'Invalid operation error.',
     expectedTransient: false,
     expectedInstance: InvalidOperationError,
@@ -86,9 +86,12 @@ const testCases: ErrorTestCase<AppError>[] = [
 ]
 
 describe(`Orders Service AppError tests`, () => {
-  //
-  // Test AppError subclasses builder functions
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test AppError subclasses builder functions
+   ************************************************************/
   describe.each(
     testCases.map((testCase) => [
       testCase.name,
@@ -134,9 +137,12 @@ describe(`Orders Service AppError tests`, () => {
     },
   )
 
-  //
-  // Test isTransientError Function
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test isTransientError Function
+   ************************************************************/
   describe(`Test isTransientError Function`, () => {
     it(`isTransientError returns true for transient errors`, () => {
       const err = UnrecognizedError.from()

@@ -38,9 +38,12 @@ function buildMockDdbCommand(): GetCommand {
 
 const expectedDdbCommand = buildMockDdbCommand()
 
-//
-// Mock clients
-//
+/*
+ *
+ *
+ ************************************************************
+ * Mock clients
+ ************************************************************/
 const mockExistingOrderData: OrderAllocationData = {
   orderId: mockGetOrderAllocationCommand.commandData.orderId,
   sku: mockGetOrderAllocationCommand.commandData.sku,
@@ -73,9 +76,12 @@ function buildMockDdbDocClient_throws(error?: unknown): DynamoDBDocumentClient {
 }
 
 describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () => {
-  //
-  // Test GetOrderAllocationCommand edge cases
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test GetOrderAllocationCommand edge cases
+   ************************************************************/
   it(`does not throw if the input GetOrderAllocationCommand is valid`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
@@ -100,8 +106,22 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input
-      GetOrderAllocationCommand.commandData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand is not an instance of the class`, async () => {
+    const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
+    const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
+    const mockTestCommand = { ...mockGetOrderAllocationCommand }
+    const resultPromise = dbGetOrderAllocationClient.getOrderAllocation(mockTestCommand)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  /*
+   *
+   *
+   ************************************************************
+   * Test GetOrderAllocationCommand.commandData edge cases
+   ************************************************************/
+  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand.commandData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const mockTestCommand = buildMockGetOrderAllocationCommand()
@@ -111,8 +131,7 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input
-      GetOrderAllocationCommand.commandData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input GetOrderAllocationCommand.commandData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const mockTestCommand = buildMockGetOrderAllocationCommand()
@@ -122,9 +141,12 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  //
-  // Test internal logic
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test internal logic
+   ************************************************************/
   it(`calls DynamoDBDocumentClient.send a single time`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_validItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
@@ -148,15 +170,12 @@ describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () =
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
 
-  //
-  // Test expected results
-  //
-  it(`does not throw if the DynamoDBDocumentClient.send returns a null Item`, async () => {
-    const mockDdbDocClient = buildMockDdbDocClient_resolves_nullItem()
-    const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
-    await expect(dbGetOrderAllocationClient.getOrderAllocation(mockGetOrderAllocationCommand)).resolves.not.toThrow()
-  })
-
+  /*
+   *
+   *
+   ************************************************************
+   * Test expected results
+   ************************************************************/
   it(`returns the expected null if DynamoDBDocumentClient.send returns a null Item`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves_nullItem()
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)

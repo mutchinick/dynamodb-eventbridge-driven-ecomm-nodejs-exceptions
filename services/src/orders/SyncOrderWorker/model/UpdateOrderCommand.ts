@@ -109,13 +109,10 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
       eventName: ValueValidators.validIncomingEventName(),
       eventData: z.object({
         orderId: ValueValidators.validOrderId(),
-        orderStatus: ValueValidators.validOrderStatus().optional(),
-        sku: ValueValidators.validSku().optional(),
-        units: ValueValidators.validUnits().optional(),
-        price: ValueValidators.validPrice().optional(),
-        userId: ValueValidators.validUserId().optional(),
-        createdAt: ValueValidators.validCreatedAt().optional(),
-        updatedAt: ValueValidators.validUpdatedAt().optional(),
+        sku: ValueValidators.validSku(),
+        units: ValueValidators.validUnits(),
+        price: ValueValidators.validPrice(),
+        userId: ValueValidators.validUserId(),
       }),
       createdAt: ValueValidators.validCreatedAt(),
       updatedAt: ValueValidators.validUpdatedAt(),
@@ -301,7 +298,7 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     const newOrderStatus = eventNameToOrderStatusMap?.[incomingEventName]
 
     if (!newOrderStatus) {
-      const invalidOperationError = InvalidOperationError.from('non-transient')
+      const invalidOperationError = InvalidOperationError.transient()
       console.error(`${logContext} exit error:`, { invalidOperationError, existingOrderStatus, incomingEventName })
       throw invalidOperationError
     }

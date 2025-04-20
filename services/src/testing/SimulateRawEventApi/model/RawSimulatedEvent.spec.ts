@@ -4,23 +4,32 @@ import { RawSimulatedEvent, RawSimulatedEventInput } from './RawSimulatedEvent'
 jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
+const mockPk = 'mockPk'
+const mockSk = 'mockSk'
+const mockEventName = 'mockEventName'
+const mockEventData = 'mockEventData'
+const mockCreatedAt = mockDate
+const mockUpdatedAt = mockDate
 
 function buildMockRawSimulatedEventInput() {
   const mockValidInput: RawSimulatedEventInput = {
-    pk: 'mockPk',
-    sk: 'mockSk',
-    eventName: 'mockEventName',
-    eventData: 'mockEventData',
-    createdAt: mockDate,
-    updatedAt: mockDate,
+    pk: mockPk,
+    sk: mockSk,
+    eventName: mockEventName,
+    eventData: mockEventData,
+    createdAt: mockCreatedAt,
+    updatedAt: mockUpdatedAt,
   }
   return mockValidInput
 }
 
 describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
-  //
-  // Test RawSimulatedEventData edge cases
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test RawSimulatedEventInput edge cases
+   ************************************************************/
   it(`does not throw if the input RawSimulatedEventInput is valid`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
     expect(() => RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)).not.toThrow()
@@ -40,17 +49,12 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  //
-  // Test RawSimulatedEventData.pk edge cases
-  //
-  it(`throws a non-transient InvalidArgumentsError if the input RawSimulatedEventInput.pk is missing`, () => {
-    const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
-    delete mockRawSimulatedEventInput.pk
-    const testingFunc = () => RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
-    expect(testingFunc).toThrow(InvalidArgumentsError)
-    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
-  })
-
+  /*
+   *
+   *
+   ************************************************************
+   * Test RawSimulatedEventInput.pk edge cases
+   ************************************************************/
   it(`throws a non-transient InvalidArgumentsError if the input RawSimulatedEventInput.pk is undefined`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
     mockRawSimulatedEventInput.pk = undefined
@@ -83,17 +87,12 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  //
-  // Test RawSimulatedEventData.sk edge cases
-  //
-  it(`throws a non-transient InvalidArgumentsError if the input RawSimulatedEventInput.sk is missing`, () => {
-    const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
-    delete mockRawSimulatedEventInput.sk
-    const testingFunc = () => RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
-    expect(testingFunc).toThrow(InvalidArgumentsError)
-    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
-  })
-
+  /*
+   *
+   *
+   ************************************************************
+   * Test RawSimulatedEventInput.sk edge cases
+   ************************************************************/
   it(`throws a non-transient InvalidArgumentsError if the input RawSimulatedEventInput.sk is undefined`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
     mockRawSimulatedEventInput.sk = undefined
@@ -126,17 +125,12 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  //
-  // Test RawSimulatedEventData.eventName edge cases
-  //
-  it(`throws a non-transient InvalidArgumentsError if the input RawSimulatedEventInput.eventName is missing`, () => {
-    const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
-    delete mockRawSimulatedEventInput.eventName
-    const testingFunc = () => RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
-    expect(testingFunc).toThrow(InvalidArgumentsError)
-    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
-  })
-
+  /*
+   *
+   *
+   ************************************************************
+   * Test RawSimulatedEventInput.eventName edge cases
+   ************************************************************/
   it(`throws a non-transient InvalidArgumentsError if the input RawSimulatedEventInput.eventName is undefined`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
     mockRawSimulatedEventInput.eventName = undefined
@@ -169,16 +163,12 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  //
-  // Test RawSimulatedEventData.createdAt edge cases
-  //
-  it(`sets the current RawSimulatedEventInput.createdAt to the current date if it is missing`, () => {
-    const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
-    delete mockRawSimulatedEventInput.createdAt
-    const simulateRawEvent = RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
-    expect(simulateRawEvent.createdAt).toBe(mockDate)
-  })
-
+  /*
+   *
+   *
+   ************************************************************
+   * Test RawSimulatedEventInput.createdAt edge cases
+   ************************************************************/
   it(`sets the current RawSimulatedEventInput.createdAt to the current date if it is undefined`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
     mockRawSimulatedEventInput.createdAt = undefined
@@ -200,16 +190,12 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
     expect(simulateRawEvent.createdAt).toBe(mockDate)
   })
 
-  //
-  // Test RawSimulatedEventData.updatedAt edge cases
-  //
-  it(`sets the current RawSimulatedEventInput.updatedAt to the current date if it is missing`, () => {
-    const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
-    delete mockRawSimulatedEventInput.updatedAt
-    const simulateRawEvent = RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
-    expect(simulateRawEvent.updatedAt).toBe(mockDate)
-  })
-
+  /*
+   *
+   *
+   ************************************************************
+   * Test RawSimulatedEventInput.updatedAt edge cases
+   ************************************************************/
   it(`sets the current RawSimulatedEventInput.updatedAt to the current date if it is undefined`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
     mockRawSimulatedEventInput.updatedAt = undefined
@@ -231,10 +217,13 @@ describe(`Testing Service SimulateRawEventApi RawSimulatedEvent tests`, () => {
     expect(simulateRawEvent.updatedAt).toBe(mockDate)
   })
 
-  //
-  // Test expected results
-  //
-  it(`returns the expected RawSimulatedEvent with the expected data`, () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test expected results
+   ************************************************************/
+  it(`returns the expected RawSimulatedEvent if the execution path is successful`, () => {
     const mockRawSimulatedEventInput = buildMockRawSimulatedEventInput()
     const result = RawSimulatedEvent.validateAndBuild(mockRawSimulatedEventInput)
     const expectedEvent: RawSimulatedEvent = {

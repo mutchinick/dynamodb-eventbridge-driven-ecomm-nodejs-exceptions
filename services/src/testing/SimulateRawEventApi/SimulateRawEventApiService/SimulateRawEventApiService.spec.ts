@@ -29,9 +29,12 @@ function buildMockIncomingSimulateRawEventRequest(): TypeUtilsMutable<IncomingSi
 
 const mockIncomingSimulateRawEventRequest = buildMockIncomingSimulateRawEventRequest()
 
-//
-// Mock clients
-//
+/*
+ *
+ *
+ ************************************************************
+ * Mock clients
+ ************************************************************/
 function buildMockEsRaiseRawSimulatedEventClient_resolves(): IEsRaiseRawSimulatedEventClient {
   return { raiseRawSimulatedEvent: jest.fn() }
 }
@@ -41,35 +44,64 @@ function buildMockEsRaiseRawSimulatedEventClient_throws(error?: unknown): IEsRai
 }
 
 describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`, () => {
-  //
-  // Test IncomingSimulateRawEventRequestInput edge cases
-  //
-  it(`does not throw if the input SimulateRawEventApiServiceInput is valid`, async () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test IncomingSimulateRawEventRequestInput edge cases
+   ************************************************************/
+  it(`does not throw if the input IncomingSimulateRawEventRequest is valid`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
     const resultPromise = simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)
     await expect(resultPromise).resolves.not.toThrow()
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input SimulateRawEventApiServiceInput is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input IncomingSimulateRawEventRequest is undefined`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    const resultPromise = simulateRawEventApiService.simulateRawEvent(undefined)
+    const mockTestRequest = undefined as never
+    const resultPromise = simulateRawEventApiService.simulateRawEvent(mockTestRequest)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input SimulateRawEventApiServiceInput is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input IncomingSimulateRawEventRequest is null`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
-    const resultPromise = simulateRawEventApiService.simulateRawEvent(null)
+    const mockTestRequest = null as never
+    const resultPromise = simulateRawEventApiService.simulateRawEvent(mockTestRequest)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  //
-  // Test internal logic
-  //
+  it(`throws a non-transient InvalidArgumentsError if the input IncomingSimulateRawEventRequest is not an instance of the class`, async () => {
+    const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
+    const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
+    const mockTestRequest = { ...mockIncomingSimulateRawEventRequest }
+    const resultPromise = simulateRawEventApiService.simulateRawEvent(mockTestRequest)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  /*
+   *
+   *
+   ************************************************************
+   * Test internal logic
+   ************************************************************/
+  it(`throws the same Error if RawSimulatedEvent.validateAndBuild throws an Error`, async () => {
+    const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
+    const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
+    const mockError = new Error('mockError')
+    jest.spyOn(RawSimulatedEvent, 'validateAndBuild').mockImplementationOnce(() => {
+      throw mockError
+    })
+    await expect(simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)).rejects.toThrow(
+      mockError,
+    )
+  })
+
   it(`calls EsRaiseRawSimulatedEventClient.simulateRawEvent a single time`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
@@ -94,8 +126,7 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
     await expect(resultPromise).rejects.toThrow(mockError)
   })
 
-  it(`returns a SimulateRawEventApiServiceOutput with the expected data 
-      if EsRaiseRawSimulatedEventClient.simulateRawEvent throws DuplicateEventRaisedError`, async () => {
+  it(`returns the expected SimulateRawEventApiServiceOutput if EsRaiseRawSimulatedEventClient.simulateRawEvent throws DuplicateEventRaisedError`, async () => {
     const mockError = DuplicateEventRaisedError.from()
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_throws(mockError)
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
@@ -111,10 +142,13 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiService tests`,
     expect(result).toStrictEqual(expect.objectContaining(expectedResult))
   })
 
-  //
-  // Test expected results
-  //
-  it(`returns a SimulateRawEventApiServiceOutput with the expected data`, async () => {
+  /*
+   *
+   *
+   ************************************************************
+   * Test expected results
+   ************************************************************/
+  it(`returns a SimulateRawEventApiServiceOutput if the execution path is successful`, async () => {
     const mockEsRaiseRawSimulatedEventClient = buildMockEsRaiseRawSimulatedEventClient_resolves()
     const simulateRawEventApiService = new SimulateRawEventApiService(mockEsRaiseRawSimulatedEventClient)
     const result = await simulateRawEventApiService.simulateRawEvent(mockIncomingSimulateRawEventRequest)

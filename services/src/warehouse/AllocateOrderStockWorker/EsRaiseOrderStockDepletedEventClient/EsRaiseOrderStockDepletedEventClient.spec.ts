@@ -41,7 +41,7 @@ function buildMockDdbCommand(): PutCommand {
       sk: `EVENT#${mockEventName}`,
       _tn: `EVENTS#EVENT`,
       _sn: `EVENTS`,
-      eventName: WarehouseEventName.ORDER_STOCK_DEPLETED_EVENT,
+      eventName: mockEventName,
       eventData: {
         orderId: mockOrderId,
         sku: mockSku,
@@ -61,9 +61,12 @@ function buildMockDdbCommand(): PutCommand {
 
 const expectedDdbCommand = buildMockDdbCommand()
 
-//
-// Mock clients
-//
+/*
+ *
+ *
+ ************************************************************
+ * Mock clients
+ ************************************************************/
 function buildMockDdbDocClient_resolves(): DynamoDBDocumentClient {
   return { send: jest.fn() } as unknown as DynamoDBDocumentClient
 }
@@ -73,15 +76,17 @@ function buildMockDdbDocClient_throws(error?: unknown): DynamoDBDocumentClient {
 }
 
 describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEventClient tests`, () => {
-  //
-  // Test OrderStockDepletedEvent edge cases
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test OrderStockDepletedEvent edge cases
+   ************************************************************/
   it(`does not throw if the input OrderStockDepletedEvent is valid`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
-    await expect(
-      esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockOrderStockDepletedEvent),
-    ).resolves.not.toThrow()
+    const resultPromise = esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockOrderStockDepletedEvent)
+    await expect(resultPromise).resolves.not.toThrow()
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEvent is undefined`, async () => {
@@ -93,7 +98,7 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEvent
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient an InvalidArgumentsError if the input OrderStockDepletedEvent is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEvent is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
     const mockTestEvent = null as OrderStockDepletedEvent
@@ -102,7 +107,22 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEvent
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient an InvalidArgumentsError if the input OrderStockDepletedEvent.eventData is undefined`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEvent is not an instance of the class`, async () => {
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
+    const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
+    const mockTestEvent = { ...mockOrderStockDepletedEvent }
+    const resultPromise = esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockTestEvent)
+    await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
+    await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  /*
+   *
+   *
+   ************************************************************
+   * Test OrderStockDepletedEvent.eventData edge cases
+   ************************************************************/
+  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEvent.eventData is undefined`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
     const mockTestEvent = buildMockOrderStockDepletedEvent()
@@ -112,7 +132,7 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEvent
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient an InvalidArgumentsError if the input OrderStockDepletedEvent.eventData is null`, async () => {
+  it(`throws a non-transient InvalidArgumentsError if the input OrderStockDepletedEvent.eventData is null`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
     const mockTestEvent = buildMockOrderStockDepletedEvent()
@@ -122,9 +142,12 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEvent
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
 
-  //
-  // Test internal logic
-  //
+  /*
+   *
+   *
+   ************************************************************
+   * Test internal logic
+   ************************************************************/
   it(`calls DynamoDBDocumentClient.send a single time`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
@@ -147,13 +170,26 @@ describe(`Warehouse Service AllocateOrderStockApi EsRaiseOrderStockDepletedEvent
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: true }))
   })
 
-  it(`throws a non-transient DuplicateEventRaisedError if DynamoDBDocumentClient.send throws a
-      ConditionalCheckFailedException`, async () => {
+  it(`throws a non-transient DuplicateEventRaisedError if DynamoDBDocumentClient.send throws a ConditionalCheckFailedException`, async () => {
     const mockError = new ConditionalCheckFailedException({ $metadata: {}, message: 'ConditionalCheckFailed' })
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
     const resultPromise = esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockOrderStockDepletedEvent)
     await expect(resultPromise).rejects.toThrow(DuplicateEventRaisedError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
+  })
+
+  /*
+   *
+   *
+   ************************************************************
+   * Test expected result
+   ************************************************************/
+  it(`returns the expected void if the execution path is successful`, async () => {
+    const mockDdbDocClient = buildMockDdbDocClient_resolves()
+    const esRaiseOrderStockDepletedEventClient = new EsRaiseOrderStockDepletedEventClient(mockDdbDocClient)
+    const result = await esRaiseOrderStockDepletedEventClient.raiseOrderStockDepletedEvent(mockOrderStockDepletedEvent)
+    const expectedResult = undefined as void
+    expect(result).toStrictEqual(expectedResult)
   })
 })

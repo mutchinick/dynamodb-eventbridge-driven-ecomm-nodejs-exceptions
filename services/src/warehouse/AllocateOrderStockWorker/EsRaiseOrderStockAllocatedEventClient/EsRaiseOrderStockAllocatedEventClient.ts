@@ -1,6 +1,6 @@
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
-import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
 import { OrderStockAllocatedEvent } from '../model/OrderStockAllocatedEvent'
 
 export interface IEsRaiseOrderStockAllocatedEventClient {
@@ -118,7 +118,7 @@ export class EsRaiseOrderStockAllocatedEventClient implements IEsRaiseOrderStock
     } catch (error) {
       // If the condition fails, the event has already been raised, so we throw a non-transient
       // DuplicateEventRaisedError
-      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
+      if (error instanceof ConditionalCheckFailedException) {
         const duplicationError = DuplicateEventRaisedError.from(error)
         console.error(`${logContext} exit error:`, { duplicationError, ddbCommand })
         throw duplicationError

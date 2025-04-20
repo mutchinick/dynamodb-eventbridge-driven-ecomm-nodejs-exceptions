@@ -1,7 +1,6 @@
 import { z } from 'zod'
-import { ForbiddenOrderStatusTransitionError, InvalidArgumentsError } from '../../errors/AppError'
+import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
-import { OrderEventName } from '../../model/OrderEventName'
 import { OrderStatus } from '../../model/OrderStatus'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderEvent } from './IncomingOrderEvent'
@@ -31,7 +30,6 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
 
   /**
    * @throws {InvalidArgumentsError}
-   * @throws {ForbiddenOrderStatusTransitionError}
    */
   public static validateAndBuild(createOrderCommandInput: CreateOrderCommandInput): CreateOrderCommand {
     const logContext = 'CreateOrderCommand.validateAndBuild'
@@ -50,28 +48,23 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
 
   /**
    * @throws {InvalidArgumentsError}
-   * @throws {ForbiddenOrderStatusTransitionError}
    */
   private static buildProps(createOrderCommandInput: CreateOrderCommandInput): CreateOrderCommandProps {
     this.validateInput(createOrderCommandInput)
 
     const { incomingOrderEvent } = createOrderCommandInput
-    const { eventData, eventName } = incomingOrderEvent
-
-    const { orderId, sku, units, price, userId } = eventData
-    const newOrderStatus = this.getNewOrderStatus(eventName)
-    const currentDate = new Date().toISOString()
-
+    const { orderId, sku, units, price, userId } = incomingOrderEvent.eventData
+    const date = new Date().toISOString()
     const createOrderCommandProps: CreateOrderCommandProps = {
       commandData: {
         orderId,
-        orderStatus: newOrderStatus,
+        orderStatus: OrderStatus.ORDER_CREATED_STATUS,
         sku,
         units,
         price,
         userId,
-        createdAt: currentDate,
-        updatedAt: currentDate,
+        createdAt: date,
+        updatedAt: date,
       },
       options: {},
     }
@@ -87,7 +80,7 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
     // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
       incomingOrderEvent: z.object({
-        eventName: ValueValidators.validIncomingEventName(),
+        eventName: ValueValidators.validOrderPlacedEventName(),
         eventData: z.object({
           orderId: ValueValidators.validOrderId(),
           sku: ValueValidators.validSku(),
@@ -107,20 +100,5 @@ export class CreateOrderCommand implements CreateOrderCommandProps {
       console.error(`${logContext} exit error:`, { invalidArgumentsError, createOrderCommandInput })
       throw invalidArgumentsError
     }
-  }
-
-  /**
-   * @throws {ForbiddenOrderStatusTransitionError}
-   */
-  private static getNewOrderStatus(incomingEventName: OrderEventName): OrderStatus {
-    const logContext = 'CreateOrderCommand.getNewOrderStatus'
-
-    if (incomingEventName === OrderEventName.ORDER_PLACED_EVENT) {
-      return OrderStatus.ORDER_CREATED_STATUS
-    }
-
-    const forbiddenError = ForbiddenOrderStatusTransitionError.from()
-    console.error(`${logContext} exit error:`, { forbiddenError, incomingEventName })
-    throw forbiddenError
   }
 }
