@@ -16,5 +16,6 @@
     "**/coverage": true
   },
   "explorerExclude.backup": {},
-  "eslint.workingDirectories": ["services", "infra"]
+  "eslint.workingDirectories": ["services", "infra"],
+  "markdown.preview.fontSize": 12
 }
