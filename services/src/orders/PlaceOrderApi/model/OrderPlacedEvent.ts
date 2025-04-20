@@ -1,13 +1,14 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { OrderEvent } from '../../model/OrderEvent'
 import { OrderEventName } from '../../model/OrderEventName'
 import { ValueValidators } from '../../model/ValueValidators'
 
-type OrderPlacedEventData = Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+export type OrderPlacedEventInput = TypeUtilsPretty<Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>>
 
-export type OrderPlacedEventInput = Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>
+type OrderPlacedEventData = TypeUtilsPretty<Pick<OrderData, 'orderId' | 'sku' | 'units' | 'price' | 'userId'>>
 
 type OrderPlacedEventProps = OrderEvent<OrderEventName.ORDER_PLACED_EVENT, OrderPlacedEventData>
 
@@ -51,14 +52,7 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
 
     const { orderId, sku, units, price, userId } = orderPlacedEventInput
     const date = new Date().toISOString()
-    const orderPlacedEventData: OrderPlacedEventData = {
-      orderId,
-      sku,
-      units,
-      price,
-      userId,
-    }
-
+    const orderPlacedEventData: OrderPlacedEventData = { orderId, sku, units, price, userId }
     const orderPlacedEventProps: OrderPlacedEventProps = {
       eventName: OrderEventName.ORDER_PLACED_EVENT,
       eventData: orderPlacedEventData,
