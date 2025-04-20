@@ -61,7 +61,16 @@ export class IncomingSimulateRawEventRequest implements IncomingSimulateRawEvent
     incomingSimulateRawEventRequestInput: IncomingSimulateRawEventRequestInput,
   ): IncomingSimulateRawEventRequestProps {
     this.validateInput(incomingSimulateRawEventRequestInput)
-    return incomingSimulateRawEventRequestInput
+    const { pk, sk, eventName, eventData, createdAt, updatedAt } = incomingSimulateRawEventRequestInput
+    const incomingSimulateRawEventRequestProps: IncomingSimulateRawEventRequestProps = {
+      pk,
+      sk,
+      eventName,
+      eventData,
+      createdAt,
+      updatedAt,
+    }
+    return incomingSimulateRawEventRequestProps
   }
 
   /**

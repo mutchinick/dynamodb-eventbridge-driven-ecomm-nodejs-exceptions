@@ -1,11 +1,12 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { ValueValidators } from '../../model/ValueValidators'
 
-export type IncomingRestockSkuRequestInput = Pick<RestockSkuData, 'sku' | 'units' | 'lotId'>
+export type IncomingRestockSkuRequestInput = TypeUtilsPretty<Pick<RestockSkuData, 'sku' | 'units' | 'lotId'>>
 
-type IncomingRestockSkuRequestProps = Pick<RestockSkuData, 'sku' | 'units' | 'lotId'>
+type IncomingRestockSkuRequestProps = TypeUtilsPretty<Pick<RestockSkuData, 'sku' | 'units' | 'lotId'>>
 
 /**
  *

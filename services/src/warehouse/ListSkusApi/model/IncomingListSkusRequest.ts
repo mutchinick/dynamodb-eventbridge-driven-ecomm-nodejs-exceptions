@@ -1,16 +1,13 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
+import { SortParams } from '../../model/SortParams'
 import { ValueValidators } from '../../model/ValueValidators'
-import { type SortDirection } from '../../model/SortDirection'
 
-type IncomingListSkusRequestData = Partial<
-  Pick<RestockSkuData, 'sku'> & { sortDirection: SortDirection } & { limit: number }
->
+export type IncomingListSkusRequestInput = TypeUtilsPretty<Partial<Pick<RestockSkuData, 'sku'> & SortParams>>
 
-export type IncomingListSkusRequestInput = IncomingListSkusRequestData
-
-type IncomingListSkusRequestProps = IncomingListSkusRequestData
+type IncomingListSkusRequestProps = TypeUtilsPretty<Partial<Pick<RestockSkuData, 'sku'> & SortParams>>
 
 /**
  *
