@@ -1,11 +1,12 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { ValueValidators } from '../../model/ValueValidators'
 
-export type GetOrderCommandInput = Pick<OrderData, 'orderId'>
+export type GetOrderCommandInput = TypeUtilsPretty<Pick<OrderData, 'orderId'>>
 
-type GetOrderCommandData = Pick<OrderData, 'orderId'>
+type GetOrderCommandData = TypeUtilsPretty<Pick<OrderData, 'orderId'>>
 
 type GetOrderCommandProps = {
   readonly commandData: GetOrderCommandData

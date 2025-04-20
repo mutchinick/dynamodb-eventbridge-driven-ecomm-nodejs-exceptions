@@ -1,13 +1,13 @@
 import { z } from 'zod'
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { AllocationStatus } from '../../model/AllocationStatus'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { WarehouseEventName } from '../../model/WarehouseEventName'
 import { IncomingOrderPaymentRejectedEvent } from './IncomingOrderPaymentRejectedEvent'
 
-export interface DeallocateOrderPaymentRejectedCommandInput {
+export type DeallocateOrderPaymentRejectedCommandInput = {
   existingOrderAllocationData: OrderAllocationData
   incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent
 }

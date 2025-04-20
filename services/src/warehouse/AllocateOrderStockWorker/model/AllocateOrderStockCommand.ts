@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { AllocationStatus } from '../../model/AllocationStatus'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
 
@@ -63,7 +63,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
 
     const { incomingOrderCreatedEvent } = allocateOrderStockCommandInput
     const { orderId, sku, units, price, userId } = incomingOrderCreatedEvent.eventData
-    const date = new Date().toISOString()
+    const currentDate = new Date().toISOString()
     const allocateOrderStockCommandProps: AllocateOrderStockCommandProps = {
       commandData: {
         orderId,
@@ -71,8 +71,8 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
         units,
         price,
         userId,
-        createdAt: date,
-        updatedAt: date,
+        createdAt: currentDate,
+        updatedAt: currentDate,
         allocationStatus: 'ALLOCATED',
       },
       options: {},

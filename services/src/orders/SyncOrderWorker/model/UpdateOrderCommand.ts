@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import {
   ForbiddenOrderStatusTransitionError,
   InvalidArgumentsError,
@@ -17,7 +18,7 @@ export type UpdateOrderCommandInput = {
   incomingOrderEvent: IncomingOrderEvent
 }
 
-type UpdateOrderCommandData = Pick<OrderData, 'orderId' | 'orderStatus' | 'updatedAt'>
+type UpdateOrderCommandData = TypeUtilsPretty<Pick<OrderData, 'orderId' | 'orderStatus' | 'updatedAt'>>
 
 type UpdateOrderCommandProps = {
   readonly commandData: UpdateOrderCommandData
@@ -72,14 +73,13 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     const existingOrderStatus = existingOrderData.orderStatus
     const incomingEventName = incomingOrderEvent.eventName
 
-    const orderId = existingOrderData.orderId
-    const newOrderStatus = this.getNewOrderStatus({ existingOrderStatus, incomingEventName })
-    const updatedAt = new Date().toISOString()
+    const newOrderStatus = this.computeNewOrderStatus({ existingOrderStatus, incomingEventName })
+    const currentDate = new Date().toISOString()
     const updateOrderCommandProps: UpdateOrderCommandProps = {
       commandData: {
-        orderId,
+        orderId: existingOrderData.orderId,
         orderStatus: newOrderStatus,
-        updatedAt,
+        updatedAt: currentDate,
       },
       options: {},
     }
@@ -138,7 +138,7 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
    * @throws {NotReadyOrderStatusTransitionError}
    * @throws {InvalidOperationError}
    */
-  private static getNewOrderStatus({
+  private static computeNewOrderStatus({
     existingOrderStatus,
     incomingEventName,
   }: {
