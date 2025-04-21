@@ -32,8 +32,8 @@ export class RestockSkuApiController implements IRestockSkuApiController {
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedInput = this.parseInputApiEvent(apiEvent)
-      const incomingRestockSkuRequest = IncomingRestockSkuRequest.validateAndBuild(unverifiedInput)
+      const unverifiedRequest = this.parseInputRequest(apiEvent) as IncomingRestockSkuRequestInput
+      const incomingRestockSkuRequest = IncomingRestockSkuRequest.validateAndBuild(unverifiedRequest)
       const restockSkuOutput = await this.restockSkuApiService.restockSku(incomingRestockSkuRequest)
       const successResponse = HttpResponse.Accepted(restockSkuOutput)
       console.info(`${logContext} exit success:`, { successResponse, apiEvent })
@@ -54,11 +54,12 @@ export class RestockSkuApiController implements IRestockSkuApiController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInputApiEvent(apiEvent: APIGatewayProxyEventV2): IncomingRestockSkuRequest {
-    const logContext = 'RestockSkuApiController.parseInputApiEvent'
+  private parseInputRequest(apiEvent: APIGatewayProxyEventV2): unknown {
+    const logContext = 'RestockSkuApiController.parseInputRequest'
 
     try {
-      return JSON.parse(apiEvent.body) as IncomingRestockSkuRequestInput
+      const unverifiedRequest = JSON.parse(apiEvent.body)
+      return unverifiedRequest
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, apiEvent })

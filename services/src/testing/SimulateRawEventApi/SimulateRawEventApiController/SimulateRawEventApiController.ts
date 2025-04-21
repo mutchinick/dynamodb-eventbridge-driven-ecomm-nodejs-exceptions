@@ -30,8 +30,8 @@ export class SimulateRawEventApiController implements ISimulateRawEventApiContro
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedInput = this.parseInputApiEvent(apiEvent)
-      const incomingSimulateRawEventRequest = IncomingSimulateRawEventRequest.validateAndBuild(unverifiedInput)
+      const unverifiedRequest = this.parseInputRequest(apiEvent) as IncomingSimulateRawEventRequestInput
+      const incomingSimulateRawEventRequest = IncomingSimulateRawEventRequest.validateAndBuild(unverifiedRequest)
       const serviceOutput = await this.simulateRawEventApiService.simulateRawEvent(incomingSimulateRawEventRequest)
       const successResponse = HttpResponse.Accepted(serviceOutput)
       console.info(`${logContext} exit success:`, { successResponse, apiEvent })
@@ -52,11 +52,12 @@ export class SimulateRawEventApiController implements ISimulateRawEventApiContro
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInputApiEvent(apiEvent: APIGatewayProxyEventV2): IncomingSimulateRawEventRequest {
-    const logContext = 'SimulateRawEventApiController.parseInputApiEvent'
+  private parseInputRequest(apiEvent: APIGatewayProxyEventV2): unknown {
+    const logContext = 'SimulateRawEventApiController.parseInputRequest'
 
     try {
-      return JSON.parse(apiEvent.body) as IncomingSimulateRawEventRequestInput
+      const unverifiedRequest = JSON.parse(apiEvent.body)
+      return unverifiedRequest
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, apiEvent })

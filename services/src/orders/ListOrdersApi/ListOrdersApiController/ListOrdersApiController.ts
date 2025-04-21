@@ -27,8 +27,8 @@ export class ListOrdersApiController implements IListOrdersApiController {
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedInput = this.parseInputApiEvent(apiEvent)
-      const incomingListOrdersRequest = IncomingListOrdersRequest.validateAndBuild(unverifiedInput)
+      const unverifiedRequest = this.parseInputRequest(apiEvent) as IncomingListOrdersRequestInput
+      const incomingListOrdersRequest = IncomingListOrdersRequest.validateAndBuild(unverifiedRequest)
       const serviceOutput = await this.listOrdersApiService.listOrders(incomingListOrdersRequest)
       const successResponse = HttpResponse.OK(serviceOutput)
       console.info(`${logContext} exit success:`, { successResponse, apiEvent })
@@ -49,11 +49,12 @@ export class ListOrdersApiController implements IListOrdersApiController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInputApiEvent(apiEvent: APIGatewayProxyEventV2): IncomingListOrdersRequestInput {
-    const logContext = 'ListOrdersApiController.parseInputApiEvent'
+  private parseInputRequest(apiEvent: APIGatewayProxyEventV2): unknown {
+    const logContext = 'ListOrdersApiController.parseInputRequest'
 
     try {
-      return JSON.parse(apiEvent.body) as IncomingListOrdersRequestInput
+      const unverifiedRequest = JSON.parse(apiEvent.body)
+      return unverifiedRequest
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, apiEvent })

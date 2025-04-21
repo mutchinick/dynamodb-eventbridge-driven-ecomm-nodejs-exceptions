@@ -57,8 +57,8 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
     console.info(`${logContext} init:`, { sqsRecord })
 
     try {
-      const unverifiedInput = this.parseInputSqsRecord(sqsRecord)
-      const incomingOrderCreatedEvent = IncomingOrderCreatedEvent.validateAndBuild(unverifiedInput)
+      const unverifiedEvent = this.parseInputEvent(sqsRecord) as IncomingOrderCreatedEventInput
+      const incomingOrderCreatedEvent = IncomingOrderCreatedEvent.validateAndBuild(unverifiedEvent)
       await this.allocateOrderStockWorkerService.allocateOrderStock(incomingOrderCreatedEvent)
       console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent, sqsRecord })
     } catch (error) {
@@ -70,11 +70,12 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInputSqsRecord(sqsRecord: SQSRecord): IncomingOrderCreatedEventInput {
-    const logContext = 'AllocateOrderStockWorkerController.parseInputSqsRecord'
+  private parseInputEvent(sqsRecord: SQSRecord): unknown {
+    const logContext = 'AllocateOrderStockWorkerController.parseInputEvent'
 
     try {
-      return JSON.parse(sqsRecord.body) as IncomingOrderCreatedEventInput
+      const unverifiedEvent = JSON.parse(sqsRecord.body)
+      return unverifiedEvent
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, sqsRecord })

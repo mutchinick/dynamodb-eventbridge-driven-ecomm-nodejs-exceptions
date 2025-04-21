@@ -64,8 +64,8 @@ export class DeallocateOrderPaymentRejectedWorkerController implements IDealloca
     console.info(`${logContext} init:`, { sqsRecord })
 
     try {
-      const unverifiedInput = this.parseInputSqsRecord(sqsRecord)
-      const incomingOrderPaymentRejectedEvent = IncomingOrderPaymentRejectedEvent.validateAndBuild(unverifiedInput)
+      const unverifiedEvent = this.parseInputEvent(sqsRecord) as IncomingOrderPaymentRejectedEventInput
+      const incomingOrderPaymentRejectedEvent = IncomingOrderPaymentRejectedEvent.validateAndBuild(unverifiedEvent)
       await this.deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(incomingOrderPaymentRejectedEvent)
       console.info(`${logContext} exit success:`, { incomingOrderPaymentRejectedEvent, sqsRecord })
     } catch (error) {
@@ -77,11 +77,12 @@ export class DeallocateOrderPaymentRejectedWorkerController implements IDealloca
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInputSqsRecord(sqsRecord: SQSRecord): IncomingOrderPaymentRejectedEventInput {
-    const logContext = 'DeallocateOrderPaymentRejectedWorkerController.parseInputSqsRecord'
+  private parseInputEvent(sqsRecord: SQSRecord): unknown {
+    const logContext = 'DeallocateOrderPaymentRejectedWorkerController.parseInputEvent'
 
     try {
-      return JSON.parse(sqsRecord.body) as IncomingOrderPaymentRejectedEventInput
+      const unverifiedEvent = JSON.parse(sqsRecord.body)
+      return unverifiedEvent
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, sqsRecord })

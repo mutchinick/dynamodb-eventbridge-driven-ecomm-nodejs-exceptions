@@ -27,8 +27,8 @@ export class ListSkusApiController implements IListSkusApiController {
     console.info(`${logContext} init:`, { apiEvent })
 
     try {
-      const unverifiedInput = this.parseInputApiEvent(apiEvent)
-      const incomingListSkusRequest = IncomingListSkusRequest.validateAndBuild(unverifiedInput)
+      const unverifiedRequest = this.parseInputRequest(apiEvent) as IncomingListSkusRequestInput
+      const incomingListSkusRequest = IncomingListSkusRequest.validateAndBuild(unverifiedRequest)
       const serviceOutput = await this.listSkusApiService.listSkus(incomingListSkusRequest)
       const successResponse = HttpResponse.OK(serviceOutput)
       console.info(`${logContext} exit success:`, { successResponse, apiEvent })
@@ -49,11 +49,12 @@ export class ListSkusApiController implements IListSkusApiController {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private parseInputApiEvent(apiEvent: APIGatewayProxyEventV2): IncomingListSkusRequestInput {
-    const logContext = 'ListSkusApiController.parseInputApiEvent'
+  private parseInputRequest(apiEvent: APIGatewayProxyEventV2): unknown {
+    const logContext = 'ListSkusApiController.parseInputRequest'
 
     try {
-      return JSON.parse(apiEvent.body) as IncomingListSkusRequestInput
+      const unverifiedRequest = JSON.parse(apiEvent.body)
+      return unverifiedRequest
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, apiEvent })
