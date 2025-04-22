@@ -1,7 +1,7 @@
 import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseRawSimulatedEventClient } from '../EsRaiseRawSimulatedEventClient/EsRaiseRawSimulatedEventClient'
 import { IncomingSimulateRawEventRequest } from '../model/IncomingSimulateRawEventRequest'
-import { RawSimulatedEvent } from '../model/RawSimulatedEvent'
+import { RawSimulatedEvent, RawSimulatedEventInput } from '../model/RawSimulatedEvent'
 
 export interface ISimulateRawEventApiService {
   /**
@@ -40,8 +40,8 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: SimulateRawEventApiServiceOutput = { ...incomingSimulateRawEventRequest }
         console.info(`${logContext} exit success: from-error:`, {
-          serviceOutput,
           error,
+          serviceOutput,
           incomingSimulateRawEventRequest,
         })
         return serviceOutput
@@ -78,9 +78,11 @@ export class SimulateRawEventApiService implements ISimulateRawEventApiService {
     console.info(`${logContext} init:`, { incomingSimulateRawEventRequest })
 
     try {
-      const rawSimulatedEvent = RawSimulatedEvent.validateAndBuild(incomingSimulateRawEventRequest)
+      const { pk, sk, eventName, eventData, createdAt, updatedAt } = incomingSimulateRawEventRequest
+      const rawSimulatedEventInput: RawSimulatedEventInput = { pk, sk, eventName, eventData, createdAt, updatedAt }
+      const rawSimulatedEvent = RawSimulatedEvent.validateAndBuild(rawSimulatedEventInput)
       await this.esRaiseRawSimulatedEventClient.raiseRawSimulatedEvent(rawSimulatedEvent)
-      console.info(`${logContext} exit success:`, { rawSimulatedEvent, incomingSimulateRawEventRequest })
+      console.info(`${logContext} exit success:`, { rawSimulatedEvent, rawSimulatedEventInput })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingSimulateRawEventRequest })
       throw error

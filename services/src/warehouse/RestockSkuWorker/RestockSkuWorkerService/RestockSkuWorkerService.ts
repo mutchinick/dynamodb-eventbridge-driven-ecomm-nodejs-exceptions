@@ -1,7 +1,7 @@
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { IDbRestockSkuClient } from '../DbRestockSkuClient/DbRestockSkuClient'
 import { IncomingSkuRestockedEvent } from '../model/IncomingSkuRestockedEvent'
-import { RestockSkuCommand } from '../model/RestockSkuCommand'
+import { RestockSkuCommand, RestockSkuCommandInput } from '../model/RestockSkuCommand'
 
 export interface IRestockSkuWorkerService {
   /**
@@ -32,9 +32,14 @@ export class RestockSkuWorkerService implements IRestockSkuWorkerService {
 
     try {
       this.validateInput(incomingSkuRestockedEvent)
-      const restockSkuCommand = RestockSkuCommand.validateAndBuild({ incomingSkuRestockedEvent })
+      const restockSkuCommandInput: RestockSkuCommandInput = { incomingSkuRestockedEvent }
+      const restockSkuCommand = RestockSkuCommand.validateAndBuild(restockSkuCommandInput)
       await this.dbRestockSkuClient.restockSku(restockSkuCommand)
-      console.info(`${logContext} exit success:`, { restockSkuCommand, incomingSkuRestockedEvent })
+      console.info(`${logContext} exit success:`, {
+        restockSkuCommand,
+        restockSkuCommandInput,
+        incomingSkuRestockedEvent,
+      })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingSkuRestockedEvent })
       throw error

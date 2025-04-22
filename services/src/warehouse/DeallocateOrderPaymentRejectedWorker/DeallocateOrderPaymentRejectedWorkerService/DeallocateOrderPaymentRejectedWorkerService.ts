@@ -44,6 +44,9 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
     try {
       this.validateInput(incomingOrderPaymentRejectedEvent)
       const existingOrderAllocationData = await this.getOrderAllocation(incomingOrderPaymentRejectedEvent)
+      // FIXME: If the Allocation DOES NOT exist there in no sense in going further.
+      // Still the Deallocation Command will result in an error, so it's "handled", but is better
+      // to handle it cleanly here first.
       await this.deallocateOrder(existingOrderAllocationData, incomingOrderPaymentRejectedEvent)
       console.info(`${logContext} exit success:`, { existingOrderAllocationData, incomingOrderPaymentRejectedEvent })
       return
@@ -82,7 +85,11 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
       const getOrderAllocationCommandInput: GetOrderAllocationCommandInput = { orderId, sku }
       const getOrderAllocationCommand = GetOrderAllocationCommand.validateAndBuild(getOrderAllocationCommandInput)
       const orderAllocationData = await this.dbGetOrderAllocationClient.getOrderAllocation(getOrderAllocationCommand)
-      console.info(`${logContext} exit success:`, { orderAllocationData })
+      console.info(`${logContext} exit success:`, {
+        orderAllocationData,
+        getOrderAllocationCommand,
+        getOrderAllocationCommandInput,
+      })
       return orderAllocationData
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderPaymentRejectedEvent })
@@ -108,9 +115,9 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
         incomingOrderPaymentRejectedEvent,
       }
       const deallocateCommand = DeallocateOrderPaymentRejectedCommand.validateAndBuild(deallocateCommandInput)
-
       await this.dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(deallocateCommand)
-      console.info(`${logContext} exit success:`, { deallocateCommand })
+
+      console.info(`${logContext} exit success:`, { deallocateCommand, deallocateCommandInput })
       return
     } catch (error) {
       console.error(`${logContext} exit error:`, {

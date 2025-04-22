@@ -1,7 +1,7 @@
 import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseOrderPlacedEventClient } from '../EsRaiseOrderPlacedEventClient/EsRaiseOrderPlacedEventClient'
 import { IncomingPlaceOrderRequest } from '../model/IncomingPlaceOrderRequest'
-import { OrderPlacedEvent } from '../model/OrderPlacedEvent'
+import { OrderPlacedEvent, OrderPlacedEventInput } from '../model/OrderPlacedEvent'
 
 export interface IPlaceOrderApiService {
   /**
@@ -39,7 +39,7 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
     } catch (error) {
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: PlaceOrderApiServiceOutput = { ...incomingPlaceOrderRequest }
-        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error, incomingPlaceOrderRequest })
+        console.info(`${logContext} exit success: from-error:`, { error, serviceOutput, incomingPlaceOrderRequest })
         return serviceOutput
       }
 
@@ -72,7 +72,9 @@ export class PlaceOrderApiService implements IPlaceOrderApiService {
     console.info(`${logContext} init:`, { incomingPlaceOrderRequest })
 
     try {
-      const orderPlacedEvent = OrderPlacedEvent.validateAndBuild(incomingPlaceOrderRequest)
+      const { orderId, sku, units, price, userId } = incomingPlaceOrderRequest
+      const orderPlacedEventInput: OrderPlacedEventInput = { orderId, sku, units, price, userId }
+      const orderPlacedEvent = OrderPlacedEvent.validateAndBuild(orderPlacedEventInput)
       await this.esRaiseOrderPlacedEventClient.raiseOrderPlacedEvent(orderPlacedEvent)
       console.info(`${logContext} exit success:`, { orderPlacedEvent, incomingPlaceOrderRequest })
     } catch (error) {

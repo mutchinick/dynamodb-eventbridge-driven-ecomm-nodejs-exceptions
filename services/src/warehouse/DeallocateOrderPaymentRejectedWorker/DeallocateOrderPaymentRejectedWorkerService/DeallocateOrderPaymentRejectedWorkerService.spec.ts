@@ -308,7 +308,7 @@ describe(`Warehouse Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns void if the execution path is successful`, async () => {
+  it(`returns the expected void if the execution path is successful`, async () => {
     const mockDbDeallocateOrderPaymentRejectedClient = buildMockDbDeallocateOrderPaymentRejectedClient_resolves()
     const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves()
     const deallocateOrderPaymentRejectedWorkerService = new DeallocateOrderPaymentRejectedWorkerService(

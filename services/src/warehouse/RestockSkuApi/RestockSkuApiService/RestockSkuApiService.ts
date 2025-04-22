@@ -2,7 +2,7 @@ import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { DuplicateEventRaisedError, InvalidArgumentsError } from '../../errors/AppError'
 import { IEsRaiseSkuRestockedEventClient } from '../EsRaiseSkuRestockedEventClient/EsRaiseSkuRestockedEventClient'
 import { IncomingRestockSkuRequest } from '../model/IncomingRestockSkuRequest'
-import { SkuRestockedEvent } from '../model/SkuRestockedEvent'
+import { SkuRestockedEvent, SkuRestockedEventInput } from '../model/SkuRestockedEvent'
 
 export interface IRestockSkuApiService {
   /**
@@ -40,7 +40,7 @@ export class RestockSkuApiService implements IRestockSkuApiService {
     } catch (error) {
       if (error instanceof DuplicateEventRaisedError) {
         const serviceOutput: RestockSkuApiServiceOutput = { ...incomingRestockSkuRequest }
-        console.info(`${logContext} exit success: from-error:`, { serviceOutput, error, incomingRestockSkuRequest })
+        console.info(`${logContext} exit success: from-error:`, { error, serviceOutput, incomingRestockSkuRequest })
         return serviceOutput
       }
 
@@ -73,9 +73,11 @@ export class RestockSkuApiService implements IRestockSkuApiService {
     console.info(`${logContext} init:`, { incomingRestockSkuRequest })
 
     try {
-      const skuRestockedEvent = SkuRestockedEvent.validateAndBuild(incomingRestockSkuRequest)
+      const { sku, units, lotId } = incomingRestockSkuRequest
+      const skuRestockedEventInput: SkuRestockedEventInput = { sku, units, lotId }
+      const skuRestockedEvent = SkuRestockedEvent.validateAndBuild(skuRestockedEventInput)
       await this.esRaiseSkuRestockedEventClient.raiseSkuRestockedEvent(skuRestockedEvent)
-      console.info(`${logContext} exit success:`, { skuRestockedEvent, incomingRestockSkuRequest })
+      console.info(`${logContext} exit success:`, { skuRestockedEvent, skuRestockedEventInput })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingRestockSkuRequest })
       throw error

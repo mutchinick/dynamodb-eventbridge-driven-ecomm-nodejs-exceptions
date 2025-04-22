@@ -2,7 +2,7 @@ import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
 import { IDbListOrdersClient } from '../DbListOrdersClient/DbListOrdersClient'
 import { IncomingListOrdersRequest } from '../model/IncomingListOrdersRequest'
-import { ListOrdersCommand } from '../model/ListOrdersCommand'
+import { ListOrdersCommand, ListOrdersCommandInput } from '../model/ListOrdersCommand'
 
 export interface IListOrdersApiService {
   /**
@@ -33,7 +33,7 @@ export class ListOrdersApiService implements IListOrdersApiService {
 
     try {
       this.validateInput(incomingListOrdersRequest)
-      const orders = await this.queryDatabase(incomingListOrdersRequest)
+      const orders = await this.queryOrders(incomingListOrdersRequest)
       const serviceOutput: ListOrdersApiServiceOutput = { orders }
       console.info(`${logContext} exit success:`, { serviceOutput, incomingListOrdersRequest })
       return serviceOutput
@@ -61,14 +61,16 @@ export class ListOrdersApiService implements IListOrdersApiService {
    * @throws {InvalidArgumentsError}
    * @throws {UnrecognizedError}
    */
-  private async queryDatabase(incomingListOrdersRequest: IncomingListOrdersRequest): Promise<OrderData[]> {
-    const logContext = 'ListOrdersApiService.queryDatabase'
+  private async queryOrders(incomingListOrdersRequest: IncomingListOrdersRequest): Promise<OrderData[]> {
+    const logContext = 'ListOrdersApiService.queryOrders'
     console.info(`${logContext} init:`, { incomingListOrdersRequest })
 
     try {
-      const listOrdersCommand = ListOrdersCommand.validateAndBuild(incomingListOrdersRequest)
+      const { orderId, sortDirection, limit } = incomingListOrdersRequest
+      const listOrdersCommandInput: ListOrdersCommandInput = { orderId, sortDirection, limit }
+      const listOrdersCommand = ListOrdersCommand.validateAndBuild(listOrdersCommandInput)
       const orders = await this.dbListOrdersClient.listOrders(listOrdersCommand)
-      console.info(`${logContext} exit success:`, { orders, listOrdersCommand, incomingListOrdersRequest })
+      console.info(`${logContext} exit success:`, { orders, listOrdersCommand, listOrdersCommandInput })
       return orders
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingListOrdersRequest })

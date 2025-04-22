@@ -2,7 +2,7 @@ import { InvalidArgumentsError } from '../../errors/AppError'
 import { RestockSkuData } from '../../model/RestockSkuData'
 import { IDbListSkusClient } from '../DbListSkusClient/DbListSkusClient'
 import { IncomingListSkusRequest } from '../model/IncomingListSkusRequest'
-import { ListSkusCommand } from '../model/ListSkusCommand'
+import { ListSkusCommand, ListSkusCommandInput } from '../model/ListSkusCommand'
 
 export interface IListSkusApiService {
   /**
@@ -33,7 +33,7 @@ export class ListSkusApiService implements IListSkusApiService {
 
     try {
       this.validateInput(incomingListSkusRequest)
-      const skus = await this.queryDatabase(incomingListSkusRequest)
+      const skus = await this.querySkus(incomingListSkusRequest)
       const serviceOutput: ListSkusApiServiceOutput = { skus }
       console.info(`${logContext} exit success:`, { serviceOutput, incomingListSkusRequest })
       return serviceOutput
@@ -61,14 +61,16 @@ export class ListSkusApiService implements IListSkusApiService {
    * @throws {InvalidArgumentsError}
    * @throws {UnrecognizedError}
    */
-  private async queryDatabase(incomingListSkusRequest: IncomingListSkusRequest): Promise<RestockSkuData[]> {
-    const logContext = 'ListSkusApiService.queryDatabase'
+  private async querySkus(incomingListSkusRequest: IncomingListSkusRequest): Promise<RestockSkuData[]> {
+    const logContext = 'ListSkusApiService.querySkus'
     console.info(`${logContext} init:`, { incomingListSkusRequest })
 
     try {
-      const listSkusCommand = ListSkusCommand.validateAndBuild(incomingListSkusRequest)
+      const { sku, sortDirection, limit } = incomingListSkusRequest
+      const listSkusCommandInput: ListSkusCommandInput = { sku, sortDirection, limit }
+      const listSkusCommand = ListSkusCommand.validateAndBuild(listSkusCommandInput)
       const skus = await this.dbListSkusClient.listSkus(listSkusCommand)
-      console.info(`${logContext} exit success:`, { skus, listSkusCommand, incomingListSkusRequest })
+      console.info(`${logContext} exit success:`, { skus, listSkusCommand, listSkusCommandInput })
       return skus
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingListSkusRequest })
