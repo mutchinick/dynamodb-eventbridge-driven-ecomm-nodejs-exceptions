@@ -140,7 +140,7 @@ describe(`Orders Service SyncOrderWorker SyncOrderWorkerService tests`, () => {
         mockEsRaiseOrderCreatedEventClient,
       )
       const mockTestEvent = buildMockIncomingOrderEvent(mockTestIncomingOrderEventProps)
-      expect(syncOrderWorkerService.syncOrder(mockTestEvent)).resolves.not.toThrow()
+      await expect(syncOrderWorkerService.syncOrder(mockTestEvent)).resolves.not.toThrow()
     })
 
     it(`throws a non-transient InvalidArgumentsError if the input IncomingOrderEvent is
