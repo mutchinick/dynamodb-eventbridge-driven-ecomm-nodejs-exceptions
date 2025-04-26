@@ -1,5 +1,3 @@
-// FIXME: This component is duplicated in AllocateOrderStockWorker.
-// It should be moved to a common place. Will do soon.
 import { DynamoDBDocumentClient, GetCommand, NativeAttributeValue } from '@aws-sdk/lib-dynamodb'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { OrderAllocationData } from '../../model/OrderAllocationData'

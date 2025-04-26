@@ -1,5 +1,3 @@
-// FIXME: This component is duplicated in AllocateOrderStockWorker.
-// It should be moved to a common place. Will do soon.
 import { DynamoDBDocumentClient, GetCommand, GetCommandOutput } from '@aws-sdk/lib-dynamodb'
 import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'

@@ -1,5 +1,3 @@
-// FIXME: This component is duplicated in AllocateOrderStockWorker.
-// It should be moved to a common place. Will do soon.
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { GetOrderAllocationCommand, GetOrderAllocationCommandInput } from './GetOrderAllocationCommand'
 
