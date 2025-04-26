@@ -43,13 +43,22 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
 
     try {
       this.validateInput(incomingOrderPaymentRejectedEvent)
+
+      // When it reads the Allocation from the database
       const existingOrderAllocationData = await this.getOrderAllocation(incomingOrderPaymentRejectedEvent)
-      // FIXME: If the Allocation DOES NOT exist there in no sense in going further.
-      // Still the Deallocation Command will result in an error, so it's "handled", but is better
-      // to handle it cleanly here first.
-      await this.deallocateOrder(existingOrderAllocationData, incomingOrderPaymentRejectedEvent)
-      console.info(`${logContext} exit success:`, { existingOrderAllocationData, incomingOrderPaymentRejectedEvent })
-      return
+
+      // When the Allocation DOES exist and it deallocates it
+      if (existingOrderAllocationData) {
+        await this.deallocateOrder(existingOrderAllocationData, incomingOrderPaymentRejectedEvent)
+        console.info(`${logContext} exit success:`, { existingOrderAllocationData, incomingOrderPaymentRejectedEvent })
+        return
+      }
+
+      // When the Allocation DOES NOT exist and it skips the deallocation
+      console.info(`${logContext} exit success: skipped:`, {
+        existingOrderAllocationData,
+        incomingOrderPaymentRejectedEvent,
+      })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, incomingOrderPaymentRejectedEvent })
       throw error
