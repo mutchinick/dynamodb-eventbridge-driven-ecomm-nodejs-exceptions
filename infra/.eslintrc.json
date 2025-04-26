@@ -1,8 +1,44 @@
 {
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2021,
-    "sourceType": "module"
+    "ecmaVersion": 2016,
+    "sourceType": "module",
+    "project": ["tsconfig.json"]
   },
-  "extends": ["plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"]
+  "plugins": ["jsdoc"],
+  "extends": ["plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-unused-expressions": "off",
+    "no-unused-expressions": "off",
+    "object-shorthand": ["error", "always"],
+    "jsdoc/require-jsdoc": [
+      "error",
+      {
+        "publicOnly": false,
+        "require": {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": true,
+          "ArrowFunctionExpression": false,
+          "FunctionExpression": false
+        }
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.spec.ts", "*.test.ts"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": [
+          "error",
+          {
+            "allowedNames": ["testingFunc"]
+          }
+        ],
+        "jsdoc/require-jsdoc": "off"
+      }
+    }
+  ]
 }
