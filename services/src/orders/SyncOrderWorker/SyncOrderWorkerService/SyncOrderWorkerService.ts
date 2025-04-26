@@ -50,9 +50,14 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
     const logContext = 'SyncOrderWorkerService.syncOrder'
     console.info(`${logContext} init:`, { incomingOrderEvent })
 
+    // This is one of those methods that is long and ugly, I have explored some ways to make it more readable,
+    // and have liked some of them, but for now I have decided to keep it as is: verbose with naming, verbose
+    // with error handling and verbose with logging. Also not a big fan of the comments =).
+    // At some point I come back to it and shorten contextualized names, use helpers to clean up logging, etc.
+
     try {
       // The input IncomingOrderEvent should already be valid because it can only be built through the same
-      // IncomingOrderEvent class which enforces strict validation. Still we perform just enough validation to
+      // IncomingOrderEvent class which enforces strict validation. Still it performs just enough validation to
       // prevent unlikely but possible uncaught exceptions for some properties that are accessed directly.
 
       this.validateInput(incomingOrderEvent)
@@ -60,7 +65,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       const isOrderPlacedEvent = IncomingOrderEvent.isOrderPlacedEvent(incomingOrderEvent)
       const existingOrderData = await this.getOrder(incomingOrderEvent.eventData.orderId)
 
-      // When IT IS an OrderPlacedEvent and the OrderData DOES NOT exist in the database then we need to
+      // When IT IS an OrderPlacedEvent and the OrderData DOES NOT exist in the database then it needs to
       // create the Order and then raise the event. This is the starting point for the Order.
       if (isOrderPlacedEvent && !existingOrderData) {
         const createdOrderData = await this.createOrder(incomingOrderEvent)
@@ -69,7 +74,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
         return
       }
 
-      // When IT IS an OrderPlacedEvent and the OrderData DOES exist in the database, then we only try
+      // When IT IS an OrderPlacedEvent and the OrderData DOES exist in the database, it only tries
       // to raise the event again because the intuition is that is was tried before but it failed.
       if (isOrderPlacedEvent && existingOrderData) {
         await this.raiseOrderCreatedEvent(existingOrderData)
@@ -77,8 +82,8 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
         return
       }
 
-      // When IT IS NOT an OrderPlacedEvent and the OrderData DOES exist in the database, then we need to
-      // update the Order to a new state. No event needs to be raised because we are in tracking mode.
+      // When IT IS NOT an OrderPlacedEvent and the OrderData DOES exist in the database, it needs to
+      // update the Order to a new state. No event needs to be raised because it is in tracking mode.
       if (!isOrderPlacedEvent && existingOrderData) {
         await this.updateOrder(existingOrderData, incomingOrderEvent)
         console.info(`${logContext} exit success: update order:`, { existingOrderData, incomingOrderEvent })
@@ -89,6 +94,8 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
       throw error
     }
 
+    // When IT IS NOT an OrderPlacedEvent and the OrderData DOES NOT exist in the database.
+    // This means it reached an invalid operation somehow, so it must return an error.
     const invalidOperationError = InvalidOperationError.nonTransient()
     console.error(`${logContext} exit error:`, { invalidOperationError, incomingOrderEvent })
     throw invalidOperationError
