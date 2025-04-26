@@ -85,7 +85,10 @@ function buildMockSqsRecord(id: string, eventBridgeEvent: EventBridgeEvent<strin
   } as unknown as SQSRecord
 }
 
-function buildMockSqsRecords(ids: string[], eventBridgeEvents: EventBridgeEvent<string, MockEventDetail>[]) {
+function buildMockSqsRecords(
+  ids: string[],
+  eventBridgeEvents: EventBridgeEvent<string, MockEventDetail>[],
+): SQSRecord[] {
   return ids.map((id, index) => buildMockSqsRecord(id, eventBridgeEvents[index]))
 }
 

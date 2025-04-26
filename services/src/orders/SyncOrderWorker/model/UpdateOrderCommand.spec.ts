@@ -40,7 +40,7 @@ function buildMockIncomingOrderEvent(): TypeUtilsMutable<IncomingOrderEvent> {
   return mockValidOrderEvent
 }
 
-function buildMockOrderData() {
+function buildMockOrderData(): OrderData {
   const mockValidOrderData: OrderData = {
     orderId: mockOrderId,
     sku: mockSku,
@@ -54,7 +54,7 @@ function buildMockOrderData() {
   return mockValidOrderData
 }
 
-function buildMockUpdateOrderCommandInput() {
+function buildMockUpdateOrderCommandInput(): TypeUtilsMutable<UpdateOrderCommandInput> {
   const mockValidInput: TypeUtilsMutable<UpdateOrderCommandInput> = {
     existingOrderData: buildMockOrderData(),
     incomingOrderEvent: buildMockIncomingOrderEvent(),

@@ -8,8 +8,10 @@
   "plugins": ["jsdoc"],
   "extends": ["plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
   "rules": {
-    "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-unused-expressions": "off",
+    "no-unused-expressions": "off",
     "object-shorthand": ["error", "always"],
     "jsdoc/require-jsdoc": [
       "error",
@@ -29,7 +31,12 @@
     {
       "files": ["*.spec.ts", "*.test.ts"],
       "rules": {
-        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-function-return-type": [
+          "error",
+          {
+            "allowedNames": ["testingFunc"]
+          }
+        ],
         "jsdoc/require-jsdoc": "off"
       }
     }

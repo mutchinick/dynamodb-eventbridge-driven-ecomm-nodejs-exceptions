@@ -155,7 +155,6 @@ export class DbDeallocateOrderPaymentRejectedClient implements IDbDeallocateOrde
       await this.ddbDocClient.send(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      //
       if (error instanceof TransactionCanceledException) {
         const deallocationError = InvalidStockDeallocationError.from(error)
         console.error(`${logContext} exit error:`, { deallocationError, ddbCommand })

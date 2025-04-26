@@ -1,5 +1,6 @@
 import { marshall } from '@aws-sdk/util-dynamodb'
 import { AttributeValue, EventBridgeEvent, SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
+import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidOperationError } from '../../errors/AppError'
 import { InventoryEventName } from '../../model/InventoryEventName'
 import { IncomingSkuRestockedEvent } from '../model/IncomingSkuRestockedEvent'
@@ -10,11 +11,7 @@ jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
 
 const mockDate = new Date().toISOString()
 
-type Mutable_IncomingSkuRestockedEvent = {
-  -readonly [K in keyof IncomingSkuRestockedEvent]: IncomingSkuRestockedEvent[K]
-}
-
-function buildMockIncomingSkuRestockedEvent(id: string): Mutable_IncomingSkuRestockedEvent {
+function buildMockIncomingSkuRestockedEvent(id: string): TypeUtilsMutable<IncomingSkuRestockedEvent> {
   const incomingSkuRestockedEvent: IncomingSkuRestockedEvent = {
     eventName: InventoryEventName.SKU_RESTOCKED_EVENT,
     eventData: {
@@ -28,7 +25,7 @@ function buildMockIncomingSkuRestockedEvent(id: string): Mutable_IncomingSkuRest
   return incomingSkuRestockedEvent
 }
 
-function buildMockIncomingSkuRestockedEvents(ids: string[]) {
+function buildMockIncomingSkuRestockedEvents(ids: string[]): TypeUtilsMutable<IncomingSkuRestockedEvent>[] {
   return ids.map((id) => buildMockIncomingSkuRestockedEvent(id))
 }
 
@@ -44,7 +41,10 @@ type MockEventDetail = {
 }
 
 // COMBAK: Work a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
-function buildMockEventBrideEvent(id: string, incomingSkuRestockedEvent: IncomingSkuRestockedEvent) {
+function buildMockEventBrideEvent(
+  id: string,
+  incomingSkuRestockedEvent: IncomingSkuRestockedEvent,
+): EventBridgeEvent<string, MockEventDetail> {
   const mockEventBridgeEvent: EventBridgeEvent<string, MockEventDetail> = {
     'detail-type': 'mockDetailType',
     account: 'mockAccount',
@@ -69,7 +69,10 @@ function buildMockEventBrideEvent(id: string, incomingSkuRestockedEvent: Incomin
   return mockEventBridgeEvent
 }
 
-function buildMockEventBrideEvents(ids: string[], incomingSkuRestockedEvents: IncomingSkuRestockedEvent[]) {
+function buildMockEventBrideEvents(
+  ids: string[],
+  incomingSkuRestockedEvents: IncomingSkuRestockedEvent[],
+): EventBridgeEvent<string, MockEventDetail>[] {
   return ids.map((id, index) => buildMockEventBrideEvent(id, incomingSkuRestockedEvents[index]))
 }
 
@@ -80,7 +83,10 @@ function buildMockSqsRecord(id: string, eventBridgeEvent: EventBridgeEvent<strin
   } as unknown as SQSRecord
 }
 
-function buildMockSqsRecords(ids: string[], eventBridgeEvents: EventBridgeEvent<string, MockEventDetail>[]) {
+function buildMockSqsRecords(
+  ids: string[],
+  eventBridgeEvents: EventBridgeEvent<string, MockEventDetail>[],
+): SQSRecord[] {
   return ids.map((id, index) => buildMockSqsRecord(id, eventBridgeEvents[index]))
 }
 
@@ -88,7 +94,12 @@ function buildMockSqsEvent(sqsRecords: SQSRecord[]): SQSEvent {
   return { Records: sqsRecords }
 }
 
-function buildMockTestObjects(ids: string[]) {
+function buildMockTestObjects(ids: string[]): {
+  mockIncomingSkuRestockedEvents: TypeUtilsMutable<IncomingSkuRestockedEvent>[]
+  mockEventBrideEvents: EventBridgeEvent<string, MockEventDetail>[]
+  mockSqsRecords: SQSRecord[]
+  mockSqsEvent: SQSEvent
+} {
   const mockIncomingSkuRestockedEvents = buildMockIncomingSkuRestockedEvents(ids)
   const mockEventBrideEvents = buildMockEventBrideEvents(ids, mockIncomingSkuRestockedEvents)
   const mockSqsRecords = buildMockSqsRecords(ids, mockEventBrideEvents)

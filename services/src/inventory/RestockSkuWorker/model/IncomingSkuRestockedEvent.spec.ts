@@ -42,7 +42,9 @@ type MockEventDetail = {
 }
 
 // COMBAK: Work a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
-function buildMockEventBrideEvent(incomingSkuRestockedEvent: IncomingSkuRestockedEvent) {
+function buildMockEventBrideEvent(
+  incomingSkuRestockedEvent: IncomingSkuRestockedEvent,
+): EventBridgeEvent<string, MockEventDetail> {
   const mockEventBridgeEvent: EventBridgeEvent<string, MockEventDetail> = {
     'detail-type': 'mockDetailType',
     account: 'mockAccount',
