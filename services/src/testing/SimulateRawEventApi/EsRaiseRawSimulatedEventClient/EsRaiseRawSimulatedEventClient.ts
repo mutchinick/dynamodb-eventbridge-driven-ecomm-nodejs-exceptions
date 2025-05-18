@@ -86,6 +86,7 @@ export class EsRaiseRawSimulatedEventClient implements IEsRaiseRawSimulatedEvent
       })
       return ddbCommand
     } catch (error) {
+      // NOTE: Unreachable with current tests because of guards, but helps make the system fundamentally safe.
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, rawSimulatedEvent })
       throw invalidArgumentsError

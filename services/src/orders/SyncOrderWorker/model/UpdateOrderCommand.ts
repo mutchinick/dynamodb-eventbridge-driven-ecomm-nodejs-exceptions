@@ -298,6 +298,7 @@ export class UpdateOrderCommand implements UpdateOrderCommandProps {
     const newOrderStatus = eventNameToOrderStatusMap?.[incomingEventName]
 
     if (!newOrderStatus) {
+      // NOTE: Unreachable with current tests because of guards, but helps make the system fundamentally safe.
       const invalidOperationError = InvalidOperationError.transient()
       console.error(`${logContext} exit error:`, { invalidOperationError, existingOrderStatus, incomingEventName })
       throw invalidOperationError
