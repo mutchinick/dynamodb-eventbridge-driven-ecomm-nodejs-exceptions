@@ -4,10 +4,10 @@ import { EventBridgeEvent } from 'aws-lambda'
 import { z } from 'zod'
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { OrderAllocationData } from '../../model/OrderAllocationData'
-import { ValueValidators } from '../../model/ValueValidators'
 import { InventoryEvent } from '../../model/InventoryEvent'
 import { InventoryEventName } from '../../model/InventoryEventName'
+import { OrderAllocationData } from '../../model/OrderAllocationData'
+import { ValueValidators } from '../../model/ValueValidators'
 
 type EventDetail = {
   eventName: 'INSERT'
@@ -16,7 +16,7 @@ type EventDetail = {
   eventVersion: string
   awsRegion: string
   dynamodb: {
-    NewImage: AttributeValue | Record<string, AttributeValue>
+    NewImage: Record<string, AttributeValue>
   }
 }
 
@@ -98,7 +98,7 @@ export class IncomingOrderPaymentRejectedEvent implements IncomingOrderPaymentRe
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
-      eventName: ValueValidators.validOrderEventNameGroup([InventoryEventName.ORDER_PAYMENT_REJECTED_EVENT]),
+      eventName: ValueValidators.validInventoryEventNameLiteral(InventoryEventName.ORDER_PAYMENT_REJECTED_EVENT),
       eventData: z.object({
         orderId: ValueValidators.validOrderId(),
         sku: ValueValidators.validSku(),

@@ -46,7 +46,7 @@ export class DbGetOrderAllocationClient implements IDbGetOrderAllocationClient {
    * @throws {InvalidArgumentsError}
    */
   private validateInput(getOrderAllocationCommand: GetOrderAllocationCommand): void {
-    const logContext = 'DbCreateOrderClient.validateInput'
+    const logContext = 'DbGetOrderAllocationClient.validateInput'
 
     if (getOrderAllocationCommand instanceof GetOrderAllocationCommand === false) {
       const errorMessage = `Expected GetOrderAllocationCommand but got ${getOrderAllocationCommand}`
@@ -62,6 +62,8 @@ export class DbGetOrderAllocationClient implements IDbGetOrderAllocationClient {
   private buildDdbCommand(getOrderAllocationCommand: GetOrderAllocationCommand): GetCommand {
     const logContext = 'DbGetOrderAllocationClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but GetCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.INVENTORY_TABLE_NAME
 

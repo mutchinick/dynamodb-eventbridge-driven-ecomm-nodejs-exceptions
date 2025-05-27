@@ -1,4 +1,4 @@
-import { ConditionalCheckFailedException, TransactionCanceledException } from '@aws-sdk/client-dynamodb'
+import { TransactionCanceledException } from '@aws-sdk/client-dynamodb'
 import { DynamoDbUtils } from './DynamoDbUtils'
 
 describe(`Orders Service shared DynamoDbUtils`, () => {
@@ -46,26 +46,6 @@ describe(`Orders Service shared DynamoDbUtils`, () => {
         CancellationReasons: [null, null, { Code: mockCancellationReasonCode }],
       })
       expect(DynamoDbUtils.getTransactionCancellationCode(mockError, 2)).toBe(mockCancellationReasonCode)
-    })
-
-    describe(`DynamoDbUtils.isConditionalCheckFailedException`, () => {
-      it(`returns true if the input Error is a ConditionalCheckFailedException`, () => {
-        const mockError = new ConditionalCheckFailedException({ $metadata: {}, message: '' })
-        expect(DynamoDbUtils.isConditionalCheckFailedException(mockError)).toBe(true)
-      })
-
-      it(`returns false if the input Error is not a ConditionalCheckFailedException`, () => {
-        const mockError = new Error('mockError')
-        expect(DynamoDbUtils.isConditionalCheckFailedException(mockError)).toBe(false)
-      })
-
-      it(`returns false if the input is undefined`, () => {
-        expect(DynamoDbUtils.isConditionalCheckFailedException(undefined)).toBe(false)
-      })
-
-      it(`returns false if the input is not an Error`, () => {
-        expect(DynamoDbUtils.isConditionalCheckFailedException('mockInvalidValue')).toBe(false)
-      })
     })
   })
 })

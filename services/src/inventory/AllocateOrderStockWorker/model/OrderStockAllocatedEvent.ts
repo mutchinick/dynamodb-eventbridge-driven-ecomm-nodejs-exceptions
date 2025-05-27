@@ -75,7 +75,7 @@ export class OrderStockAllocatedEvent implements OrderStockAllocatedEventProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private static validateInput(orderStockAllocatedEventInput: OrderStockAllocatedEventData): void {
+  private static validateInput(orderStockAllocatedEventInput: OrderStockAllocatedEventInput): void {
     const logContext = 'OrderStockAllocatedEvent.validateInput'
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.

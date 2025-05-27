@@ -55,11 +55,11 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
    * Test APIGatewayProxyEventV2 edge cases
    ************************************************************/
   it(`does not throw if the input APIGatewayProxyEventV2 is valid`, async () => {
-    const mockListOrdersApiService = buildMockRestockSkuApiService_resolves()
-    const listOrdersApiController = new RestockSkuApiController(mockListOrdersApiService)
+    const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
+    const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await expect(listOrdersApiController.restockSku(mockApiEvent)).resolves.not.toThrow()
+    await expect(restockSkuApiController.restockSku(mockApiEvent)).resolves.not.toThrow()
   })
 
   it(`fails to call RestockSkuApiService.restockSku if the input
@@ -74,9 +74,9 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
   it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2 is undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = undefined as unknown as APIGatewayProxyEventV2
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -92,9 +92,9 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
   it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2 is invalid`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = 'mockInvalidValue' as unknown as APIGatewayProxyEventV2
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -117,9 +117,9 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
       undefined`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: undefined } as unknown as APIGatewayProxyEventV2
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -135,9 +135,9 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
   it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is null`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: null } as unknown as APIGatewayProxyEventV2
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -154,9 +154,9 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
       valid JSON`, async () => {
     const mockRestockSkuApiService = buildMockRestockSkuApiService_resolves()
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: 'mockInvalidValue' } as unknown as APIGatewayProxyEventV2
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -348,9 +348,8 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
     const restockSkuApiController = new RestockSkuApiController(mockRestockSkuApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await restockSkuApiController.restockSku(mockApiEvent)
-    const expectedResponse = HttpResponse.InternalServerError()
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -362,8 +361,8 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     await restockSkuApiController.restockSku(mockApiEvent)
-    const expectedResponse = HttpResponse.InternalServerError()
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -375,8 +374,8 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiController tests`, () => 
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     await restockSkuApiController.restockSku(mockApiEvent)
-    const expectedResponse = HttpResponse.BadRequestError()
     const response = await restockSkuApiController.restockSku(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 

@@ -44,7 +44,7 @@ export class DbGetOrderClient implements IDbGetOrderClient {
    * @throws {InvalidArgumentsError}
    */
   private validateInput(getOrderCommand: GetOrderCommand): void {
-    const logContext = 'DbCreateOrderClient.validateInput'
+    const logContext = 'DbGetOrderClient.validateInput'
 
     if (getOrderCommand instanceof GetOrderCommand === false) {
       const errorMessage = `Expected GetOrderCommand but got ${getOrderCommand}`
@@ -60,6 +60,8 @@ export class DbGetOrderClient implements IDbGetOrderClient {
   private buildDdbCommand(getOrderCommand: GetOrderCommand): GetCommand {
     const logContext = 'DbGetOrderClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but GetCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.ORDERS_TABLE_NAME
 

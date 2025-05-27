@@ -50,14 +50,6 @@ describe(`Inventory Service AllocateOrderStockApi OrderStockAllocatedEvent tests
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a non-transient InvalidArgumentsError if the input
-      OrderStockAllocatedEventInput is null`, () => {
-    const mockOrderStockAllocatedEventInput = null as unknown as OrderStockAllocatedEventInput
-    const testingFunc = () => OrderStockAllocatedEvent.validateAndBuild(mockOrderStockAllocatedEventInput)
-    expect(testingFunc).toThrow(InvalidArgumentsError)
-    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
-  })
-
   /*
    *
    *

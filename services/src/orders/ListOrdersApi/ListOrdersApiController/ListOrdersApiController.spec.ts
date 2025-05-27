@@ -367,39 +367,36 @@ describe(`Orders Service ListOrdersApi ListOrdersApiController tests`, () => {
   })
 
   it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders
-      throws an Error not accounted for`, async () => {
+       throws an Error not accounted for`, async () => {
     const mockError = new Error('mockError')
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(mockError)
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await listOrdersApiController.listOrders(mockApiEvent)
     const response = await listOrdersApiController.listOrders(mockApiEvent)
     const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 500 Internal Server Error if ListOrdersApiService.listOrders
-      throws an UnrecognizedError`, async () => {
+       throws an UnrecognizedError`, async () => {
     const unrecognizedError = UnrecognizedError.from()
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(unrecognizedError)
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await listOrdersApiController.listOrders(mockApiEvent)
     const response = await listOrdersApiController.listOrders(mockApiEvent)
     const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if ListOrdersApiService.listOrders throws an
-      InvalidArgumentsError`, async () => {
+       InvalidArgumentsError`, async () => {
     const mockError = InvalidArgumentsError.from()
     const mockListOrdersApiService = buildMockListOrdersApiService_throws(mockError)
     const listOrdersApiController = new ListOrdersApiController(mockListOrdersApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await listOrdersApiController.listOrders(mockApiEvent)
     const response = await listOrdersApiController.listOrders(mockApiEvent)
     const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)

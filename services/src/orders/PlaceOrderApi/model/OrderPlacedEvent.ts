@@ -64,7 +64,7 @@ export class OrderPlacedEvent implements OrderPlacedEventProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private static validateInput(orderPlacedEventInput: OrderPlacedEventData): void {
+  private static validateInput(orderPlacedEventInput: OrderPlacedEventInput): void {
     const logContext = 'OrderPlacedEvent.validateInput'
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.

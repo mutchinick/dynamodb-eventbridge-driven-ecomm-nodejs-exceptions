@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { AllocationStatus } from '../../model/AllocationStatus'
+import { InventoryEventName } from '../../model/InventoryEventName'
 import { OrderAllocationData } from '../../model/OrderAllocationData'
 import { ValueValidators } from '../../model/ValueValidators'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
@@ -89,7 +90,7 @@ export class AllocateOrderStockCommand implements AllocateOrderStockCommandProps
     // COMBAK: Maybe some schemas can be converted to shared models at some point.
     const schema = z.object({
       incomingOrderCreatedEvent: z.object({
-        eventName: ValueValidators.validOrderCreatedEventName(),
+        eventName: ValueValidators.validInventoryEventNameLiteral(InventoryEventName.ORDER_CREATED_EVENT),
         eventData: z.object({
           orderId: ValueValidators.validOrderId(),
           sku: ValueValidators.validSku(),

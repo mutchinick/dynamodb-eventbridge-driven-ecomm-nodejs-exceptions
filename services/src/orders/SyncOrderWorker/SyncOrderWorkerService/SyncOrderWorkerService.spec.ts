@@ -37,7 +37,7 @@ const mockOrderData: OrderData = {
   updatedAt: mockUpdatedAt,
 }
 
-// COMBAK: Work a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
+// COMBAK: Work a simpler way to build/wrap/unwrap these EventBridgeEvents (maybe some abstraction util?)
 function buildMockIncomingOrderEvent(
   incomingOrderEventProps: IncomingOrderEvent,
 ): TypeUtilsMutable<IncomingOrderEvent> {
@@ -91,7 +91,7 @@ function buildMockDbCreateOrderClient_throws(error?: unknown): IDbCreateOrderCli
 }
 
 function buildMockEsRaiseOrderCreatedEventClient_resolves(): IEsRaiseOrderCreatedEventClient {
-  return { raiseOrderCreatedEvent: jest.fn() }
+  return { raiseOrderCreatedEvent: jest.fn().mockResolvedValue(undefined) }
 }
 
 function buildMockEsRaiseOrderCreatedEventClient_throws(error?: unknown): IEsRaiseOrderCreatedEventClient {

@@ -60,6 +60,8 @@ export class DbGetOrderPaymentClient implements IDbGetOrderPaymentClient {
   private buildDdbCommand(getOrderPaymentCommand: GetOrderPaymentCommand): GetCommand {
     const logContext = 'DbGetOrderPaymentClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but GetCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.PAYMENTS_TABLE_NAME
 

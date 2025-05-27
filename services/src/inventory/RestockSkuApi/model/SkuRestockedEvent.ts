@@ -1,10 +1,10 @@
 import { z } from 'zod'
 import { TypeUtilsPretty } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { RestockSkuData } from '../../model/RestockSkuData'
-import { ValueValidators } from '../../model/ValueValidators'
 import { InventoryEvent } from '../../model/InventoryEvent'
 import { InventoryEventName } from '../../model/InventoryEventName'
+import { RestockSkuData } from '../../model/RestockSkuData'
+import { ValueValidators } from '../../model/ValueValidators'
 
 export type SkuRestockedEventInput = TypeUtilsPretty<Pick<RestockSkuData, 'sku' | 'units' | 'lotId'>>
 
@@ -64,7 +64,7 @@ export class SkuRestockedEvent implements SkuRestockedEventProps {
   /**
    * @throws {InvalidArgumentsError}
    */
-  private static validateInput(skuRestockedEventInput: SkuRestockedEventData): void {
+  private static validateInput(skuRestockedEventInput: SkuRestockedEventInput): void {
     const logContext = 'SkuRestockedEvent.validateInput'
 
     // COMBAK: Maybe some schemas can be converted to shared models at some point.

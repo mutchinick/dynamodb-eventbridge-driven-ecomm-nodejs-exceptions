@@ -82,9 +82,9 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2 is undefined`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = undefined as unknown as APIGatewayProxyEventV2
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -100,9 +100,9 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2 is invalid`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = 'mockInvalidValue' as unknown as APIGatewayProxyEventV2
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -125,9 +125,9 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
       undefined`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: undefined } as unknown as APIGatewayProxyEventV2
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -143,9 +143,9 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
   it(`responds with 400 Bad Request if the input APIGatewayProxyEventV2.body is null`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: null } as unknown as APIGatewayProxyEventV2
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -162,9 +162,9 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
       valid JSON`, async () => {
     const mockSimulateRawEventApiService = buildMockSimulateRawEventApiService_resolves()
     const simulateRawEventApiController = new SimulateRawEventApiController(mockSimulateRawEventApiService)
-    const expectedResponse = HttpResponse.BadRequestError()
     const mockApiEvent = { body: 'mockInvalidValue' } as unknown as APIGatewayProxyEventV2
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -509,8 +509,8 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    const expectedResponse = HttpResponse.InternalServerError()
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -522,8 +522,8 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    const expectedResponse = HttpResponse.InternalServerError()
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
@@ -535,8 +535,8 @@ describe(`Testing Service SimulateRawEventApi SimulateRawEventApiController test
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
     await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
-    const expectedResponse = HttpResponse.BadRequestError()
     const response = await simulateRawEventApiController.simulateRawEvent(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 

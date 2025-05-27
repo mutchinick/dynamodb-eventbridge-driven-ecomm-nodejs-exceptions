@@ -64,8 +64,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
         return
       }
 
-      // When the Allocation DOES NOT exist and it creates it and raises the Allocated event,
-      // it is successful and it raises the Allocated event.
+      // When the Allocation DOES NOT exist and it creates it and raises the Allocated event
       else {
         await this.allocateOrder(incomingOrderCreatedEvent)
         await this.raiseAllocatedEvent(incomingOrderCreatedEvent)
@@ -78,7 +77,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       // because it doesn't know if the Allocated event was raised successfully when first allocated.
       if (error instanceof DuplicateStockAllocationError) {
         await this.raiseAllocatedEvent(incomingOrderCreatedEvent)
-        console.info(`${logContext} exit success: form-error:`, { error, incomingOrderCreatedEvent })
+        console.info(`${logContext} exit success: from-error:`, { error, incomingOrderCreatedEvent })
         return
       }
 
@@ -86,7 +85,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
       // it encounters a DepletedStockAllocationError and it tries to the raise the Depleted event.
       if (error instanceof DepletedStockAllocationError) {
         await this.raiseDepletedEvent(incomingOrderCreatedEvent)
-        console.info(`${logContext} exit success: form-error:`, { error, incomingOrderCreatedEvent })
+        console.info(`${logContext} exit success: from-error:`, { error, incomingOrderCreatedEvent })
         return
       }
 

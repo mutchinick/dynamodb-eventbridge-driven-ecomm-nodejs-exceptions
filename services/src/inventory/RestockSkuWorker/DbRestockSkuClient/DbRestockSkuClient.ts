@@ -61,6 +61,8 @@ export class DbRestockSkuClient implements IDbRestockSkuClient {
   private buildDdbCommand(restockSkuCommand: RestockSkuCommand): TransactWriteCommand {
     const logContext = 'DbRestockSkuClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but TransactWriteCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.INVENTORY_TABLE_NAME
 

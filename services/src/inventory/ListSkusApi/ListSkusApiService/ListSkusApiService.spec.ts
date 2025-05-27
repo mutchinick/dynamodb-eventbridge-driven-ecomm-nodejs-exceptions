@@ -26,7 +26,7 @@ const mockIncomingListSkusRequest = buildMockIncomingListSkusRequest()
  ************************************************************
  * Mock clients
  ************************************************************/
-const mockExistingRestockSkuData: RestockSkuData[] = [
+const mockExistingSkuData: RestockSkuData[] = [
   {
     sku: 'mockSku-1',
     units: 12,
@@ -44,7 +44,7 @@ const mockExistingRestockSkuData: RestockSkuData[] = [
 ]
 
 function buildMockDbListSkusClient_resolves(): IDbListSkusClient {
-  return { listSkus: jest.fn().mockResolvedValue(mockExistingRestockSkuData) }
+  return { listSkus: jest.fn().mockResolvedValue(mockExistingSkuData) }
 }
 
 function buildMockDbListSkusClient_throws(error?: unknown): IDbListSkusClient {
@@ -149,18 +149,18 @@ describe(`Inventory Service ListSkusApi ListSkusApiService tests`, () => {
     const expectedResult: ListSkusApiServiceOutput = {
       skus: [
         {
-          sku: mockExistingRestockSkuData[0].sku,
-          units: mockExistingRestockSkuData[0].units,
-          lotId: mockExistingRestockSkuData[0].lotId,
-          createdAt: mockExistingRestockSkuData[0].createdAt,
-          updatedAt: mockExistingRestockSkuData[0].updatedAt,
+          sku: mockExistingSkuData[0].sku,
+          units: mockExistingSkuData[0].units,
+          lotId: mockExistingSkuData[0].lotId,
+          createdAt: mockExistingSkuData[0].createdAt,
+          updatedAt: mockExistingSkuData[0].updatedAt,
         },
         {
-          sku: mockExistingRestockSkuData[1].sku,
-          units: mockExistingRestockSkuData[1].units,
-          lotId: mockExistingRestockSkuData[1].lotId,
-          createdAt: mockExistingRestockSkuData[1].createdAt,
-          updatedAt: mockExistingRestockSkuData[1].updatedAt,
+          sku: mockExistingSkuData[1].sku,
+          units: mockExistingSkuData[1].units,
+          lotId: mockExistingSkuData[1].lotId,
+          createdAt: mockExistingSkuData[1].createdAt,
+          updatedAt: mockExistingSkuData[1].updatedAt,
         },
       ],
     }

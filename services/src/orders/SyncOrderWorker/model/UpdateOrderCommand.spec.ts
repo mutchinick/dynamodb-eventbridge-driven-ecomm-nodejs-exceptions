@@ -117,7 +117,7 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input
       UpdateOrderCommandInput.existingOrderData.orderId is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.orderId = '' as OrderStatus
+    mockUpdateOrderCommandInput.existingOrderData.orderId = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -126,7 +126,7 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input
       UpdateOrderCommandInput.existingOrderData.orderId is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.orderId = '      ' as OrderStatus
+    mockUpdateOrderCommandInput.existingOrderData.orderId = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -135,7 +135,7 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input
       UpdateOrderCommandInput.existingOrderData.orderId length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.orderId = 'ABC' as OrderStatus
+    mockUpdateOrderCommandInput.existingOrderData.orderId = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -219,7 +219,7 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input
       UpdateOrderCommandInput.existingOrderData.sku is empty`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.sku = '' as OrderStatus
+    mockUpdateOrderCommandInput.existingOrderData.sku = ''
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -228,7 +228,7 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input
       UpdateOrderCommandInput.existingOrderData.sku is blank`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.sku = '      ' as OrderStatus
+    mockUpdateOrderCommandInput.existingOrderData.sku = '      '
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -237,7 +237,7 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   it(`throws a non-transient InvalidArgumentsError if the input
       UpdateOrderCommandInput.existingOrderData.sku length < 4`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.sku = '      ' as OrderStatus
+    mockUpdateOrderCommandInput.existingOrderData.sku = '123'
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))

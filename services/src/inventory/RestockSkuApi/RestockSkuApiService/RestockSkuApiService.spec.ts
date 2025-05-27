@@ -102,8 +102,8 @@ describe(`Inventory Service RestockSkuApi RestockSkuApiService tests`, () => {
     const mockEsRaiseSkuRestockedEventClient = buildMockEsRaiseSkuRestockedEventClient_resolves()
     const restockSkuApiService = new RestockSkuApiService(mockEsRaiseSkuRestockedEventClient)
     await restockSkuApiService.restockSku(mockIncomingRestockSkuRequest)
-    const expectedListSkusCommandInput: SkuRestockedEventInput = { ...mockIncomingRestockSkuRequest }
-    const expectedSkuRestockedEvent = SkuRestockedEvent.validateAndBuild(expectedListSkusCommandInput)
+    const expectedSkuRestockedEventInput: SkuRestockedEventInput = { ...mockIncomingRestockSkuRequest }
+    const expectedSkuRestockedEvent = SkuRestockedEvent.validateAndBuild(expectedSkuRestockedEventInput)
     expect(mockEsRaiseSkuRestockedEventClient.raiseSkuRestockedEvent).toHaveBeenCalledWith(expectedSkuRestockedEvent)
   })
 

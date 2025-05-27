@@ -39,12 +39,12 @@ type MockEventDetail = {
   eventSource: 'aws:dynamodb'
   eventVersion: string
   dynamodb: {
-    NewImage: AttributeValue | Record<string, AttributeValue>
+    NewImage: Record<string, AttributeValue>
   }
 }
 
-// COMBAK: Work a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
-function buildMockEventBrideEvent(
+// COMBAK: Work a simpler way to build/wrap/unwrap these EventBridgeEvents (maybe some abstraction util?)
+function buildMockEventBridgeEvent(
   incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent,
 ): EventBridgeEvent<string, MockEventDetail> {
   const mockEventBridgeEvent: EventBridgeEvent<string, MockEventDetail> = {
@@ -81,7 +81,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************/
   it(`does not throw if the input EventBridgeEvent is valid`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     expect(() => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)).not.toThrow()
   })
 
@@ -110,7 +110,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     mockEventBridgeEvent.detail = undefined as never
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -120,7 +120,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     mockEventBridgeEvent.detail = null as never
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -136,7 +136,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail.dynamodb is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     mockEventBridgeEvent.detail.dynamodb = undefined as never
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -146,7 +146,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail.dynamodb is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     mockEventBridgeEvent.detail.dynamodb = null as never
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -163,7 +163,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       EventBridgeEvent.detail.dynamodb.newImage (IncomingOrderPaymentRejectedEvent) is
       undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     mockEventBridgeEvent.detail.dynamodb.NewImage = undefined as never
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -174,7 +174,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       EventBridgeEvent.detail.dynamodb.newImage (IncomingOrderPaymentRejectedEvent) is
       null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     mockEventBridgeEvent.detail.dynamodb.NewImage = null as never
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -191,7 +191,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventName is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventName = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -201,7 +201,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventName is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventName = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -211,7 +211,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventName is empty`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventName = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -221,7 +221,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventName is blank`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventName = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -231,7 +231,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventName is not an InventoryEventName`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventName = 'mockEventName' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -247,7 +247,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.createdAt is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.createdAt = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -257,7 +257,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.createdAt is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.createdAt = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -267,7 +267,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.createdAt is empty`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.createdAt = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -277,7 +277,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.createdAt is blank`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.createdAt = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -287,7 +287,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.createdAt length < 4`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.createdAt = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -303,7 +303,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.updatedAt is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.updatedAt = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -313,7 +313,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.updatedAt is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.updatedAt = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -323,7 +323,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.updatedAt is empty`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.updatedAt = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -333,7 +333,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.updatedAt is blank`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.updatedAt = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -343,7 +343,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.updatedAt length < 4`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.updatedAt = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -359,7 +359,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -369,7 +369,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -379,7 +379,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData is empty`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData = {} as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -389,7 +389,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData invalid`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData = 'mockInvalidValue' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -405,7 +405,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.orderId is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.orderId = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -415,7 +415,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.orderId is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.orderId = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -425,7 +425,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.orderId is empty`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.orderId = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -435,7 +435,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.orderId is blank`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.orderId = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -445,7 +445,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.orderId length < 4`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.orderId = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -461,7 +461,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.sku is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.sku = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -471,7 +471,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.sku is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.sku = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -481,7 +481,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.sku is empty`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.sku = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -491,7 +491,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.sku is blank`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.sku = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -501,7 +501,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.sku length < 4`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.sku = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -517,7 +517,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.units is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.units = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -527,7 +527,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.units is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.units = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -537,7 +537,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.units < 1`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.units = 0
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -547,7 +547,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.units is not an integer`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.units = 3.45
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -557,7 +557,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.units is not a number`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.units = '1' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -573,7 +573,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.price is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.price = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -583,7 +583,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.price is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.price = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -593,7 +593,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.price < 0`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.price = -1
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -603,7 +603,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.price is not a number`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.price = '1' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -619,7 +619,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.userId is undefined`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.userId = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -629,7 +629,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.userId is null`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.userId = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -639,7 +639,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.userId is empty`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.userId = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -649,7 +649,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.userId is blank`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.userId = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -659,7 +659,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       IncomingOrderPaymentRejectedEvent.eventData.userId length < 4`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
     mockIncomingOrderPaymentRejectedEvent.eventData.userId = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const testingFunc = () => IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -674,7 +674,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`returns the expected IncomingOrderPaymentRejectedEvent if the execution path is
       successful`, () => {
     const mockIncomingOrderPaymentRejectedEvent = buildMockIncomingOrderPaymentRejectedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderPaymentRejectedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderPaymentRejectedEvent)
     const result = IncomingOrderPaymentRejectedEvent.validateAndBuild(mockEventBridgeEvent)
     const expectedEvent: IncomingOrderPaymentRejectedEvent = {
       eventName: mockIncomingOrderPaymentRejectedEvent.eventName,

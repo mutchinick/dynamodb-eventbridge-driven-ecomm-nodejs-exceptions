@@ -1,6 +1,6 @@
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { DuplicateEventRaisedError, InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
-import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
 import { OrderCreatedEvent } from '../model/OrderCreatedEvent'
 
 export interface IEsRaiseOrderCreatedEventClient {
@@ -61,6 +61,8 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
   private buildDdbCommand(orderCreatedEvent: OrderCreatedEvent): PutCommand {
     const logContext = 'EsRaiseOrderCreatedEventClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but PutCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.EVENT_STORE_TABLE_NAME
 
@@ -68,11 +70,11 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
       const { orderId, sku, units, price, userId } = eventData
 
       const eventPk = `EVENTS#ORDER_ID#${orderId}`
-      const eventSk = `EVENT#${orderCreatedEvent.eventName}`
+      const eventSk = `EVENT#${eventName}`
       const eventTn = `EVENTS#EVENT`
       const eventSn = `EVENTS`
       const eventGsi1pk = `EVENTS#EVENT`
-      const eventGsi1sk = `CREATED_AT#${orderCreatedEvent.createdAt}`
+      const eventGsi1sk = `CREATED_AT#${createdAt}`
 
       const ddbCommand = new PutCommand({
         TableName: tableName,
@@ -115,7 +117,7 @@ export class EsRaiseOrderCreatedEventClient implements IEsRaiseOrderCreatedEvent
       await this.ddbDocClient.send(ddbCommand)
       console.info(`${logContext} exit success:`, { ddbCommand })
     } catch (error) {
-      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
+      if (error instanceof ConditionalCheckFailedException) {
         const duplicationError = DuplicateEventRaisedError.from(error)
         console.error(`${logContext} exit error:`, { duplicationError, ddbCommand })
         throw duplicationError

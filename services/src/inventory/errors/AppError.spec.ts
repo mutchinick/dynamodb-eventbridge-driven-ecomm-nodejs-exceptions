@@ -65,7 +65,7 @@ const testCases: ErrorTestCase<AppError>[] = [
   {
     name: 'DepletedStockAllocationError',
     from: (cause, message) => DepletedStockAllocationError.from(cause, message),
-    expectedMessage: 'Depleted restock allocation error.',
+    expectedMessage: 'Depleted stock allocation error.',
     expectedTransient: false,
     expectedInstance: DepletedStockAllocationError,
   },

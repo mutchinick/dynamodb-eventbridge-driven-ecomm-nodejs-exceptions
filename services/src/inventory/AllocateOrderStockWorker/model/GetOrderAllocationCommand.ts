@@ -1,3 +1,5 @@
+// FIXME: This component is duplicated in DeallocateOrderPaymentRejectedWorker.
+// It should be moved to a common place. Will do soon.
 import { z } from 'zod'
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { OrderAllocationData } from '../../model/OrderAllocationData'

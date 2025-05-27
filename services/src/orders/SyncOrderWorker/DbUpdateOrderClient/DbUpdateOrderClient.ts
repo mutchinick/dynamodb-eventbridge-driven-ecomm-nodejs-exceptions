@@ -1,8 +1,8 @@
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, NativeAttributeValue, UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
-import { DynamoDbUtils } from '../../shared/DynamoDbUtils'
 import { UpdateOrderCommand } from '../model/UpdateOrderCommand'
 
 export interface IDbUpdateOrderClient {
@@ -61,6 +61,8 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
   private buildDdbCommand(updateOrderCommand: UpdateOrderCommand): UpdateCommand {
     const logContext = 'DbUpdateOrderClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but UpdateCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.ORDERS_TABLE_NAME
 
@@ -109,7 +111,7 @@ export class DbUpdateOrderClient implements IDbUpdateOrderClient {
       console.info(`${logContext} exit success:`, { orderData, ddbCommand })
       return orderData
     } catch (error) {
-      if (DynamoDbUtils.isConditionalCheckFailedException(error)) {
+      if (error instanceof ConditionalCheckFailedException) {
         const attributes = unmarshall(error.Item)
         const orderData = this.buildOrderData(attributes)
         console.info(`${logContext} exit success: from-error:`, { orderData, error, ddbCommand })

@@ -1,5 +1,6 @@
+import { AttributeValue } from '@aws-sdk/client-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
-import { AttributeValue, EventBridgeEvent, SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
+import { EventBridgeEvent, SQSBatchResponse, SQSEvent, SQSRecord } from 'aws-lambda'
 import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidOperationError } from '../../errors/AppError'
 import { InventoryEventName } from '../../model/InventoryEventName'
@@ -36,12 +37,12 @@ type MockEventDetail = {
   eventSource: 'aws:dynamodb'
   eventVersion: string
   dynamodb: {
-    NewImage: AttributeValue | Record<string, AttributeValue>
+    NewImage: Record<string, AttributeValue>
   }
 }
 
-// COMBAK: Work a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
-function buildMockEventBrideEvent(
+// COMBAK: Work a simpler way to build/wrap/unwrap these EventBridgeEvents (maybe some abstraction util?)
+function buildMockEventBridgeEvent(
   id: string,
   incomingSkuRestockedEvent: IncomingSkuRestockedEvent,
 ): EventBridgeEvent<string, MockEventDetail> {
@@ -69,11 +70,11 @@ function buildMockEventBrideEvent(
   return mockEventBridgeEvent
 }
 
-function buildMockEventBrideEvents(
+function buildMockEventBridgeEvents(
   ids: string[],
   incomingSkuRestockedEvents: IncomingSkuRestockedEvent[],
 ): EventBridgeEvent<string, MockEventDetail>[] {
-  return ids.map((id, index) => buildMockEventBrideEvent(id, incomingSkuRestockedEvents[index]))
+  return ids.map((id, index) => buildMockEventBridgeEvent(id, incomingSkuRestockedEvents[index]))
 }
 
 function buildMockSqsRecord(id: string, eventBridgeEvent: EventBridgeEvent<string, MockEventDetail>): SQSRecord {
@@ -96,17 +97,17 @@ function buildMockSqsEvent(sqsRecords: SQSRecord[]): SQSEvent {
 
 function buildMockTestObjects(ids: string[]): {
   mockIncomingSkuRestockedEvents: TypeUtilsMutable<IncomingSkuRestockedEvent>[]
-  mockEventBrideEvents: EventBridgeEvent<string, MockEventDetail>[]
+  mockEventBridgeEvents: EventBridgeEvent<string, MockEventDetail>[]
   mockSqsRecords: SQSRecord[]
   mockSqsEvent: SQSEvent
 } {
   const mockIncomingSkuRestockedEvents = buildMockIncomingSkuRestockedEvents(ids)
-  const mockEventBrideEvents = buildMockEventBrideEvents(ids, mockIncomingSkuRestockedEvents)
-  const mockSqsRecords = buildMockSqsRecords(ids, mockEventBrideEvents)
+  const mockEventBridgeEvents = buildMockEventBridgeEvents(ids, mockIncomingSkuRestockedEvents)
+  const mockSqsRecords = buildMockSqsRecords(ids, mockEventBridgeEvents)
   const mockSqsEvent = buildMockSqsEvent(mockSqsRecords)
   return {
     mockIncomingSkuRestockedEvents,
-    mockEventBrideEvents,
+    mockEventBridgeEvents,
     mockSqsRecords,
     mockSqsEvent,
   }
@@ -144,7 +145,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
    ************************************************************
    * Test SQSEvent edge cases
    ************************************************************/
-  it(`does not throw the input SQSEvent is valid`, async () => {
+  it(`does not throw if the input SQSEvent is valid`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const { mockSqsEvent } = buildMockTestObjects([])
@@ -165,9 +166,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = undefined as never
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent is null`, async () => {
@@ -183,9 +184,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = null as never
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -208,9 +209,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = {} as never
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records
@@ -227,9 +228,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent(undefined)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records
@@ -246,9 +247,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent(null)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input SQSEvent records
@@ -265,9 +266,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsEvent = buildMockSqsEvent([])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -292,9 +293,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = { body: undefined } as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is
@@ -313,9 +314,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockSqsRecord = { body: null } as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input SQSRecord.body is
@@ -336,9 +337,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockSqsRecord = {} as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     mockSqsEvent.Records[0].body = 'mockInvalidValue'
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -353,7 +354,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = 'mockInvalidValue' as unknown as IncomingSkuRestockedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -366,12 +367,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = 'mockInvalidValue' as unknown as IncomingSkuRestockedEvent
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -387,7 +388,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventName = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -401,12 +402,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventName = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input
@@ -416,7 +417,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventName = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -430,12 +431,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventName = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -451,7 +452,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.createdAt = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -465,12 +466,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.createdAt = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input
@@ -480,7 +481,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.createdAt = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -494,12 +495,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.createdAt = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -515,7 +516,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.updatedAt = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -529,12 +530,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.updatedAt = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input
@@ -544,7 +545,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.updatedAt = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -558,12 +559,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.updatedAt = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -579,7 +580,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -593,12 +594,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input
@@ -608,7 +609,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -622,12 +623,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -643,7 +644,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.sku = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -657,12 +658,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.sku = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input
@@ -672,7 +673,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.sku = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -686,12 +687,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.sku = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -707,7 +708,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.units = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -721,12 +722,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.units = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input
@@ -736,7 +737,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.units = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -750,12 +751,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.units = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -771,7 +772,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.lotId = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -785,12 +786,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.lotId = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`fails to call RestockSkuWorkerService.restockSku if the input
@@ -800,7 +801,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.lotId = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     await restockSkuWorkerController.restockSkus(mockSqsEvent)
@@ -814,12 +815,12 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const mockId = 'AA'
     const mockIncomingSkuRestockedEvent = buildMockIncomingSkuRestockedEvent(mockId)
     mockIncomingSkuRestockedEvent.eventData.lotId = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockId, mockIncomingSkuRestockedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingSkuRestockedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   /*
@@ -848,7 +849,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     expect(mockRestockSkuWorkerService.restockSku).toHaveBeenCalledTimes(mockSqsRecords.length)
   })
 
-  it(`calls RestockSkuWorkerService.restockSku with the expectedResponse input`, async () => {
+  it(`calls RestockSkuWorkerService.restockSku with the expected input`, async () => {
     const mockRestockSkuWorkerService = buildMockRestockSkuWorkerService_resolves()
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB', 'CC']
@@ -871,9 +872,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB', 'CC']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the
@@ -883,9 +884,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA-THROW', 'BB-THROW', 'CC']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the
@@ -895,9 +896,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB-THROW', 'CC', 'DD', 'EE-THROW']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the
@@ -907,9 +908,9 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB-THROW', 'CC-THROW', 'DD-THROW', 'EE-THROW']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`returns the expected response SQSBatchResponse.batchItemFailures if the
@@ -919,14 +920,14 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA-THROW', 'BB-THROW', 'CC']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[0].messageId },
         { itemIdentifier: mockSqsRecords[1].messageId },
       ],
     }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`returns the expected response SQSBatchResponse.batchItemFailures if the
@@ -936,14 +937,14 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB-THROW', 'CC', 'DD', 'EE-THROW']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[1].messageId },
         { itemIdentifier: mockSqsRecords[4].messageId },
       ],
     }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`returns the expected response SQSBatchResponse.batchItemFailures if the
@@ -953,7 +954,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA', 'BB-THROW', 'CC-THROW', 'DD-THROW', 'EE-THROW']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[1].messageId },
@@ -962,7 +963,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
         { itemIdentifier: mockSqsRecords[4].messageId },
       ],
     }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`returns all SQSBatchResponse.batchItemFailures if the RestockSkuWorkerService
@@ -972,7 +973,7 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
     const restockSkuWorkerController = new RestockSkuWorkerController(mockRestockSkuWorkerService)
     const mockIds = ['AA-THROW', 'BB-THROW', 'CC-THROW']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const result = await restockSkuWorkerController.restockSkus(mockSqsEvent)
+    const response = await restockSkuWorkerController.restockSkus(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[0].messageId },
@@ -980,6 +981,6 @@ describe(`Inventory Service RestockSkuWorker RestockSkuWorkerController tests`, 
         { itemIdentifier: mockSqsRecords[2].messageId },
       ],
     }
-    expect(result).toStrictEqual(expectedResponse)
+    expect(response).toStrictEqual(expectedResponse)
   })
 })

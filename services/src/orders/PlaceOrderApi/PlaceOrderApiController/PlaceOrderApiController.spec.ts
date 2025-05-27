@@ -452,41 +452,38 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiController tests`, () => {
   })
 
   it(`responds with 500 Internal Server Error if PlaceOrderApiService.placeOrder
-      throws an Error not accounted for`, async () => {
+       throws an Error not accounted for`, async () => {
     const mockError = new Error('mockError')
     const mockPlaceOrderApiService = buildMockPlaceOrderApiService_throws(mockError)
     const placeOrderApiController = new PlaceOrderApiController(mockPlaceOrderApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await placeOrderApiController.placeOrder(mockApiEvent)
-    const expectedResponse = HttpResponse.InternalServerError()
     const response = await placeOrderApiController.placeOrder(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 500 Internal Server Error if PlaceOrderApiService.placeOrder
-      throws an UnrecognizedError`, async () => {
+       throws an UnrecognizedError`, async () => {
     const unrecognizedError = UnrecognizedError.from()
     const mockPlaceOrderApiService = buildMockPlaceOrderApiService_throws(unrecognizedError)
     const placeOrderApiController = new PlaceOrderApiController(mockPlaceOrderApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await placeOrderApiController.placeOrder(mockApiEvent)
-    const expectedResponse = HttpResponse.InternalServerError()
     const response = await placeOrderApiController.placeOrder(mockApiEvent)
+    const expectedResponse = HttpResponse.InternalServerError()
     expect(response).toStrictEqual(expectedResponse)
   })
 
   it(`responds with 400 Bad Request if PlaceOrderApiService.placeOrder throws an
-      InvalidArgumentsError`, async () => {
+       InvalidArgumentsError`, async () => {
     const mockError = InvalidArgumentsError.from()
     const mockPlaceOrderApiService = buildMockPlaceOrderApiService_throws(mockError)
     const placeOrderApiController = new PlaceOrderApiController(mockPlaceOrderApiService)
     const mockApiEventBody = buildMockApiEventBody()
     const mockApiEvent = buildMockApiEvent(mockApiEventBody)
-    await placeOrderApiController.placeOrder(mockApiEvent)
-    const expectedResponse = HttpResponse.BadRequestError()
     const response = await placeOrderApiController.placeOrder(mockApiEvent)
+    const expectedResponse = HttpResponse.BadRequestError()
     expect(response).toStrictEqual(expectedResponse)
   })
 

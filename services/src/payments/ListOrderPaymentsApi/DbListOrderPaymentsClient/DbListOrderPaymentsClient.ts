@@ -64,6 +64,8 @@ export class DbListOrderPaymentsClient implements IDbListOrderPaymentsClient {
   private buildDdbCommand(listOrderPaymentsCommand: ListOrderPaymentsCommand): QueryCommand {
     const logContext = 'DbListOrderPaymentsClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but QueryCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.PAYMENTS_TABLE_NAME
 

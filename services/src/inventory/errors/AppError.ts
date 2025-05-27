@@ -44,7 +44,7 @@ export class UnrecognizedError extends AppError {
 export class InvalidArgumentsError extends AppError {
   private static readonly _defaultMessage = 'Invalid arguments error.'
 
-  public static from(cause?: unknown, message?: string): UnrecognizedError {
+  public static from(cause?: unknown, message?: string): InvalidArgumentsError {
     return new InvalidArgumentsError(message ?? this._defaultMessage, false, cause)
   }
 }
@@ -55,7 +55,7 @@ export class InvalidArgumentsError extends AppError {
 export class DuplicateEventRaisedError extends AppError {
   private static readonly _defaultMessage = 'Duplicate event raised error.'
 
-  public static from(cause?: unknown, message?: string): UnrecognizedError {
+  public static from(cause?: unknown, message?: string): DuplicateEventRaisedError {
     return new DuplicateEventRaisedError(message ?? this._defaultMessage, false, cause)
   }
 }
@@ -75,7 +75,7 @@ export class DuplicateRestockOperationError extends AppError {
  *
  */
 export class DepletedStockAllocationError extends AppError {
-  private static readonly _defaultMessage = 'Depleted restock allocation error.'
+  private static readonly _defaultMessage = 'Depleted stock allocation error.'
 
   public static from(cause?: unknown, message?: string): DepletedStockAllocationError {
     return new DepletedStockAllocationError(message ?? this._defaultMessage, false, cause)

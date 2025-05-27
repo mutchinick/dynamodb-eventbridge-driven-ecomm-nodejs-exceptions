@@ -1,3 +1,5 @@
+// FIXME: This component is duplicated in DeallocateOrderPaymentRejectedWorker.
+// It should be moved to a common place. Will do soon.
 import { InvalidArgumentsError } from '../../errors/AppError'
 import { GetOrderAllocationCommand, GetOrderAllocationCommandInput } from './GetOrderAllocationCommand'
 
@@ -12,7 +14,7 @@ function buildMockGetOrderAllocationCommandInput(): GetOrderAllocationCommandInp
   return mockValidInput
 }
 
-describe(`Inventory Service DeallocateOrderPaymentRejectedWorker GetOrderAllocationCommand
+describe(`Inventory Service AllocateOrderStockWorker GetOrderAllocationCommand
           tests`, () => {
   /*
    *

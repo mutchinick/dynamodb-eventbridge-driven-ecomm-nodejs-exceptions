@@ -39,12 +39,12 @@ type MockEventDetail = {
   eventSource: 'aws:dynamodb'
   eventVersion: string
   dynamodb: {
-    NewImage: AttributeValue | Record<string, AttributeValue>
+    NewImage: Record<string, AttributeValue>
   }
 }
 
-// COMBAK: Work a simpler way to build/wrap/unwrap these EventBrideEvents (maybe some abstraction util?)
-function buildMockEventBrideEvent(
+// COMBAK: Work a simpler way to build/wrap/unwrap these EventBridgeEvents (maybe some abstraction util?)
+function buildMockEventBridgeEvent(
   incomingOrderCreatedEvent: IncomingOrderCreatedEvent,
 ): EventBridgeEvent<string, MockEventDetail> {
   const mockEventBridgeEvent: EventBridgeEvent<string, MockEventDetail> = {
@@ -80,7 +80,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
    ************************************************************/
   it(`does not throw if the input EventBridgeEvent is valid`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     expect(() => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)).not.toThrow()
   })
 
@@ -109,7 +109,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     mockEventBridgeEvent.detail = undefined as never
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -119,7 +119,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     mockEventBridgeEvent.detail = null as never
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -135,7 +135,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail.dynamodb is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     mockEventBridgeEvent.detail.dynamodb = undefined as never
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -145,7 +145,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail.dynamodb is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     mockEventBridgeEvent.detail.dynamodb = null as never
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -162,7 +162,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       EventBridgeEvent.detail.dynamodb.newImage (IncomingOrderCreatedEvent) is
       undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     mockEventBridgeEvent.detail.dynamodb.NewImage = undefined as never
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -172,7 +172,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
   it(`throws a non-transient InvalidArgumentsError if the input
       EventBridgeEvent.detail.dynamodb.newImage (IncomingOrderCreatedEvent) is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     mockEventBridgeEvent.detail.dynamodb.NewImage = null as never
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
@@ -189,7 +189,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventName is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventName = undefined
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -199,7 +199,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventName is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventName = null
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -209,7 +209,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventName is empty`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventName = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -219,7 +219,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventName is blank`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventName = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -229,7 +229,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventName is not an InventoryEventName`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventName = 'mockEventName' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -245,7 +245,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.createdAt is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.createdAt = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -255,7 +255,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.createdAt is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.createdAt = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -265,7 +265,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.createdAt is empty`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.createdAt = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -275,7 +275,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.createdAt is blank`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.createdAt = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -285,7 +285,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.createdAt length < 4`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.createdAt = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -301,7 +301,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.updatedAt is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.updatedAt = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -311,7 +311,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.updatedAt is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.updatedAt = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -321,7 +321,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.updatedAt is empty`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.updatedAt = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -331,7 +331,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.updatedAt is blank`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.updatedAt = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -341,7 +341,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.updatedAt length < 4`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.updatedAt = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -357,7 +357,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -367,7 +367,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -377,7 +377,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData is empty`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData = {} as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -387,7 +387,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData invalid`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData = 'mockInvalidValue' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -403,7 +403,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.orderId is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.orderId = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -413,7 +413,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.orderId is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.orderId = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -423,7 +423,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.orderId is empty`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.orderId = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -433,7 +433,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.orderId is blank`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.orderId = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -443,7 +443,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.orderId length < 4`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.orderId = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -459,7 +459,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.sku is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.sku = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -469,7 +469,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.sku is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.sku = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -479,7 +479,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.sku is empty`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.sku = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -489,7 +489,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.sku is blank`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.sku = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -499,7 +499,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.sku length < 4`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.sku = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -515,7 +515,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.units is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.units = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -525,7 +525,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.units is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.units = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -535,7 +535,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.units < 1`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.units = 0
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -545,7 +545,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.units is not an integer`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.units = 3.45
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -555,7 +555,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.units is not a number`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.units = '1' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -571,7 +571,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.price is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.price = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -581,7 +581,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.price is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.price = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -591,7 +591,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.price < 0`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.price = -1
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -601,7 +601,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.price is not a number`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.price = '1' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -617,7 +617,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.userId is undefined`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.userId = undefined as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -627,7 +627,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.userId is null`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.userId = null as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -637,7 +637,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.userId is empty`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.userId = '' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -647,7 +647,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.userId is blank`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.userId = '      ' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -657,7 +657,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
       IncomingOrderCreatedEvent.eventData.userId length < 4`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
     mockIncomingOrderCreatedEvent.eventData.userId = '123' as never
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const testingFunc = () => IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     expect(testingFunc).toThrow(InvalidArgumentsError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -672,7 +672,7 @@ describe(`Inventory Service AllocateOrderStockWorker IncomingOrderCreatedEvent t
   it(`returns the expected IncomingOrderCreatedEvent if the execution path is
       successful`, () => {
     const mockIncomingOrderCreatedEvent = buildMockIncomingOrderCreatedEvent()
-    const mockEventBridgeEvent = buildMockEventBrideEvent(mockIncomingOrderCreatedEvent)
+    const mockEventBridgeEvent = buildMockEventBridgeEvent(mockIncomingOrderCreatedEvent)
     const result = IncomingOrderCreatedEvent.validateAndBuild(mockEventBridgeEvent)
     const expectedEvent: IncomingOrderCreatedEvent = {
       eventName: mockIncomingOrderCreatedEvent.eventName,

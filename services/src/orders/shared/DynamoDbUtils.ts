@@ -1,9 +1,13 @@
-import { ConditionalCheckFailedException, TransactionCanceledException } from '@aws-sdk/client-dynamodb'
+import { TransactionCanceledException } from '@aws-sdk/client-dynamodb'
 
 /**
  *
  */
 export class DynamoDbUtils {
+  public static readonly CancellationReasons = {
+    ConditionalCheckFailed: 'ConditionalCheckFailed',
+  } as const
+
   /**
    *
    */
@@ -12,15 +16,5 @@ export class DynamoDbUtils {
       return error.CancellationReasons?.[n]?.Code || null
     }
     return null
-  }
-
-  /**
-   *
-   */
-  public static isConditionalCheckFailedException(error: unknown): error is ConditionalCheckFailedException {
-    if (error instanceof ConditionalCheckFailedException) {
-      return true
-    }
-    return false
   }
 }

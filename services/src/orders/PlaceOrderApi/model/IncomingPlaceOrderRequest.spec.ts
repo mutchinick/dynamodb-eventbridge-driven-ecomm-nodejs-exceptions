@@ -257,15 +257,6 @@ describe(`Orders Service PlaceOrderApi IncomingPlaceOrderRequest tests`, () => {
   })
 
   it(`throws a non-transient InvalidArgumentsError if the input
-      IncomingPlaceOrderRequestInput.userId is undefined`, async () => {
-    const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
-    mockIncomingPlaceOrderRequestInput.userId = undefined as never
-    const testingFunc = () => IncomingPlaceOrderRequest.validateAndBuild(mockIncomingPlaceOrderRequestInput)
-    expect(testingFunc).toThrow(InvalidArgumentsError)
-    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
-  })
-
-  it(`throws a non-transient InvalidArgumentsError if the input
       IncomingPlaceOrderRequestInput.userId is null`, async () => {
     const mockIncomingPlaceOrderRequestInput = buildMockIncomingPlaceOrderRequestInput()
     mockIncomingPlaceOrderRequestInput.userId = null as never

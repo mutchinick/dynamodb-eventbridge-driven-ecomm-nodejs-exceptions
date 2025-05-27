@@ -64,6 +64,8 @@ export class DbListSkusClient implements IDbListSkusClient {
   private buildDdbCommand(listSkusCommand: ListSkusCommand): QueryCommand {
     const logContext = 'DbListSkusClient.buildDdbCommand'
 
+    // Perhaps we can prevent all errors by validating the arguments, but QueryCommand
+    // is an external dependency and we don't know what happens internally, so we try-catch
     try {
       const tableName = process.env.INVENTORY_TABLE_NAME
 
