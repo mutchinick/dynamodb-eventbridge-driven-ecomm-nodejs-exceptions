@@ -1,7 +1,7 @@
 import { DynamoDBDocumentClient, QueryCommand, QueryCommandOutput } from '@aws-sdk/lib-dynamodb'
 import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import { InvalidArgumentsError, UnrecognizedError } from '../../errors/AppError'
-import { RestockSkuData } from '../../model/RestockSkuData'
+import { SkuData } from '../../model/SkuData'
 import { type SortDirection } from '../../model/SortDirection'
 import { ListSkusCommand, ListSkusCommandInput } from '../model/ListSkusCommand'
 import { DbListSkusClient } from './DbListSkusClient'
@@ -104,18 +104,16 @@ function buildMockDdbCommand_ListDefault(): QueryCommand {
  ************************************************************
  * Mock clients
  ************************************************************/
-const mockExistingSkuData: RestockSkuData[] = [
+const mockExistingSkuData: SkuData[] = [
   {
     sku: mockSku,
     units: 2,
-    lotId: 'mockLotId',
     createdAt: mockDate,
     updatedAt: mockDate,
   },
   {
     sku: `${mockSku}-2`,
     units: 2,
-    lotId: 'mockLotId',
     createdAt: mockDate,
     updatedAt: mockDate,
   },
@@ -271,37 +269,36 @@ describe(`Inventory Service ListSkusApi DbListSkusClient tests`, () => {
    ************************************************************
    * Test expected results
    ************************************************************/
-  it(`returns the expected empty RestockSkuData[] if DynamoDBDocumentClient.send
+  it(`returns the expected empty SkuData[] if DynamoDBDocumentClient.send
       returns Items with null items`, async () => {
     const mockTestCommand = buildMockListSkusCommand({})
     const mockDdbDocClient = buildMockDdbDocClient_resolves_nullItems()
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const result = await dbListSkusClient.listSkus(mockTestCommand)
-    const expectedResult: RestockSkuData[] = []
+    const expectedResult: SkuData[] = []
     expect(result).toStrictEqual(expectedResult)
   })
 
-  it(`returns the expected empty RestockSkuData[] if DynamoDBDocumentClient.send
+  it(`returns the expected empty SkuData[] if DynamoDBDocumentClient.send
       returns Items with no items`, async () => {
     const mockTestCommand = buildMockListSkusCommand({})
     const mockDdbDocClient = buildMockDdbDocClient_resolves('none')
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const result = await dbListSkusClient.listSkus(mockTestCommand)
-    const expectedResult: RestockSkuData[] = []
+    const expectedResult: SkuData[] = []
     expect(result).toStrictEqual(expectedResult)
   })
 
-  it(`returns the expected RestockSkuData[] if DynamoDBDocumentClient.send returns
+  it(`returns the expected SkuData[] if DynamoDBDocumentClient.send returns
       Items with one item`, async () => {
     const mockTestCommand = buildMockListSkusCommand({})
     const mockDdbDocClient = buildMockDdbDocClient_resolves('one')
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const result = await dbListSkusClient.listSkus(mockTestCommand)
-    const expectedResult: RestockSkuData[] = [
+    const expectedResult: SkuData[] = [
       {
         sku: mockExistingSkuData[0].sku,
         units: mockExistingSkuData[0].units,
-        lotId: mockExistingSkuData[0].lotId,
         createdAt: mockExistingSkuData[0].createdAt,
         updatedAt: mockExistingSkuData[0].updatedAt,
       },
@@ -309,24 +306,22 @@ describe(`Inventory Service ListSkusApi DbListSkusClient tests`, () => {
     expect(result).toStrictEqual(expectedResult)
   })
 
-  it(`returns the expected RestockSkuData[] if DynamoDBDocumentClient.send returns
+  it(`returns the expected SkuData[] if DynamoDBDocumentClient.send returns
       Items with many items`, async () => {
     const mockTestCommand = buildMockListSkusCommand({ sortDirection: mockSortDirection, limit: mockLimit })
     const mockDdbDocClient = buildMockDdbDocClient_resolves('many')
     const dbListSkusClient = new DbListSkusClient(mockDdbDocClient)
     const result = await dbListSkusClient.listSkus(mockTestCommand)
-    const expectedResult: RestockSkuData[] = [
+    const expectedResult: SkuData[] = [
       {
         sku: mockExistingSkuData[0].sku,
         units: mockExistingSkuData[0].units,
-        lotId: mockExistingSkuData[0].lotId,
         createdAt: mockExistingSkuData[0].createdAt,
         updatedAt: mockExistingSkuData[0].updatedAt,
       },
       {
         sku: mockExistingSkuData[1].sku,
         units: mockExistingSkuData[1].units,
-        lotId: mockExistingSkuData[1].lotId,
         createdAt: mockExistingSkuData[1].createdAt,
         updatedAt: mockExistingSkuData[1].updatedAt,
       },

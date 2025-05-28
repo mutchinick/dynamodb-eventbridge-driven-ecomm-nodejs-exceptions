@@ -1,5 +1,5 @@
 import { InvalidArgumentsError } from '../../errors/AppError'
-import { RestockSkuData } from '../../model/RestockSkuData'
+import { SkuData } from '../../model/SkuData'
 import { IDbListSkusClient } from '../DbListSkusClient/DbListSkusClient'
 import { IncomingListSkusRequest } from '../model/IncomingListSkusRequest'
 import { ListSkusCommand, ListSkusCommandInput } from '../model/ListSkusCommand'
@@ -12,7 +12,7 @@ export interface IListSkusApiService {
   listSkus: (incomingListSkusRequest: IncomingListSkusRequest) => Promise<ListSkusApiServiceOutput>
 }
 
-export type ListSkusApiServiceOutput = { skus: RestockSkuData[] }
+export type ListSkusApiServiceOutput = { skus: SkuData[] }
 
 /**
  *
@@ -61,7 +61,7 @@ export class ListSkusApiService implements IListSkusApiService {
    * @throws {InvalidArgumentsError}
    * @throws {UnrecognizedError}
    */
-  private async querySkus(incomingListSkusRequest: IncomingListSkusRequest): Promise<RestockSkuData[]> {
+  private async querySkus(incomingListSkusRequest: IncomingListSkusRequest): Promise<SkuData[]> {
     const logContext = 'ListSkusApiService.querySkus'
     console.info(`${logContext} init:`, { incomingListSkusRequest })
 
