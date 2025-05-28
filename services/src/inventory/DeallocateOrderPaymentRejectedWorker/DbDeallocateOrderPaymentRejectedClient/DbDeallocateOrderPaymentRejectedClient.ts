@@ -75,7 +75,7 @@ export class DbDeallocateOrderPaymentRejectedClient implements IDbDeallocateOrde
       const { allocationStatus, expectedAllocationStatus } = commandData
 
       const allocationPk = `INVENTORY#SKU#${sku}`
-      const allocationSk = `SKU#${sku}#ORDER_ID#${orderId}#ALLOCATION`
+      const allocationSk = `SKU#${sku}#ORDER_ID#${orderId}#ORDER_ALLOCATION`
 
       const skuItemPk = `INVENTORY#SKU#${sku}`
       const skuItemSk = `SKU#${sku}`
