@@ -452,7 +452,7 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiController tests`, () => {
   })
 
   it(`responds with 500 Internal Server Error if PlaceOrderApiService.placeOrder
-       throws an Error not accounted for`, async () => {
+      throws an Error not accounted for`, async () => {
     const mockError = new Error('mockError')
     const mockPlaceOrderApiService = buildMockPlaceOrderApiService_throws(mockError)
     const placeOrderApiController = new PlaceOrderApiController(mockPlaceOrderApiService)
@@ -464,7 +464,7 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiController tests`, () => {
   })
 
   it(`responds with 500 Internal Server Error if PlaceOrderApiService.placeOrder
-       throws an UnrecognizedError`, async () => {
+      throws an UnrecognizedError`, async () => {
     const unrecognizedError = UnrecognizedError.from()
     const mockPlaceOrderApiService = buildMockPlaceOrderApiService_throws(unrecognizedError)
     const placeOrderApiController = new PlaceOrderApiController(mockPlaceOrderApiService)
@@ -476,7 +476,7 @@ describe(`Orders Service PlaceOrderApi PlaceOrderApiController tests`, () => {
   })
 
   it(`responds with 400 Bad Request if PlaceOrderApiService.placeOrder throws an
-       InvalidArgumentsError`, async () => {
+      InvalidArgumentsError`, async () => {
     const mockError = InvalidArgumentsError.from()
     const mockPlaceOrderApiService = buildMockPlaceOrderApiService_throws(mockError)
     const placeOrderApiController = new PlaceOrderApiController(mockPlaceOrderApiService)

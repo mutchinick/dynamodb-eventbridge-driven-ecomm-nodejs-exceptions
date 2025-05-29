@@ -1103,8 +1103,8 @@ describe(`Payments Service ProcessOrderPaymentWorker ProcessOrderPaymentWorkerCo
     expect(mockProcessOrderPaymentWorkerService.processOrderPayment).toHaveBeenCalledTimes(mockSqsRecords.length)
   })
 
-  it(`calls ProcessOrderPaymentWorkerService.processOrderPayment with the
-      expected input`, async () => {
+  it(`calls ProcessOrderPaymentWorkerService.processOrderPayment with the expected
+      input`, async () => {
     const mockProcessOrderPaymentWorkerService = buildMockProcessOrderPaymentWorkerService_resolves()
     const processOrderPaymentWorkerController = new ProcessOrderPaymentWorkerController(
       mockProcessOrderPaymentWorkerService,

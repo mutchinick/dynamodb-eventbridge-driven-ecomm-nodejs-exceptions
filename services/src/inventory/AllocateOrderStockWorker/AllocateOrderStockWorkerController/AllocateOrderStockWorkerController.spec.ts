@@ -1099,8 +1099,7 @@ describe(`Inventory Service AllocateOrderStockWorker AllocateOrderStockWorkerCon
     expect(mockAllocateOrderStockWorkerService.allocateOrderStock).toHaveBeenCalledTimes(mockSqsRecords.length)
   })
 
-  it(`calls AllocateOrderStockWorkerService.allocateOrderStock with the
-      expected input`, async () => {
+  it(`calls AllocateOrderStockWorkerService.allocateOrderStock with the expected input`, async () => {
     const mockAllocateOrderStockWorkerService = buildMockAllocateOrderStockWorkerService_resolves()
     const allocateOrderStockWorkerController = new AllocateOrderStockWorkerController(
       mockAllocateOrderStockWorkerService,
