@@ -6,7 +6,7 @@ import { InvalidArgumentsError } from '../../errors/AppError'
 import { InventoryEventName } from '../../model/InventoryEventName'
 import { IncomingOrderCreatedEvent } from './IncomingOrderCreatedEvent'
 
-jest.useFakeTimers().setSystemTime(new Date('2024-10-19Z03:24:00'))
+jest.useFakeTimers().setSystemTime(new Date('2024-10-19T03:24:00Z'))
 
 const mockDate = new Date().toISOString()
 const mockEventName = InventoryEventName.ORDER_CREATED_EVENT
