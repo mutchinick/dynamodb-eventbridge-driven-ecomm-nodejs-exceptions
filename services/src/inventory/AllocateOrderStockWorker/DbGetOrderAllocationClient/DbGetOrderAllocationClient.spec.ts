@@ -77,7 +77,7 @@ function buildMockDdbDocClient_throws(error?: unknown): DynamoDBDocumentClient {
   return { send: jest.fn().mockRejectedValue(error ?? new Error()) } as unknown as DynamoDBDocumentClient
 }
 
-describe(`Orders Service SyncOrderWorker DbGetOrderAllocationClient tests`, () => {
+describe(`Inventory Service SyncOrderWorker DbGetOrderAllocationClient tests`, () => {
   /*
    *
    *
