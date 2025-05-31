@@ -46,7 +46,7 @@ const expectedDdbCommand = buildMockDdbCommand()
  ************************************************************
  * Mock clients
  ************************************************************/
-const mockExistingOrderData: OrderAllocationData = {
+const mockExistingOrderAllocationData: OrderAllocationData = {
   orderId: mockGetOrderAllocationCommand.commandData.orderId,
   sku: mockGetOrderAllocationCommand.commandData.sku,
   units: 2,
@@ -59,7 +59,7 @@ const mockExistingOrderData: OrderAllocationData = {
 
 function buildMockDdbDocClient_resolves_validItem(): DynamoDBDocumentClient {
   const mockDdbOutput: GetCommandOutput = {
-    Item: mockExistingOrderData,
+    Item: mockExistingOrderAllocationData,
     $metadata: {},
   }
   return { send: jest.fn().mockResolvedValue(mockDdbOutput) } as unknown as DynamoDBDocumentClient
@@ -198,14 +198,14 @@ describe(`Inventory Service SyncOrderWorker DbGetOrderAllocationClient tests`, (
     const dbGetOrderAllocationClient = new DbGetOrderAllocationClient(mockDdbDocClient)
     const result = await dbGetOrderAllocationClient.getOrderAllocation(mockGetOrderAllocationCommand)
     const expectedResult: OrderAllocationData = {
-      orderId: mockExistingOrderData.orderId,
-      sku: mockExistingOrderData.sku,
-      units: mockExistingOrderData.units,
-      price: mockExistingOrderData.price,
-      userId: mockExistingOrderData.userId,
-      createdAt: mockExistingOrderData.createdAt,
-      updatedAt: mockExistingOrderData.updatedAt,
-      allocationStatus: mockExistingOrderData.allocationStatus,
+      orderId: mockExistingOrderAllocationData.orderId,
+      sku: mockExistingOrderAllocationData.sku,
+      units: mockExistingOrderAllocationData.units,
+      price: mockExistingOrderAllocationData.price,
+      userId: mockExistingOrderAllocationData.userId,
+      createdAt: mockExistingOrderAllocationData.createdAt,
+      updatedAt: mockExistingOrderAllocationData.updatedAt,
+      allocationStatus: mockExistingOrderAllocationData.allocationStatus,
     }
     expect(result).toStrictEqual(expectedResult)
   })
