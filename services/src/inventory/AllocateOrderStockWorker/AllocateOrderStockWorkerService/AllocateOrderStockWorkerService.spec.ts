@@ -282,7 +282,7 @@ describe(`Inventory Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
     })
 
     it(`calls DbGetOrderAllocationClient.getOrderAllocation with the expected
-        AllocateOrderCreatedCommand`, async () => {
+        GetOrderAllocationCommand`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_nullItem()
       const mockDbAllocateOrderStockClient = buildMockDbAllocateOrderStockClient_resolves()
       const mockEsRaiseOrderStockAllocatedEventClient = buildMockEsRaiseOrderStockAllocatedEventClient_resolves()
@@ -320,10 +320,10 @@ describe(`Inventory Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
    *
    *
    ************************************************************
-   * Test when the Allocation DOES NOT exist and it creates it and raises the Allocation event
+   * Test when the Allocation DOES NOT exist and it creates it and raises the Allocated event
    ************************************************************/
   describe(`Test when the Allocation DOES NOT exist and it creates it and raises the
-            Allocation event`, () => {
+            Allocated event`, () => {
     /*
      *
      *
@@ -404,7 +404,7 @@ describe(`Inventory Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
      *
      *
      ************************************************************
-     * Test when it raises the Allocation event
+     * Test when it raises the Allocated event
      ************************************************************/
     it(`throws the same Error if the OrderStockAllocatedEvent.validateAndBuild throws an
         Error`, async () => {
@@ -508,9 +508,9 @@ describe(`Inventory Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
    *
    *
    ************************************************************
-   * Test when the Allocation DOES exist and it only raises the Allocation event
+   * Test when the Allocation DOES exist and it only raises the Allocated event
    ************************************************************/
-  describe(`Test when the Allocation DOES exist and it only raises the Allocation event`, () => {
+  describe(`Test when the Allocation DOES exist and it only raises the Allocated event`, () => {
     /*
      *
      *
@@ -570,7 +570,7 @@ describe(`Inventory Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
      *
      *
      ************************************************************
-     * Test when it raises the Allocation event
+     * Test when it raises the Allocated event
      ************************************************************/
     it(`throws the same Error if the OrderStockAllocatedEvent.validateAndBuild throws an
         Error`, async () => {
@@ -963,7 +963,7 @@ describe(`Inventory Service AllocateOrderStockWorker AllocateOrderStockWorkerSer
      *
      *
      ************************************************************
-     * Test when it raises the Allocation event
+     * Test when it raises the Allocated event
      ************************************************************/
     it(`throws the same Error if the OrderStockAllocatedEvent.validateAndBuild throws an
         Error`, async () => {
