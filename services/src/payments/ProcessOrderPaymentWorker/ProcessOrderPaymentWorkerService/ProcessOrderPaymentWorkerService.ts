@@ -34,6 +34,8 @@ type SubmitOrderPaymentOutput = {
   error?: Error
 }
 
+export const MAX_ALLOWED_PAYMENT_RETRIES = 3
+
 /**
  *
  */
@@ -80,20 +82,22 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
       )
 
       // When it records the Payment in the database
-      const { paymentId, paymentStatus } = submitOrderPaymentOutput
-      const newOrderPaymentData = await this.recordOrderPayment(
+      const { paymentId, paymentStatus: receivedPaymentStatus } = submitOrderPaymentOutput
+      const recordedOrderPaymentData = await this.recordOrderPayment(
         incomingOrderStockAllocatedEvent,
         existingOrderPaymentData,
         paymentId,
-        paymentStatus,
+        receivedPaymentStatus,
       )
 
+      const recordedPaymentStatus = recordedOrderPaymentData.paymentStatus
+
       // When it raises the Payment Accepted event
-      if (paymentStatus === 'PAYMENT_ACCEPTED') {
+      if (recordedPaymentStatus === 'PAYMENT_ACCEPTED') {
         await this.raisePaymentAcceptedEvent(incomingOrderStockAllocatedEvent)
         console.info(`${logContext} exit success:`, {
           submitOrderPaymentOutput,
-          newOrderPaymentData,
+          recordedOrderPaymentData,
           existingOrderPaymentData,
           incomingOrderStockAllocatedEvent,
         })
@@ -101,11 +105,11 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
       }
 
       // When it raises the Payment Rejected event
-      if (paymentStatus === 'PAYMENT_REJECTED') {
+      if (recordedPaymentStatus === 'PAYMENT_REJECTED') {
         await this.raisePaymentRejectedEvent(incomingOrderStockAllocatedEvent)
         console.info(`${logContext} exit success:`, {
           submitOrderPaymentOutput,
-          newOrderPaymentData,
+          recordedOrderPaymentData,
           existingOrderPaymentData,
           incomingOrderStockAllocatedEvent,
         })
@@ -123,7 +127,7 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
       console.info(`${logContext} exit success: from-error:`, {
         paymentError,
         submitOrderPaymentOutput,
-        newOrderPaymentData,
+        recordedOrderPaymentData,
         existingOrderPaymentData,
         incomingOrderStockAllocatedEvent,
       })
@@ -186,11 +190,13 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
     const logContext = 'ProcessOrderPaymentWorkerService.submitOrderPayment'
     console.info(`${logContext} init:`, { incomingOrderStockAllocatedEvent })
 
-    // When retries exceed 3 we return a Rejected Payment.
-    if (existingOrderPaymentData?.paymentRetries >= 3) {
+    // When retries exceed the limit, we accept ot reject definitively.
+    if (existingOrderPaymentData?.paymentRetries >= MAX_ALLOWED_PAYMENT_RETRIES) {
+      const { paymentStatus } = existingOrderPaymentData
+      const newPaymentStatus = paymentStatus === 'PAYMENT_ACCEPTED' ? 'PAYMENT_ACCEPTED' : 'PAYMENT_REJECTED'
       const submitOrderPaymentOutput: SubmitOrderPaymentOutput = {
         paymentId: existingOrderPaymentData.paymentId,
-        paymentStatus: 'PAYMENT_REJECTED',
+        paymentStatus: newPaymentStatus,
       }
       console.info(`${logContext} exit success:`, {
         submitOrderPaymentOutput,
@@ -228,7 +234,7 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
       // The event will be sent back to the queue, and we will try to process it again, but we
       // don't throw here, because it still needs to be recorded in the database.
       if (error instanceof PaymentFailedError) {
-        const paymentOutput: SubmitOrderPaymentOutput = {
+        const submitOrderPaymentOutput: SubmitOrderPaymentOutput = {
           paymentId: existingOrderPaymentData?.paymentId,
           paymentStatus: 'PAYMENT_FAILED',
           error,
@@ -238,13 +244,13 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
           incomingOrderStockAllocatedEvent,
           existingOrderPaymentData,
         })
-        return paymentOutput
+        return submitOrderPaymentOutput
       }
 
       // When we get a PaymentAlreadyAcceptedError we return an Accepted Payment.
       // This case should not happen but it can in the event of a race condition.
       if (error instanceof PaymentAlreadyAcceptedError) {
-        const paymentOutput: SubmitOrderPaymentOutput = {
+        const submitOrderPaymentOutput: SubmitOrderPaymentOutput = {
           paymentId: existingOrderPaymentData.paymentId,
           paymentStatus: 'PAYMENT_ACCEPTED',
         }
@@ -253,13 +259,13 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
           incomingOrderStockAllocatedEvent,
           existingOrderPaymentData,
         })
-        return paymentOutput
+        return submitOrderPaymentOutput
       }
 
       // When we get a PaymentAlreadyRejectedError we return a Rejected Payment.
       // This case should not happen but it can in the event of a race condition.
       if (error instanceof PaymentAlreadyRejectedError) {
-        const paymentOutput: SubmitOrderPaymentOutput = {
+        const submitOrderPaymentOutput: SubmitOrderPaymentOutput = {
           paymentId: existingOrderPaymentData.paymentId,
           paymentStatus: 'PAYMENT_REJECTED',
         }
@@ -268,7 +274,7 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
           incomingOrderStockAllocatedEvent,
           existingOrderPaymentData,
         })
-        return paymentOutput
+        return submitOrderPaymentOutput
       }
 
       // We shouldn't get here, but if we do, we throw the error.
@@ -285,32 +291,40 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
     incomingOrderStockAllocatedEvent: IncomingOrderStockAllocatedEvent,
     existingOrderPaymentData: OrderPaymentData | undefined,
     paymentId: string,
-    newPaymentStatus: PaymentStatus,
+    receivedPaymentStatus: PaymentStatus,
   ): Promise<OrderPaymentData> {
     const logContext = 'ProcessOrderPaymentWorkerService.recordOrderPayment'
     console.info(`${logContext} init:`, {
       incomingOrderStockAllocatedEvent,
       existingOrderPaymentData,
       paymentId,
-      newPaymentStatus,
+      receivedPaymentStatus,
     })
 
     try {
       const { orderId, sku, units, price, userId } = incomingOrderStockAllocatedEvent.eventData
-      const newOrderPaymentFields = { orderId, sku, units, price, userId, paymentId, paymentStatus: newPaymentStatus }
+      const newOrderPaymentFields = {
+        orderId,
+        sku,
+        units,
+        price,
+        userId,
+        paymentId,
+        paymentStatus: receivedPaymentStatus,
+      }
       const recordOrderPaymentCommandInput: RecordOrderPaymentCommandInput = {
         existingOrderPaymentData,
         newOrderPaymentFields,
       }
       const recordOrderPaymentCommand = RecordOrderPaymentCommand.validateAndBuild(recordOrderPaymentCommandInput)
       await this.dbRecordOrderPaymentClient.recordOrderPayment(recordOrderPaymentCommand)
-      const newOrderPaymentData = recordOrderPaymentCommand.commandData
+      const recordedOrderPaymentData = recordOrderPaymentCommand.commandData
       console.info(`${logContext} exit success:`, {
         recordOrderPaymentCommand,
         recordOrderPaymentCommandInput,
-        newOrderPaymentData,
+        recordedOrderPaymentData,
       })
-      return newOrderPaymentData
+      return recordedOrderPaymentData
     } catch (error) {
       // When we get a PaymentAlreadyAcceptedError we return the existing Payment.
       // This case should not happen but it can in the event of a race condition.
@@ -320,7 +334,7 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
           incomingOrderStockAllocatedEvent,
           existingOrderPaymentData,
           paymentId,
-          newPaymentStatus,
+          receivedPaymentStatus,
         })
         return existingOrderPaymentData
       }
@@ -333,7 +347,7 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
           incomingOrderStockAllocatedEvent,
           existingOrderPaymentData,
           paymentId,
-          newPaymentStatus,
+          receivedPaymentStatus,
         })
         return existingOrderPaymentData
       }
@@ -344,7 +358,7 @@ export class ProcessOrderPaymentWorkerService implements IProcessOrderPaymentWor
         incomingOrderStockAllocatedEvent,
         existingOrderPaymentData,
         paymentId,
-        newPaymentStatus,
+        receivedPaymentStatus,
       })
       throw error
     }
