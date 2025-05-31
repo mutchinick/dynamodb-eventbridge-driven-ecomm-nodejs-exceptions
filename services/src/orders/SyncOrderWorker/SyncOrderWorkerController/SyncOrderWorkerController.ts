@@ -51,7 +51,7 @@ export class SyncOrderWorkerController implements ISyncOrderWorkerController {
    * @throws {InvalidArgumentsError}
    * @throws {ForbiddenOrderStatusTransitionError}
    * @throws {RedundantOrderStatusTransitionError}
-   * @throws {NotReadyOrderStatusTransitionError}
+   * @throws {StaleOrderStatusTransitionError}
    * @throws {DuplicateEventRaisedError}
    * @throws {InvalidOperationError}
    * @throws {UnrecognizedError}

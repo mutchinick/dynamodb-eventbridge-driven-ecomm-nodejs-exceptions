@@ -85,11 +85,11 @@ export class NotFoundOrderStatusTransitionError extends AppError {
 /*
  *
  */
-export class NotReadyOrderStatusTransitionError extends AppError {
-  private static readonly _defaultMessage = 'Not ready order status transition error.'
+export class StaleOrderStatusTransitionError extends AppError {
+  private static readonly _defaultMessage = 'Stale order status transition error.'
 
-  public static from(cause?: unknown, message?: string): NotReadyOrderStatusTransitionError {
-    return new NotReadyOrderStatusTransitionError(message ?? this._defaultMessage, true, cause)
+  public static from(cause?: unknown, message?: string): StaleOrderStatusTransitionError {
+    return new StaleOrderStatusTransitionError(message ?? this._defaultMessage, false, cause)
   }
 }
 

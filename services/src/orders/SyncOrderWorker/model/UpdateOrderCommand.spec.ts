@@ -2,7 +2,7 @@ import { TypeUtilsMutable } from '../../../shared/TypeUtils'
 import {
   ForbiddenOrderStatusTransitionError,
   InvalidArgumentsError,
-  NotReadyOrderStatusTransitionError,
+  StaleOrderStatusTransitionError,
   RedundantOrderStatusTransitionError,
 } from '../../errors/AppError'
 import { OrderData } from '../../model/OrderData'
@@ -897,8 +897,8 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   it(`throws non-transient ForbiddenOrderStatusTransitionError if the input
       existingOrderData.orderStatus is not valid for transition`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_CANCELED_STATUS
-    mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_STOCK_ALLOCATED_EVENT
+    mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_PAYMENT_ACCEPTED_STATUS
+    mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_PAYMENT_REJECTED_EVENT
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     expect(testingFunc).toThrow(ForbiddenOrderStatusTransitionError)
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
@@ -914,14 +914,14 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
     expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
-  it(`throws a transient NotReadyOrderStatusTransitionError error if the input
-      existingOrderData.orderStatus is not ready for transition`, () => {
+  it(`throws a non-transient StaleOrderStatusTransitionError error if the input
+      existingOrderData.orderStatus is stale for transition`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
-    mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_CREATED_STATUS
-    mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_FULFILLED_EVENT
+    mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_DELIVERED_STATUS
+    mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_SHIPPED_EVENT
     const testingFunc = () => UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
-    expect(testingFunc).toThrow(NotReadyOrderStatusTransitionError)
-    expect(testingFunc).toThrow(expect.objectContaining({ transient: true }))
+    expect(testingFunc).toThrow(StaleOrderStatusTransitionError)
+    expect(testingFunc).toThrow(expect.objectContaining({ transient: false }))
   })
 
   /*
@@ -948,15 +948,15 @@ describe(`Orders Service SyncOrderWorker UpdateOrderCommand tests`, () => {
   })
 
   it(`returns the expected UpdateOrderCommand if the execution path is successful
-      (case ORDER_FULFILLED_STATUS)`, () => {
+      (case ORDER_SHIPPED_STATUS)`, () => {
     const mockUpdateOrderCommandInput = buildMockUpdateOrderCommandInput()
     mockUpdateOrderCommandInput.existingOrderData.orderStatus = OrderStatus.ORDER_PAYMENT_ACCEPTED_STATUS
-    mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_FULFILLED_EVENT
+    mockUpdateOrderCommandInput.incomingOrderEvent.eventName = OrderEventName.ORDER_SHIPPED_EVENT
     const result = UpdateOrderCommand.validateAndBuild(mockUpdateOrderCommandInput)
     const expectedCommand: UpdateOrderCommand = {
       commandData: {
         orderId: mockUpdateOrderCommandInput.existingOrderData.orderId,
-        orderStatus: OrderStatus.ORDER_FULFILLED_STATUS,
+        orderStatus: OrderStatus.ORDER_SHIPPED_STATUS,
         updatedAt: mockDate,
       },
       options: {},

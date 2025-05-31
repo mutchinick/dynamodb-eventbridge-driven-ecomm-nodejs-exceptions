@@ -15,7 +15,7 @@ export interface ISyncOrderWorkerService {
    * @throws {InvalidArgumentsError}
    * @throws {ForbiddenOrderStatusTransitionError}
    * @throws {RedundantOrderStatusTransitionError}
-   * @throws {NotReadyOrderStatusTransitionError}
+   * @throws {StaleOrderStatusTransitionError}
    * @throws {DuplicateEventRaisedError}
    * @throws {InvalidOperationError}
    * @throws {UnrecognizedError}
@@ -41,7 +41,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
    * @throws {InvalidArgumentsError}
    * @throws {ForbiddenOrderStatusTransitionError}
    * @throws {RedundantOrderStatusTransitionError}
-   * @throws {NotReadyOrderStatusTransitionError}
+   * @throws {StaleOrderStatusTransitionError}
    * @throws {DuplicateEventRaisedError}
    * @throws {InvalidOperationError}
    * @throws {UnrecognizedError}
@@ -185,7 +185,7 @@ export class SyncOrderWorkerService implements ISyncOrderWorkerService {
    * @throws {InvalidArgumentsError}
    * @throws {ForbiddenOrderStatusTransitionError}
    * @throws {RedundantOrderStatusTransitionError}
-   * @throws {NotReadyOrderStatusTransitionError}
+   * @throws {StaleOrderStatusTransitionError}
    * @throws {InvalidOperationError}
    */
   private async updateOrder(existingOrderData: OrderData, incomingOrderEvent: IncomingOrderEvent): Promise<void> {
