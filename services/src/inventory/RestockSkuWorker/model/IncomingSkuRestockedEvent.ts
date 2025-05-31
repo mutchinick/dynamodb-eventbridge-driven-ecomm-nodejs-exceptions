@@ -104,8 +104,8 @@ export class IncomingSkuRestockedEvent implements IncomingSkuRestockedEventProps
     try {
       const eventDetail = incomingSkuRestockedEventInput.detail
       const unverifiedEvent = unmarshall(eventDetail.dynamodb.NewImage)
-      const incomingSkuRestockedEvent = schema.parse(unverifiedEvent) as IncomingSkuRestockedEventProps
-      return incomingSkuRestockedEvent
+      const incomingSkuRestockedEventProps = schema.parse(unverifiedEvent) as IncomingSkuRestockedEventProps
+      return incomingSkuRestockedEventProps
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingSkuRestockedEventInput })

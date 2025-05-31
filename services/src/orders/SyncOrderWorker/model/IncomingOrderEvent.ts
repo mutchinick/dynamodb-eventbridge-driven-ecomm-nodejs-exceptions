@@ -104,8 +104,8 @@ export class IncomingOrderEvent implements IncomingOrderEventProps {
     try {
       const eventDetail = incomingOrderEventInput.detail
       const unverifiedEvent = unmarshall(eventDetail.dynamodb.NewImage)
-      const incomingOrderEvent = schema.parse(unverifiedEvent) as IncomingOrderEventProps
-      return incomingOrderEvent
+      const incomingOrderEventProps = schema.parse(unverifiedEvent) as IncomingOrderEventProps
+      return incomingOrderEventProps
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingOrderEventInput })

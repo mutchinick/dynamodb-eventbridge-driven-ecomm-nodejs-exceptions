@@ -113,8 +113,10 @@ export class IncomingOrderPaymentRejectedEvent implements IncomingOrderPaymentRe
     try {
       const eventDetail = incomingOrderPaymentRejectedEventInput.detail
       const unverifiedEvent = unmarshall(eventDetail.dynamodb.NewImage)
-      const incomingOrderPaymentRejectedEvent = schema.parse(unverifiedEvent) as IncomingOrderPaymentRejectedEventProps
-      return incomingOrderPaymentRejectedEvent
+      const incomingOrderPaymentRejectedEventProps = schema.parse(
+        unverifiedEvent,
+      ) as IncomingOrderPaymentRejectedEventProps
+      return incomingOrderPaymentRejectedEventProps
     } catch (error) {
       const invalidArgumentsError = InvalidArgumentsError.from(error)
       console.error(`${logContext} exit error:`, { invalidArgumentsError, incomingOrderPaymentRejectedEventInput })
