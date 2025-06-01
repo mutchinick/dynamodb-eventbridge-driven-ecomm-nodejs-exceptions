@@ -295,8 +295,8 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrder).toHaveBeenCalledTimes(1)
     })
 
-    it(`calls DbDeallocateOrderPaymentRejectedClient.deallocateOrder with the
-        expected DeallocateOrderPaymentRejectedCommand`, async () => {
+    it(`calls DbDeallocateOrderPaymentRejectedClient.deallocateOrder with the expected
+        DeallocateOrderPaymentRejectedCommand`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_OrderAllocation()
       const mockDbDeallocateOrderPaymentRejectedClient = buildMockDbDeallocateOrderPaymentRejectedClient_resolves()
       const deallocateOrderPaymentRejectedWorkerService = new DeallocateOrderPaymentRejectedWorkerService(
@@ -309,8 +309,8 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       )
     })
 
-    it(`throws the same Error if
-        DbDeallocateOrderPaymentRejectedClient.deallocateOrder throws an Error`, async () => {
+    it(`throws the same Error if DbDeallocateOrderPaymentRejectedClient.deallocateOrder
+        throws an Error`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_OrderAllocation()
       const mockError = new Error('mockError')
       const mockDbDeallocateOrderPaymentRejectedClient =
@@ -381,8 +381,8 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrder).not.toHaveBeenCalled()
     })
 
-    it(`does not throw if DbDeallocateOrderPaymentRejectedClient.deallocateOrder
-        throws an Error`, async () => {
+    it(`does not throw if DbDeallocateOrderPaymentRejectedClient.deallocateOrder throws
+        an Error`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_nullItem()
       const mockDbDeallocateOrderPaymentRejectedClient = buildMockDbDeallocateOrderPaymentRejectedClient_throws()
       const deallocateOrderPaymentRejectedWorkerService = new DeallocateOrderPaymentRejectedWorkerService(
