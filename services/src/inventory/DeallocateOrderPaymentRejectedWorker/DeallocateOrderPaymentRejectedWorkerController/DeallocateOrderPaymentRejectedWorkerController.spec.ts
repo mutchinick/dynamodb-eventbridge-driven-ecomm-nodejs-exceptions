@@ -124,14 +124,14 @@ function buildMockTestObjects(ids: string[]): {
  * Mock services
  ************************************************************/
 function buildMockDeallocateOrderPaymentRejectedWorkerService_resolves(): IDeallocateOrderPaymentRejectedWorkerService {
-  return { deallocateOrderStock: jest.fn() }
+  return { deallocateOrder: jest.fn() }
 }
 
 function buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(
   error?: unknown,
 ): IDeallocateOrderPaymentRejectedWorkerService {
   return {
-    deallocateOrderStock: jest
+    deallocateOrder: jest
       .fn()
       .mockImplementation((incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent) => {
         const shouldThrow = Object.values(incomingOrderPaymentRejectedEvent.eventData).reduce(
@@ -157,59 +157,59 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`does not throw if the input SQSEvent is valid`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const { mockSqsEvent } = buildMockTestObjects([])
-    await expect(deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)).resolves.not.toThrow()
+    await expect(deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)).resolves.not.toThrow()
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSEvent is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = undefined as never
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent is
       undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = undefined as never
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSEvent is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = null as never
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent is
       null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = null as never
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -220,102 +220,102 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test SQSEvent.Records edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSEvent records are missing`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = {} as never
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
       records are missing`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = {} as never
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSEvent records are undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = buildMockSqsEvent(undefined)
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
       records are undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = buildMockSqsEvent(undefined)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSEvent records are null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = buildMockSqsEvent(null)
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
       records are null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = buildMockSqsEvent(null)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSEvent records are empty`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = buildMockSqsEvent([])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSEvent
       records are empty`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsEvent = buildMockSqsEvent([])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -326,85 +326,85 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test SQSRecord.body edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSRecord.body is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsRecord = { body: undefined } as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body
       is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsRecord = { body: undefined } as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSRecord.body is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsRecord = { body: null } as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body
       is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsRecord = { body: null } as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input SQSRecord.body is not a valid JSON`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsRecord = {} as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     mockSqsEvent.Records[0].body = 'mockInvalidValue'
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns an empty SQSBatchResponse.batchItemFailures if the input SQSRecord.body
       is not a valid JSON`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockSqsRecord = {} as unknown as SQSRecord
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
     mockSqsEvent.Records[0].body = 'mockInvalidValue'
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -415,11 +415,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent is invalid`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -427,15 +427,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent is invalid`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -443,7 +443,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -454,11 +454,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.eventName edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventName is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -467,15 +467,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventName is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -484,16 +484,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventName is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -502,15 +502,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventName is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -519,7 +519,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -530,11 +530,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.createdAt edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.createdAt is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -543,15 +543,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.createdAt is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -560,16 +560,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.createdAt is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -578,15 +578,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.createdAt is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -595,7 +595,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -606,11 +606,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.updatedAt edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.updatedAt is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -619,15 +619,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.updatedAt is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -636,16 +636,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.updatedAt is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -654,15 +654,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.updatedAt is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -671,7 +671,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -682,11 +682,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.eventData edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -695,15 +695,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -712,16 +712,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -730,15 +730,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -747,7 +747,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -758,11 +758,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.eventData.orderId edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.orderId is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -771,15 +771,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.orderId is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -788,16 +788,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.orderId is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -806,15 +806,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.orderId is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -823,7 +823,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -834,11 +834,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.eventData.sku edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.sku is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -847,15 +847,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.sku is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -864,16 +864,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.sku is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -882,15 +882,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.sku is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -899,7 +899,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -910,11 +910,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.eventData.units edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.units is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -923,15 +923,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.units is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -940,16 +940,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.units is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -958,15 +958,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.units is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -975,7 +975,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -986,11 +986,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.eventData.price edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.price is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -999,15 +999,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.price is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -1016,16 +1016,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.price is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -1034,15 +1034,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.price is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -1051,7 +1051,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -1062,11 +1062,11 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test IncomingOrderPaymentRejectedEvent.eventData.userId edge cases
    ************************************************************/
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.userId is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -1075,15 +1075,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.userId is undefined`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -1092,16 +1092,16 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
 
-  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock
+  it(`fails to call DeallocateOrderPaymentRejectedWorkerService.deallocateOrder
       if the input IncomingOrderPaymentRejectedEvent.eventData.userId is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -1110,15 +1110,15 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).not.toHaveBeenCalled()
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).not.toHaveBeenCalled()
   })
 
   it(`returns no SQSBatchResponse.batchItemFailures if the input
       IncomingOrderPaymentRejectedEvent.eventData.userId is null`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockId = 'AA'
@@ -1127,7 +1127,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockEventBridgeEvent = buildMockEventBridgeEvent(mockId, mockIncomingOrderPaymentRejectedEvent)
     const mockSqsRecord = buildMockSqsRecord(mockId, mockEventBridgeEvent)
     const mockSqsEvent = buildMockSqsEvent([mockSqsRecord])
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -1138,53 +1138,51 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
    ************************************************************
    * Test internal logic
    ************************************************************/
-  it(`calls DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock a single
+  it(`calls DeallocateOrderPaymentRejectedWorkerService.deallocateOrder a single
       time for an SQSEvent with a single record`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).toHaveBeenCalledTimes(1)
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).toHaveBeenCalledTimes(1)
   })
 
-  it(`calls DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock multiple
+  it(`calls DeallocateOrderPaymentRejectedWorkerService.deallocateOrder multiple
       times for an SQSEvent with multiple records`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA', 'BB', 'CC']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).toHaveBeenCalledTimes(
-      mockSqsRecords.length,
-    )
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).toHaveBeenCalledTimes(mockSqsRecords.length)
   })
 
-  it(`calls DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock with the
+  it(`calls DeallocateOrderPaymentRejectedWorkerService.deallocateOrder with the
       expected input`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA', 'BB', 'CC']
     const { mockIncomingOrderPaymentRejectedEvents, mockSqsEvent } = buildMockTestObjects(mockIds)
-    await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).toHaveBeenNthCalledWith(
+    await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).toHaveBeenNthCalledWith(
       1,
       mockIncomingOrderPaymentRejectedEvents[0],
     )
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).toHaveBeenNthCalledWith(
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).toHaveBeenNthCalledWith(
       2,
       mockIncomingOrderPaymentRejectedEvents[1],
     )
-    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock).toHaveBeenNthCalledWith(
+    expect(mockDeallocateOrderPaymentRejectedWorkerService.deallocateOrder).toHaveBeenNthCalledWith(
       3,
       mockIncomingOrderPaymentRejectedEvents[2],
     )
@@ -1200,12 +1198,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       DeallocateOrderPaymentRejectedWorkerService does not throw`, async () => {
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_resolves()
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA', 'BB', 'CC']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -1216,12 +1214,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const nonTransientError = InvalidOperationError.nonTransient()
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(nonTransientError)
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA-THROW', 'BB-THROW', 'CC']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -1232,12 +1230,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const nonTransientError = InvalidOperationError.nonTransient()
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(nonTransientError)
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA', 'BB-THROW', 'CC', 'DD', 'EE-THROW']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -1248,12 +1246,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const nonTransientError = InvalidOperationError.nonTransient()
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(nonTransientError)
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA', 'BB-THROW', 'CC-THROW', 'DD-THROW', 'EE-THROW']
     const { mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = { batchItemFailures: [] }
     expect(response).toStrictEqual(expectedResponse)
   })
@@ -1263,12 +1261,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const transientError = InvalidOperationError.transient()
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(transientError)
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA-THROW', 'BB-THROW', 'CC']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[0].messageId },
@@ -1283,12 +1281,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const transientError = InvalidOperationError.transient()
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(transientError)
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA', 'BB-THROW', 'CC', 'DD', 'EE-THROW']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[1].messageId },
@@ -1303,12 +1301,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const transientError = InvalidOperationError.transient()
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(transientError)
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA', 'BB-THROW', 'CC-THROW', 'DD-THROW', 'EE-THROW']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[1].messageId },
@@ -1325,12 +1323,12 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const transientError = InvalidOperationError.transient()
     const mockDeallocateOrderPaymentRejectedWorkerService =
       buildMockDeallocateOrderPaymentRejectedWorkerService_throwsOnData(transientError)
-    const deallocateOrderStockWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
+    const deallocateOrderPaymentRejectedWorkerController = new DeallocateOrderPaymentRejectedWorkerController(
       mockDeallocateOrderPaymentRejectedWorkerService,
     )
     const mockIds = ['AA-THROW', 'BB-THROW', 'CC-THROW']
     const { mockSqsRecords, mockSqsEvent } = buildMockTestObjects(mockIds)
-    const response = await deallocateOrderStockWorkerController.deallocateOrdersStock(mockSqsEvent)
+    const response = await deallocateOrderPaymentRejectedWorkerController.deallocateOrders(mockSqsEvent)
     const expectedResponse: SQSBatchResponse = {
       batchItemFailures: [
         { itemIdentifier: mockSqsRecords[0].messageId },

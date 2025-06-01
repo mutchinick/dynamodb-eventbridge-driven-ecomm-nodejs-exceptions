@@ -113,13 +113,13 @@ function buildMockDbGetOrderAllocationClient_throws(error?: Error): IDbGetOrderA
 }
 
 function buildMockDbDeallocateOrderPaymentRejectedClient_resolves(): IDbDeallocateOrderPaymentRejectedClient {
-  return { deallocateOrderStock: jest.fn() }
+  return { deallocateOrder: jest.fn() }
 }
 
 function buildMockDbDeallocateOrderPaymentRejectedClient_throws(
   error?: Error,
 ): IDbDeallocateOrderPaymentRejectedClient {
-  return { deallocateOrderStock: jest.fn().mockRejectedValue(error ?? new Error()) }
+  return { deallocateOrder: jest.fn().mockRejectedValue(error ?? new Error()) }
 }
 
 describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
@@ -145,7 +145,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       await expect(
-        deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent),
+        deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent),
       ).resolves.not.toThrow()
     })
 
@@ -158,7 +158,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       const mockTestEvent = undefined as never
-      const resultPromise = deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockTestEvent)
+      const resultPromise = deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockTestEvent)
       await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
@@ -172,7 +172,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       const mockTestEvent = null as never
-      const resultPromise = deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockTestEvent)
+      const resultPromise = deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockTestEvent)
       await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
@@ -186,7 +186,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       const mockTestEvent = { ...mockIncomingOrderPaymentRejectedEvent }
-      const resultPromise = deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockTestEvent)
+      const resultPromise = deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockTestEvent)
       await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
       await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
     })
@@ -212,7 +212,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         throw mockError
       })
       await expect(
-        deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent),
+        deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent),
       ).rejects.toThrow(mockError)
     })
 
@@ -223,7 +223,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbGetOrderAllocationClient,
         mockDbDeallocateOrderPaymentRejectedClient,
       )
-      await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent)
+      await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent)
       expect(mockDbGetOrderAllocationClient.getOrderAllocation).toHaveBeenCalledTimes(1)
     })
 
@@ -235,7 +235,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbGetOrderAllocationClient,
         mockDbDeallocateOrderPaymentRejectedClient,
       )
-      await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent)
+      await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent)
       expect(mockDbGetOrderAllocationClient.getOrderAllocation).toHaveBeenCalledWith(expectedGetOrderAllocationCommand)
     })
 
@@ -249,7 +249,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       await expect(
-        deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent),
+        deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent),
       ).rejects.toThrow(mockError)
     })
   })
@@ -280,22 +280,22 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         throw mockError
       })
       await expect(
-        deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent),
+        deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent),
       ).rejects.toThrow(mockError)
     })
 
-    it(`calls DbDeallocateOrderPaymentRejectedClient.deallocateOrderStock a single time`, async () => {
+    it(`calls DbDeallocateOrderPaymentRejectedClient.deallocateOrder a single time`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_OrderAllocation()
       const mockDbDeallocateOrderPaymentRejectedClient = buildMockDbDeallocateOrderPaymentRejectedClient_resolves()
       const deallocateOrderPaymentRejectedWorkerService = new DeallocateOrderPaymentRejectedWorkerService(
         mockDbGetOrderAllocationClient,
         mockDbDeallocateOrderPaymentRejectedClient,
       )
-      await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent)
-      expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrderStock).toHaveBeenCalledTimes(1)
+      await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent)
+      expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrder).toHaveBeenCalledTimes(1)
     })
 
-    it(`calls DbDeallocateOrderPaymentRejectedClient.deallocateOrderStock with the
+    it(`calls DbDeallocateOrderPaymentRejectedClient.deallocateOrder with the
         expected DeallocateOrderPaymentRejectedCommand`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_OrderAllocation()
       const mockDbDeallocateOrderPaymentRejectedClient = buildMockDbDeallocateOrderPaymentRejectedClient_resolves()
@@ -303,14 +303,14 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbGetOrderAllocationClient,
         mockDbDeallocateOrderPaymentRejectedClient,
       )
-      await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent)
-      expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrderStock).toHaveBeenCalledWith(
+      await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent)
+      expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrder).toHaveBeenCalledWith(
         expectedDeallocateOrderPaymentRejectedCommand,
       )
     })
 
     it(`throws the same Error if
-        DbDeallocateOrderPaymentRejectedClient.deallocateOrderStock throws an Error`, async () => {
+        DbDeallocateOrderPaymentRejectedClient.deallocateOrder throws an Error`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_OrderAllocation()
       const mockError = new Error('mockError')
       const mockDbDeallocateOrderPaymentRejectedClient =
@@ -320,7 +320,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       await expect(
-        deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent),
+        deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent),
       ).rejects.toThrow(mockError)
     })
 
@@ -337,7 +337,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbGetOrderAllocationClient,
         mockDbDeallocateOrderPaymentRejectedClient,
       )
-      const result = await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(
+      const result = await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(
         mockIncomingOrderPaymentRejectedEvent,
       )
       expect(result).toBeUndefined()
@@ -365,23 +365,23 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       const spy = jest.spyOn(DeallocateOrderPaymentRejectedCommand, 'validateAndBuild')
-      await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent)
+      await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent)
       expect(spy).not.toHaveBeenCalled()
       spy.mockRestore()
     })
 
-    it(`does not call DbDeallocateOrderPaymentRejectedClient.deallocateOrderStock`, async () => {
+    it(`does not call DbDeallocateOrderPaymentRejectedClient.deallocateOrder`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_nullItem()
       const mockDbDeallocateOrderPaymentRejectedClient = buildMockDbDeallocateOrderPaymentRejectedClient_resolves()
       const deallocateOrderPaymentRejectedWorkerService = new DeallocateOrderPaymentRejectedWorkerService(
         mockDbGetOrderAllocationClient,
         mockDbDeallocateOrderPaymentRejectedClient,
       )
-      await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent)
-      expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrderStock).not.toHaveBeenCalled()
+      await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent)
+      expect(mockDbDeallocateOrderPaymentRejectedClient.deallocateOrder).not.toHaveBeenCalled()
     })
 
-    it(`does not throw if DbDeallocateOrderPaymentRejectedClient.deallocateOrderStock
+    it(`does not throw if DbDeallocateOrderPaymentRejectedClient.deallocateOrder
         throws an Error`, async () => {
       const mockDbGetOrderAllocationClient = buildMockDbGetOrderAllocationClient_resolves_nullItem()
       const mockDbDeallocateOrderPaymentRejectedClient = buildMockDbDeallocateOrderPaymentRejectedClient_throws()
@@ -390,7 +390,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbDeallocateOrderPaymentRejectedClient,
       )
       await expect(
-        deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(mockIncomingOrderPaymentRejectedEvent),
+        deallocateOrderPaymentRejectedWorkerService.deallocateOrder(mockIncomingOrderPaymentRejectedEvent),
       ).resolves.not.toThrow()
     })
 
@@ -407,7 +407,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
         mockDbGetOrderAllocationClient,
         mockDbDeallocateOrderPaymentRejectedClient,
       )
-      const result = await deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(
+      const result = await deallocateOrderPaymentRejectedWorkerService.deallocateOrder(
         mockIncomingOrderPaymentRejectedEvent,
       )
       expect(result).toBeUndefined()

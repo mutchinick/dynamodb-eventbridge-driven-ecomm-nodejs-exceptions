@@ -15,7 +15,7 @@ export interface IDeallocateOrderPaymentRejectedWorkerService {
    * @throws {InvalidStockDeallocationError}
    * @throws {UnrecognizedError}
    */
-  deallocateOrderStock: (incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent) => Promise<void>
+  deallocateOrder: (incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent) => Promise<void>
 }
 
 /**
@@ -35,10 +35,8 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
    * @throws {InvalidStockDeallocationError}
    * @throws {UnrecognizedError}
    */
-  public async deallocateOrderStock(
-    incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent,
-  ): Promise<void> {
-    const logContext = 'DeallocateOrderPaymentRejectedWorkerService.deallocateOrderStock'
+  public async deallocateOrder(incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent): Promise<void> {
+    const logContext = 'DeallocateOrderPaymentRejectedWorkerService.deallocateOrder'
     console.info(`${logContext} init:`, { incomingOrderPaymentRejectedEvent })
 
     try {
@@ -49,7 +47,7 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
 
       // When the Allocation DOES exist and it deallocates it
       if (existingOrderAllocationData) {
-        await this.deallocateOrder(existingOrderAllocationData, incomingOrderPaymentRejectedEvent)
+        await this.deallocateOrderAllocation(existingOrderAllocationData, incomingOrderPaymentRejectedEvent)
         console.info(`${logContext} exit success:`, { existingOrderAllocationData, incomingOrderPaymentRejectedEvent })
         return
       }
@@ -111,11 +109,11 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
    * @throws {InvalidStockDeallocationError}
    * @throws {UnrecognizedError}
    */
-  private async deallocateOrder(
+  private async deallocateOrderAllocation(
     existingOrderAllocationData: OrderAllocationData,
     incomingOrderPaymentRejectedEvent: IncomingOrderPaymentRejectedEvent,
   ): Promise<void> {
-    const logContext = 'DeallocateOrderPaymentRejectedWorkerService.deallocateOrder'
+    const logContext = 'DeallocateOrderPaymentRejectedWorkerService.deallocateOrderAllocation'
     console.info(`${logContext} init:`, { incomingOrderPaymentRejectedEvent })
 
     try {
@@ -124,7 +122,7 @@ export class DeallocateOrderPaymentRejectedWorkerService implements IDeallocateO
         incomingOrderPaymentRejectedEvent,
       }
       const deallocateCommand = DeallocateOrderPaymentRejectedCommand.validateAndBuild(deallocateCommandInput)
-      await this.dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(deallocateCommand)
+      await this.dbDeallocateOrderPaymentRejectedClient.deallocateOrder(deallocateCommand)
 
       console.info(`${logContext} exit success:`, { deallocateCommand, deallocateCommandInput })
       return

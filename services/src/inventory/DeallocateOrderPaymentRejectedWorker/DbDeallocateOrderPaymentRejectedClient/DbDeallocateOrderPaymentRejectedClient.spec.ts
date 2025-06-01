@@ -140,7 +140,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     await expect(
-      dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockDeallocateOrderPaymentRejectedCommand),
+      dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockDeallocateOrderPaymentRejectedCommand),
     ).resolves.not.toThrow()
   })
 
@@ -149,7 +149,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = undefined as DeallocateOrderPaymentRejectedCommand
-    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockTestCommand)
+    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
@@ -159,7 +159,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = null as DeallocateOrderPaymentRejectedCommand
-    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockTestCommand)
+    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
@@ -169,7 +169,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = { ...mockDeallocateOrderPaymentRejectedCommand }
-    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockTestCommand)
+    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
@@ -186,7 +186,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = buildMockDeallocateOrderPaymentRejectedCommand()
     mockTestCommand.commandData = undefined
-    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockTestCommand)
+    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
@@ -197,7 +197,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
     const mockTestCommand = buildMockDeallocateOrderPaymentRejectedCommand()
     mockTestCommand.commandData = null
-    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockTestCommand)
+    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockTestCommand)
     await expect(resultPromise).rejects.toThrow(InvalidArgumentsError)
     await expect(resultPromise).rejects.toThrow(expect.objectContaining({ transient: false }))
   })
@@ -211,14 +211,14 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`calls DynamoDBDocumentClient.send a single time`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
-    await dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockDeallocateOrderPaymentRejectedCommand)
+    await dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockDeallocateOrderPaymentRejectedCommand)
     expect(mockDdbDocClient.send).toHaveBeenCalledTimes(1)
   })
 
   it(`calls DynamoDBDocumentClient.send with the expected input`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
-    await dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(mockDeallocateOrderPaymentRejectedCommand)
+    await dbDeallocateOrderPaymentRejectedClient.deallocateOrder(mockDeallocateOrderPaymentRejectedCommand)
     expect(mockDdbDocClient.send).toHaveBeenCalledWith(expect.objectContaining({ input: expectedDdbCommand.input }))
   })
 
@@ -226,7 +226,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
       unwrapped Error`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_throws()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
-    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(
+    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrder(
       mockDeallocateOrderPaymentRejectedCommand,
     )
     await expect(resultPromise).rejects.toThrow(UnrecognizedError)
@@ -239,7 +239,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
     const mockError: Error = new TransactionCanceledException({ $metadata: {}, message: '' })
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
-    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(
+    const resultPromise = dbDeallocateOrderPaymentRejectedClient.deallocateOrder(
       mockDeallocateOrderPaymentRejectedCommand,
     )
     await expect(resultPromise).rejects.toThrow(InvalidStockDeallocationError)
@@ -255,7 +255,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   it(`returns the expected void if the execution path is successful`, async () => {
     const mockDdbDocClient = buildMockDdbDocClient_resolves()
     const dbDeallocateOrderPaymentRejectedClient = new DbDeallocateOrderPaymentRejectedClient(mockDdbDocClient)
-    const result = await dbDeallocateOrderPaymentRejectedClient.deallocateOrderStock(
+    const result = await dbDeallocateOrderPaymentRejectedClient.deallocateOrder(
       mockDeallocateOrderPaymentRejectedCommand,
     )
     expect(result).not.toBeDefined()

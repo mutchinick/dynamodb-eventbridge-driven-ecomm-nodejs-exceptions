@@ -7,7 +7,7 @@ import {
 } from '../model/IncomingOrderPaymentRejectedEvent'
 
 export interface IDeallocateOrderPaymentRejectedWorkerController {
-  deallocateOrdersStock: (sqsEvent: SQSEvent) => Promise<SQSBatchResponse>
+  deallocateOrders: (sqsEvent: SQSEvent) => Promise<SQSBatchResponse>
 }
 
 /**
@@ -20,14 +20,14 @@ export class DeallocateOrderPaymentRejectedWorkerController implements IDealloca
   constructor(
     private readonly deallocateOrderPaymentRejectedWorkerService: IDeallocateOrderPaymentRejectedWorkerService,
   ) {
-    this.deallocateOrdersStock = this.deallocateOrdersStock.bind(this)
+    this.deallocateOrders = this.deallocateOrders.bind(this)
   }
 
   /**
    *
    */
-  public async deallocateOrdersStock(sqsEvent: SQSEvent): Promise<SQSBatchResponse> {
-    const logContext = 'DeallocateOrderPaymentRejectedWorkerController.deallocateOrdersStock'
+  public async deallocateOrders(sqsEvent: SQSEvent): Promise<SQSBatchResponse> {
+    const logContext = 'DeallocateOrderPaymentRejectedWorkerController.deallocateOrders'
     console.info(`${logContext} init:`, { sqsEvent })
 
     const sqsBatchResponse: SQSBatchResponse = { batchItemFailures: [] }
@@ -66,7 +66,7 @@ export class DeallocateOrderPaymentRejectedWorkerController implements IDealloca
     try {
       const unverifiedEvent = this.parseInputEvent(sqsRecord) as IncomingOrderPaymentRejectedEventInput
       const incomingOrderPaymentRejectedEvent = IncomingOrderPaymentRejectedEvent.validateAndBuild(unverifiedEvent)
-      await this.deallocateOrderPaymentRejectedWorkerService.deallocateOrderStock(incomingOrderPaymentRejectedEvent)
+      await this.deallocateOrderPaymentRejectedWorkerService.deallocateOrder(incomingOrderPaymentRejectedEvent)
       console.info(`${logContext} exit success:`, { incomingOrderPaymentRejectedEvent, sqsRecord })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, sqsRecord })

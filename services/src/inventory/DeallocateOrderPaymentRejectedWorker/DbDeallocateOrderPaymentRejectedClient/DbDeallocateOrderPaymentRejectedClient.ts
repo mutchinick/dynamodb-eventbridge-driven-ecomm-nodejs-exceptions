@@ -9,7 +9,7 @@ export interface IDbDeallocateOrderPaymentRejectedClient {
    * @throws {InvalidStockDeallocationError}
    * @throws {UnrecognizedError}
    */
-  deallocateOrderStock: (deallocateOrderPaymentRejectedCommand: DeallocateOrderPaymentRejectedCommand) => Promise<void>
+  deallocateOrder: (deallocateOrderPaymentRejectedCommand: DeallocateOrderPaymentRejectedCommand) => Promise<void>
 }
 
 /**
@@ -26,10 +26,10 @@ export class DbDeallocateOrderPaymentRejectedClient implements IDbDeallocateOrde
    * @throws {InvalidStockDeallocationError}
    * @throws {UnrecognizedError}
    */
-  public async deallocateOrderStock(
+  public async deallocateOrder(
     deallocateOrderPaymentRejectedCommand: DeallocateOrderPaymentRejectedCommand,
   ): Promise<void> {
-    const logContext = 'DbDeallocateOrderPaymentRejectedClient.deallocateOrderStock'
+    const logContext = 'DbDeallocateOrderPaymentRejectedClient.deallocateOrder'
     console.info(`${logContext} init:`, { deallocateOrderPaymentRejectedCommand })
 
     try {
