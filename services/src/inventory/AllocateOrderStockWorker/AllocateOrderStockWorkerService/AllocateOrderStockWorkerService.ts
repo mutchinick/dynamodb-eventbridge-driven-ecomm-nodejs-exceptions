@@ -20,7 +20,7 @@ export interface IAllocateOrderStockWorkerService {
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  allocateOrderStock: (incomingOrderCreatedEvent: IncomingOrderCreatedEvent) => Promise<void>
+  allocateOrder: (incomingOrderCreatedEvent: IncomingOrderCreatedEvent) => Promise<void>
 }
 
 /**
@@ -42,8 +42,8 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
    * @throws {DuplicateEventRaisedError}
    * @throws {UnrecognizedError}
    */
-  public async allocateOrderStock(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
-    const logContext = 'AllocateOrderStockWorkerService.allocateOrderStock'
+  public async allocateOrder(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
+    const logContext = 'AllocateOrderStockWorkerService.allocateOrder'
     console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
 
     // This is one of those methods that is long and ugly, I have explored some ways to make it more readable,
@@ -66,7 +66,7 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
 
       // When the Allocation DOES NOT exist and it creates it and raises the Allocated event
       else {
-        await this.allocateOrder(incomingOrderCreatedEvent)
+        await this.allocateOrderAllocation(incomingOrderCreatedEvent)
         await this.raiseAllocatedEvent(incomingOrderCreatedEvent)
         console.info(`${logContext} exit success:`, { existingOrderAllocationData, incomingOrderCreatedEvent })
         return
@@ -141,14 +141,14 @@ export class AllocateOrderStockWorkerService implements IAllocateOrderStockWorke
    * @throws {DepletedStockAllocationError}
    * @throws {UnrecognizedError}
    */
-  private async allocateOrder(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
-    const logContext = 'AllocateOrderStockWorkerService.allocateOrder'
+  private async allocateOrderAllocation(incomingOrderCreatedEvent: IncomingOrderCreatedEvent): Promise<void> {
+    const logContext = 'AllocateOrderStockWorkerService.allocateOrderAllocation'
     console.info(`${logContext} init:`, { incomingOrderCreatedEvent })
 
     try {
       const allocateOrderStockCommandInput: AllocateOrderStockCommandInput = { incomingOrderCreatedEvent }
       const allocateOrderStockCommand = AllocateOrderStockCommand.validateAndBuild(allocateOrderStockCommandInput)
-      await this.dbAllocateOrderStockClient.allocateOrderStock(allocateOrderStockCommand)
+      await this.dbAllocateOrderStockClient.allocateOrder(allocateOrderStockCommand)
       console.info(`${logContext} exit success:`, { allocateOrderStockCommand, allocateOrderStockCommandInput })
       return
     } catch (error) {

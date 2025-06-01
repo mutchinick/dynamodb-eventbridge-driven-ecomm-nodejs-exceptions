@@ -15,7 +15,7 @@ export interface IDbAllocateOrderStockClient {
    * @throws {DepletedStockAllocationError}
    * @throws {UnrecognizedError}
    */
-  allocateOrderStock: (allocateOrderStockCommand: AllocateOrderStockCommand) => Promise<void>
+  allocateOrder: (allocateOrderStockCommand: AllocateOrderStockCommand) => Promise<void>
 }
 
 /**
@@ -33,8 +33,8 @@ export class DbAllocateOrderStockClient implements IDbAllocateOrderStockClient {
    * @throws {DepletedStockAllocationError}
    * @throws {UnrecognizedError}
    */
-  public async allocateOrderStock(allocateOrderStockCommand: AllocateOrderStockCommand): Promise<void> {
-    const logContext = 'DbAllocateOrderStockClient.allocateOrderStock'
+  public async allocateOrder(allocateOrderStockCommand: AllocateOrderStockCommand): Promise<void> {
+    const logContext = 'DbAllocateOrderStockClient.allocateOrder'
     console.info(`${logContext} init:`, { allocateOrderStockCommand })
 
     try {

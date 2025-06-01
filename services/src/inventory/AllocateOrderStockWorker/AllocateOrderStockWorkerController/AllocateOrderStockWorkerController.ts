@@ -4,7 +4,7 @@ import { IAllocateOrderStockWorkerService } from '../AllocateOrderStockWorkerSer
 import { IncomingOrderCreatedEvent, IncomingOrderCreatedEventInput } from '../model/IncomingOrderCreatedEvent'
 
 export interface IAllocateOrderStockWorkerController {
-  allocateOrdersStock: (sqsEvent: SQSEvent) => Promise<SQSBatchResponse>
+  allocateOrders: (sqsEvent: SQSEvent) => Promise<SQSBatchResponse>
 }
 
 /**
@@ -15,14 +15,14 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
    *
    */
   constructor(private readonly allocateOrderStockWorkerService: IAllocateOrderStockWorkerService) {
-    this.allocateOrdersStock = this.allocateOrdersStock.bind(this)
+    this.allocateOrders = this.allocateOrders.bind(this)
   }
 
   /**
    *
    */
-  public async allocateOrdersStock(sqsEvent: SQSEvent): Promise<SQSBatchResponse> {
-    const logContext = 'AllocateOrderStockWorkerController.allocateOrdersStock'
+  public async allocateOrders(sqsEvent: SQSEvent): Promise<SQSBatchResponse> {
+    const logContext = 'AllocateOrderStockWorkerController.allocateOrders'
     console.info(`${logContext} init:`, { sqsEvent })
 
     const sqsBatchResponse: SQSBatchResponse = { batchItemFailures: [] }
@@ -59,7 +59,7 @@ export class AllocateOrderStockWorkerController implements IAllocateOrderStockWo
     try {
       const unverifiedEvent = this.parseInputEvent(sqsRecord) as IncomingOrderCreatedEventInput
       const incomingOrderCreatedEvent = IncomingOrderCreatedEvent.validateAndBuild(unverifiedEvent)
-      await this.allocateOrderStockWorkerService.allocateOrderStock(incomingOrderCreatedEvent)
+      await this.allocateOrderStockWorkerService.allocateOrder(incomingOrderCreatedEvent)
       console.info(`${logContext} exit success:`, { incomingOrderCreatedEvent, sqsRecord })
     } catch (error) {
       console.error(`${logContext} exit error:`, { error, sqsRecord })
