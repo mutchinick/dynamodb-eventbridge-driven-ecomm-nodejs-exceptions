@@ -107,6 +107,17 @@ export class InvalidStockDeallocationError extends AppError {
 /*
  *
  */
+export class InvalidStockCompletionError extends AppError {
+  private static readonly _defaultMessage = 'Invalid stock completion error.'
+
+  public static from(cause?: unknown, message?: string): InvalidStockCompletionError {
+    return new InvalidStockCompletionError(message ?? this._defaultMessage, false, cause)
+  }
+}
+
+/*
+ *
+ */
 export function isTransientError(error: unknown): boolean {
   if (error instanceof AppError) {
     return error.transient

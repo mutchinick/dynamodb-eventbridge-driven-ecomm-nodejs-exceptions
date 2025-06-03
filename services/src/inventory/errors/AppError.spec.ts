@@ -6,6 +6,7 @@ import {
   DuplicateStockAllocationError,
   InvalidArgumentsError,
   InvalidOperationError,
+  InvalidStockCompletionError,
   InvalidStockDeallocationError,
   UnrecognizedError,
   isTransientError,
@@ -82,6 +83,13 @@ const testCases: ErrorTestCase<AppError>[] = [
     expectedMessage: 'Invalid stock deallocation error.',
     expectedTransient: false,
     expectedInstance: InvalidStockDeallocationError,
+  },
+  {
+    name: 'InvalidStockCompletionError',
+    from: (cause, message) => InvalidStockCompletionError.from(cause, message),
+    expectedMessage: 'Invalid stock completion error.',
+    expectedTransient: false,
+    expectedInstance: InvalidStockCompletionError,
   },
 ]
 
