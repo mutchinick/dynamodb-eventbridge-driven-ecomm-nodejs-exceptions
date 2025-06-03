@@ -234,7 +234,7 @@ describe(`Inventory Service DeallocateOrderPaymentRejectedWorker
   })
 
   it(`throws a non-transient InvalidStockDeallocationError if
-      DynamoDBDocumentClient.send throws a ConditionalCheckFailedException when
+      DynamoDBDocumentClient.send throws a TransactionCanceledException when
       allocating the stock`, async () => {
     const mockError: Error = new TransactionCanceledException({ $metadata: {}, message: '' })
     const mockDdbDocClient = buildMockDdbDocClient_throws(mockError)
